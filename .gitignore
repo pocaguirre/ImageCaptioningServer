@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Pycharm
+.idea/
+
+# Random
+.DS_Store
+
+# Protected files
+UserInterface/keys.json
