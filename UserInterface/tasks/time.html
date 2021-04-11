@@ -13,6 +13,7 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
         <script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
+        <script src="https://www.pocaguirre.com/static/jquery.countdown360/dist/jquery.countdown360.js"></script>
 
         <script>
             STATIC_ROOT = "https://www.pocaguirre.com/static";
@@ -25,6 +26,9 @@
             var init_time = $.now();
 
             // change im_urls to your images
+            let instruction_im_path = STATIC_ROOT + "/images/image_captioning/dog.jpg";
+            let instruction_im = new Image();
+            instruction_im.src = instruction_im_path;
             var im_urls = [ STATIC_ROOT + "/images/image_captioning/dog.jpg",
                             STATIC_ROOT + "/images/image_captioning/cat.jpg",
                             STATIC_ROOT + "/images/image_captioning/dog.jpg",
@@ -41,6 +45,7 @@
                 q.im = im;
                 q.ans = '';
                 q.done = false;
+                q.seen = false; // TODO: add button to see image, then start counter, then show image, then empty canvas
                 // TODO: add fields for identifying images here
                 questions.push(q);
             }
@@ -64,6 +69,8 @@
                 $( "#dialog-modal" ).hide();
                 $('#next').on('click', function(){next();});
                 $('#prev').on('click', function(){prev();});
+                $("#see-image").on("click", function(){see_image_btn();});
+                $("#see-image-instruction").on("click", function(){see_image_instruction_btn();});
                 $("#start-btn").on('click', function (){start();})
                 var els = document.getElementsByClassName('instruction-check');
                 for (var i = 0; i < els.length; i++) {
@@ -193,12 +200,12 @@
             }
 
             function check_all_checks(){
-                if ($(".instruction-check:checked").length > 5) {
+                if ($(".instruction-check:checked").length > 6) {
                     $("#start-btn").prop("disabled", false);
                 }
             }
             // ===============================================================
-            // rednering question, image, and dialog
+            // rendering question, image, and dialog
             // ==============================================================
             function render_header_button(im_urls){
                 $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-info">Instructions</button>`);
@@ -214,19 +221,76 @@
             }
 
             function render_question(idx){
-                q = questions[idx]
-                render_im(q.im);
+                q = questions[idx];
                 $('.state-button').show();
+                if (q.seen) {
+                    $("#see-image-div").prop('hidden', true);
+                    $("#already-seen").prop('hidden', false);
+                } else {
+                   $("#see-image-div").prop('hidden', false);
+                   $("#already-seen").prop('hidden', true);
+                }
                 $('#description').show();
                 $('#description').css('width', 480);
                 $('#description').css('height', 150);
                 $('#description').val(q.ans);
             }
 
-            function render_im(im){
-                im.height = im.height * 480 / im.width
+            function see_image_btn(){
+                $("#see-image-div").prop('hidden', true);
+                let countdown = $("#countdown")
+                countdown.prop('hidden', false);
+                countdown.countdown360({
+                  radius      : 60.5,
+                  seconds     : 3,
+                  strokeWidth : 15,
+                  fillStyle   : '#0276FD',
+                  strokeStyle : '#003F87',
+                  fontSize    : 50,
+                  fontColor   : '#FFFFFF',
+                  autostart: false,
+                  onComplete  : function () {
+                      $("#countdown").prop('hidden', true);
+                      q = questions[state];
+                      q.seen = true;
+                      render_im(q.im);
+                      setTimeout(() => {  clear_im(); }, 500);
+                  }
+                }).start();
+            }
+
+
+            function see_image_instruction_btn(){
+                $("#see-image-div-instruction").prop('hidden', true);
+                let countdown = $("#countdown-instruction")
+                countdown.prop('hidden', false);
+                countdown.countdown360({
+                  radius      : 60.5,
+                  seconds     : 3,
+                  strokeWidth : 15,
+                  fillStyle   : '#0276FD',
+                  strokeStyle : '#003F87',
+                  fontSize    : 50,
+                  fontColor   : '#FFFFFF',
+                  autostart: false,
+                  onComplete  : function () {
+                      $("#countdown-instruction").prop('hidden', true);
+                      render_im(instruction_im, canvas="#canvas-instruction");
+                      setTimeout(() => {  clear_im(canvas="#canvas-instruction"); }, 500);
+                  }
+                }).start();
+            }
+
+            function clear_im(canvas="#canvas"){
+                var c = $(canvas)[0];
+                var ctx = c.getContext("2d");
+                ctx.clearRect(0, 0, c.width, c.height);
+            }
+
+            function render_im(im, canvas="#canvas"){
+                im.height = im.height * 480 / im.width;
                 im.width = 480;
-                var c = $('#canvas')[0]
+                var c = $(canvas)[0];
                 if (im.width > im.height){
                     c.width =  480;
                     c.height = im.height * 480 / im.width;
@@ -375,7 +439,17 @@
                     <div class="row">
                         <div class="col-6 text-end">
                             <div style='padding-top:5px'>
-                                <canvas id='canvas'></canvas>
+                                <div class="text-center">
+                                    <div id="countdown"></div>
+                                    <canvas id='canvas'></canvas>
+                                </div>
+                                <div id="see-image-div" class="text-center">
+                                    <button id="see-image" class="btn btn-primary">See Image</button>
+                                    <p><em>Remember: You can only see the image once.</em></p>
+                                </div>
+                                <div id="already-seen" class="text-center">
+                                    <p><em>Image already seen.</em></p>
+                                </div>
                             </div>
 
                         </div>
@@ -390,6 +464,7 @@
                                 <li><strong style='color:red'>Do not</strong> give people proper names.</li>
                                 <li><strong style='color:red'>Do not</strong> use more than one sentence.</li>
                                 <li>Your description should contain at least <strong style='color:blue'>8 words</strong>.</li>
+                                <li>You can observe the image for <strong style='color:red'>only 1 second</strong>.</li>
                                 <div style='padding-top:5px'>
                                     <div id='userinput_div'>
     <!--                                    <div id='header' style='font-weight:800; font-size: 14pt; padding-bottom:5px'>-->
@@ -421,7 +496,7 @@
                 </div>
                 <div id="instructions">
                     <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
-                        <h style='font-weight:800'>Instructions:</h>
+                        <h2 style='font-weight:800'>Instructions:</h2>
                         <div class="form-check">
                             <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction1">
                             <label class="form-check-label" for="instruction1">
@@ -459,6 +534,23 @@
                             Your description should contain at least <strong style='color:blue'>8 words</strong>.
                             </label>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction7">
+                            <label class="form-check-label" for="instruction6">
+                            You can observe the image for <strong style='color:red'>only 1 second</strong>.
+                            </label>
+                        </div>
+                    </div>
+                    <hr>
+                    <h2 style='font-weight:800'>Image Test</h2>
+                    <p class="lead">This is an example of an interaction with an image in this HIT.</p>
+                    <div class="text-center">
+                        <div id="countdown-instruction"></div>
+                        <canvas id='canvas-instruction'></canvas>
+                    </div>
+                    <div id="see-image-div-instruction" class="text-center">
+                        <button id="see-image-instruction" class="btn btn-primary">See Image</button>
+                        <p><em>Remember: You can only see the image once.</em></p>
                     </div>
                     <div class="text-center">
                         <button id="start-btn" class="btn btn-primary" disabled>start</button>
