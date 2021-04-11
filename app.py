@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from model import Tasks
 
 engine = Tasks()
-app = Flask(__name__)
+app = Flask(__name__, static_folder='UserInterface/static')
 
 
 @app.route('/')
