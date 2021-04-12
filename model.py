@@ -14,8 +14,8 @@ IMAGE_SETS = {
 
 def real_task(func):
 
-    def inner(worker_id, assign_id):
-        task = func(worker_id, assign_id)
+    def inner(self, worker_id, assign_id):
+        task = func(self, worker_id, assign_id)
         task_obj = {
             "html": f"{STATIC_ROOT}tasks/{task['condition']}.html #main-body",
             "js": f"{STATIC_ROOT}js/{task['condition']}.js",
@@ -121,7 +121,8 @@ if __name__ == '__main__':
     flag = True
     while flag:
         wid = input("Worker ID: ")
-        task = tasks.get_test_task(wid)
+        aid = input("Assgin ID: ")
+        task = tasks.get_task(wid, aid)
         print(task)
         cont = input("continue? Y/N")
         if cont[0] == 'N':
