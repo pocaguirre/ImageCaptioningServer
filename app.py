@@ -24,7 +24,7 @@ def get_task():
     app.logger.debug("Getting new task")
     if request.method == 'POST':
         app.logger.debug("Into POST request")
-        worker_id = request.form['workerId']
+        worker_id = request.form['workerID']
         assignment_id = request.form['assignID']
         app.logger.debug(f"WorkerID: {worker_id} AssignmentID: {assignment_id}")
         task = engine.get_task(worker_id, assignment_id)
