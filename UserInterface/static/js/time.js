@@ -8,6 +8,9 @@ var state = -1;
 var init_time = $.now();
 
 // change im_urls to your images
+let instruction_im_path = STATIC_ROOT + "/images/dog.jpg";
+let instruction_im = new Image();
+instruction_im.src = instruction_im_path;
 var im_urls = [ STATIC_ROOT + "/images/dog.jpg",
                 STATIC_ROOT + "/images/cat.jpg",
                 STATIC_ROOT + "/images/dog.jpg",
@@ -24,6 +27,7 @@ for (i=0; i < im_urls.length; i++){
     q.im = im;
     q.ans = '';
     q.done = false;
+    q.seen = false; // TODO: add button to see image, then start counter, then show image, then empty canvas
     // TODO: add fields for identifying images here
     questions.push(q);
 }
@@ -47,6 +51,8 @@ $(window).load(function(){
     $( "#dialog-modal" ).hide();
     $('#next').on('click', function(){next();});
     $('#prev').on('click', function(){prev();});
+    $("#see-image").on("click", function(){see_image_btn();});
+    $("#see-image-instruction").on("click", function(){see_image_instruction_btn();});
     $("#start-btn").on('click', function (){start();})
     var els = document.getElementsByClassName('instruction-check');
     for (var i = 0; i < els.length; i++) {
@@ -176,12 +182,12 @@ function check_correct(question){
 }
 
 function check_all_checks(){
-    if ($(".instruction-check:checked").length > 5) {
+    if ($(".instruction-check:checked").length > 6) {
         $("#start-btn").prop("disabled", false);
     }
 }
 // ===============================================================
-// rednering question, image, and dialog
+// rendering question, image, and dialog
 // ==============================================================
 function render_header_button(im_urls){
     $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-info">Instructions</button>`);
@@ -197,19 +203,76 @@ function render_header_button(im_urls){
 }
 
 function render_question(idx){
-    q = questions[idx]
-    render_im(q.im);
+    q = questions[idx];
     $('.state-button').show();
+    if (q.seen) {
+        $("#see-image-div").prop('hidden', true);
+        $("#already-seen").prop('hidden', false);
+    } else {
+       $("#see-image-div").prop('hidden', false);
+       $("#already-seen").prop('hidden', true);
+    }
     $('#description').show();
     $('#description').css('width', 480);
     $('#description').css('height', 150);
     $('#description').val(q.ans);
 }
 
-function render_im(im){
-    im.height = im.height * 480 / im.width
+function see_image_btn(){
+    $("#see-image-div").prop('hidden', true);
+    let countdown = $("#countdown")
+    countdown.prop('hidden', false);
+    countdown.countdown360({
+      radius      : 60.5,
+      seconds     : 3,
+      strokeWidth : 15,
+      fillStyle   : '#0276FD',
+      strokeStyle : '#003F87',
+      fontSize    : 50,
+      fontColor   : '#FFFFFF',
+      autostart: false,
+      onComplete  : function () {
+          $("#countdown").prop('hidden', true);
+          q = questions[state];
+          q.seen = true;
+          render_im(q.im);
+          setTimeout(() => {  clear_im(); }, 500);
+      }
+    }).start();
+}
+
+
+function see_image_instruction_btn(){
+    $("#see-image-div-instruction").prop('hidden', true);
+    let countdown = $("#countdown-instruction")
+    countdown.prop('hidden', false);
+    countdown.countdown360({
+      radius      : 60.5,
+      seconds     : 3,
+      strokeWidth : 15,
+      fillStyle   : '#0276FD',
+      strokeStyle : '#003F87',
+      fontSize    : 50,
+      fontColor   : '#FFFFFF',
+      autostart: false,
+      onComplete  : function () {
+          $("#countdown-instruction").prop('hidden', true);
+          render_im(instruction_im, canvas="#canvas-instruction");
+          setTimeout(() => {  clear_im(canvas="#canvas-instruction"); }, 500);
+      }
+    }).start();
+}
+
+function clear_im(canvas="#canvas"){
+    var c = $(canvas)[0];
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+}
+
+function render_im(im, canvas="#canvas"){
+    im.height = im.height * 480 / im.width;
     im.width = 480;
-    var c = $('#canvas')[0]
+    var c = $(canvas)[0];
     if (im.width > im.height){
         c.width =  480;
         c.height = im.height * 480 / im.width;
