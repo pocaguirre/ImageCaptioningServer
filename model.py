@@ -5,10 +5,10 @@ from queue import Queue
 STATIC_ROOT = "https://imagecaptioningicl.azurewebsites.net/static/"
 
 IMAGE_SETS = {
-    "test1": [f"{STATIC_ROOT}/images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-    "test2": [f"{STATIC_ROOT}/images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-    "test3": [f"{STATIC_ROOT}/images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-    "test4": [f"{STATIC_ROOT}/images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
+    "test1": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
+    "test2": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
+    "test3": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
+    "test4": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
 }
 
 
@@ -16,6 +16,8 @@ def real_task(func):
 
     def inner(self, worker_id, assign_id):
         task = func(self, worker_id, assign_id)
+        if 'condition' not in task:
+            return {"ERROR"}
         task_obj = {
             "html": f"{STATIC_ROOT}tasks/{task['condition']}.html #main-body",
             "js": f"{STATIC_ROOT}js/{task['condition']}.js",
