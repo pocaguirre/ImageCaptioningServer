@@ -1,65 +1,29 @@
 STATIC_ROOT = "https://imagecaptioningicl.azurewebsites.net/static";
 
-// ============================================================================
-// create question set and state to go through the questions
-// ============================================================================
-var questions = new Array();
-var state = -1;
-var init_time = $.now();
 
 // change im_urls to your images
 let instruction_im_path = STATIC_ROOT + "/images/dog.jpg";
 let instruction_im = new Image();
 instruction_im.src = instruction_im_path;
-var im_urls = [ STATIC_ROOT + "/images/dog.jpg",
-                STATIC_ROOT + "/images/cat.jpg",
-                STATIC_ROOT + "/images/dog.jpg",
-                STATIC_ROOT + "/images/cat.jpg",
-                STATIC_ROOT + "/images/dog.jpg"];
 
 // ============================================================================
 // initialize images
 // ============================================================================
-for (i=0; i < im_urls.length; i++){
-    var im = new Image();
-    var q = new Object();
-    im.src = im_urls[i];
-    q.im = im;
-    q.ans = '';
-    q.done = false;
-    q.seen = false; // TODO: add button to see image, then start counter, then show image, then empty canvas
-    // TODO: add fields for identifying images here
-    questions.push(q);
-}
-
-// ============================================================================
-// page onload
-// ============================================================================
-$(window).load(function(){
-    render_header_button(im_urls);
-    $("#dialog-modal" ).dialog({
-      autoOpen: false,
-      height: 250,
-      modal: true,
-    buttons: {
-        'ok':function(){
-            $( this ).dialog( "close" );
-        },
+function initialize_images(im_urls) {
+    for (i = 0; i < im_urls.length; i++) {
+        var im = new Image();
+        var q = new Object();
+        im.src = im_urls[i];
+        q.im = im;
+        q.ans = '';
+        q.done = false;
+        q.seen = false; // TODO: add button to see image, then start counter, then show image, then empty canvas
+        // TODO: add fields for identifying images here
+        questions.push(q);
     }
-    });
-    addDialog();
-    $( "#dialog-modal" ).hide();
-    $('#next').on('click', function(){next();});
-    $('#prev').on('click', function(){prev();});
     $("#see-image").on("click", function(){see_image_btn();});
     $("#see-image-instruction").on("click", function(){see_image_instruction_btn();});
-    $("#start-btn").on('click', function (){start();})
-    var els = document.getElementsByClassName('instruction-check');
-    for (var i = 0; i < els.length; i++) {
-      els[i].onclick = check_all_checks;
-    }
-
-})
+}
 
 // ================================================================
 // function to control next and previous question
@@ -284,6 +248,7 @@ function render_im(im, canvas="#canvas"){
     ctx.drawImage(im, 0, 0, c.width, c.height);
 }
 
+
 function update_header_buttons(activeIdx){
     $( ".header-btn" ).each(function( index ) {
         let cl;
@@ -356,35 +321,3 @@ function getAnswers(){
     }
     return answers;
 }
-
-// ===========================================================
-// add dialog for the web page
-// ===========================================================
-function addDialog(){
-    $( "#dialog-confirm" ).dialog({
-      autoOpen: false,
-      resizable: false,
-      height:140,
-      modal: true,
-      buttons: {
-        "Yes": function() {
-          $( this ).dialog( "close" );
-          $("#ans").val(JSON.stringify(getAnswers()));
-          // $('#mturk_form').submit();
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      }
-    });
-    $( ".ui-dialog" ).css('position', 'absolute');
-}
-
-// ===========================================================
-// disable cut and paste on input text
-// ===========================================================
-$(document).ready(function(){
-  $(document).on("cut copy paste","#description",function(e) {
-      e.preventDefault();
-  });
- });
