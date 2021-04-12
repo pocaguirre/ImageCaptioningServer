@@ -21,15 +21,15 @@ def hello_world():
 
 @app.route('/get_task', methods=['POST', 'GET'])
 def get_task():
-    app.logger.debug("Getting new task")
+    # app.logger.debug("Getting new task")
     if request.method == 'POST':
-        app.logger.debug("Into POST request")
+        # app.logger.debug("Into POST request")
         worker_id = request.form['workerID']
         assignment_id = request.form['assignID']
-        app.logger.debug(f"WorkerID: {worker_id} AssignmentID: {assignment_id}")
-        task = engine.get_task(worker_id, assignment_id)
-        app.logger.debug(f"Task assigned: condition = {task['condition']} | image_set = {task['image_set']}")
-        return jsonify(task)
+        # app.logger.debug(f"WorkerID: {worker_id} AssignmentID: {assignment_id}")
+        # task = engine.get_task(worker_id, assignment_id)
+        # app.logger.debug(f"Task assigned: condition = {task['condition']} | image_set = {task['image_set']}")
+        return jsonify({"task": "testing"})
     else:
         worker_id = "1"
         return jsonify(engine.get_test_task(worker_id))
