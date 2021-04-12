@@ -1,5 +1,5 @@
 {
-  "STATIC_ROOT": "https://www.pocaguirre.com/static/",
+  "STATIC_ROOT": "https://imagecaptioningicl.azurewebsites.net/static",
   "HIT":{
     "USE_SANDBOX": true,
     "REGION_NAME": "us-east-1",
@@ -7,10 +7,10 @@
     "Description": "Add descriptions to images for BVI (demo)",
     "Keywords": "image, description, caption",
     "Reward": "0.00",
-    "MaxAssignments": 3,
-    "LifetimeInSeconds": 172800,
+    "MaxAssignments": 4,
+    "LifetimeInSeconds": 400,
     "AssignmentDurationInSeconds": 600,
     "AutoApprovalDelayInSeconds": 86400,
-    "Question": "tasks/control.html"
+    "Question": "static/tasks/main.html"
   }
 }
