@@ -1,11 +1,13 @@
 from flask import Flask, jsonify, request
 from model import Tasks
 from applicationinsights.flask.ext import AppInsights
+from flask_cors import CORS, cross_origin
 
 engine = Tasks()
 app = Flask(__name__, static_folder='UserInterface/static')
 app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = 'b2010324-c9a2-4838-9da9-d95fbaf83afd'
 appinsights = AppInsights(app)
+cors = CORS(app)
 
 
 @app.after_request
@@ -20,6 +22,7 @@ def hello_world():
 
 
 @app.route('/get_task', methods=['POST', 'GET'])
+@cross_origin()
 def get_task():
     # app.logger.debug("Getting new task")
     if request.method == 'POST':

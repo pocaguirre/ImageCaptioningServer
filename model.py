@@ -86,6 +86,7 @@ class Tasks(object):
 
     @real_task
     def get_task(self, worker_id, assign_id) -> dict:
+        # TODO: check CORS error from javascript :(
         if not self._check_worker_exists(worker_id):
             self._set_up_worker(worker_id)
         if self._is_new_assignment(assign_id):

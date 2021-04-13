@@ -9,6 +9,7 @@ click==7.1.2
 concrete==4.15.1
 decorator==4.4.2
 Flask==1.1.2
+Flask-Cors==3.0.10
 future==0.18.2
 humanfriendly==9.1
 idna==2.8
