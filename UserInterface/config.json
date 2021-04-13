@@ -8,7 +8,7 @@
     "Keywords": "image, description, caption",
     "Reward": "0.00",
     "MaxAssignments": 4,
-    "LifetimeInSeconds": 400,
+    "LifetimeInSeconds": 8400,
     "AssignmentDurationInSeconds": 600,
     "AutoApprovalDelayInSeconds": 86400,
     "Question": "static/tasks/main.html"
