@@ -14,11 +14,13 @@
     <script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
     <script type="text/javascript">
         var mturk = {{ mturk|tojson }};
+        var workerID;
+        var assignID;
         {% if workerID %}
-        var workerID = {{ workerID|tojson }};
+        workerID = {{ workerID|tojson }};
         {% endif %}
         {% if assignID %}
-        var assignID = {{ assignID|tojson }};
+        assignID = {{ assignID|tojson }};
         {% endif %}
     </script>
     <script type='text/javascript' src='https://imagecaptioningicl.azurewebsites.net/static/js/main.js'></script>

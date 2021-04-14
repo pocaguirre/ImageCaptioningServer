@@ -19,8 +19,8 @@ $(window).load(function(){
         });
         addDialog();
         $( "#dialog-modal" ).hide();
-        var workerID = turkGetParam("workerId");
-        var assignID = turkGetParam("assignmentId");
+        workerID = turkGetParam("workerId");
+        assignID = turkGetParam("assignmentId");
     }
     $.post( "https://imagecaptioningicl.azurewebsites.net/get_task", { workerID: workerID,
                                                                         assignID: assignID}, function( data ) {
