@@ -18,15 +18,39 @@ def after_request(response):
     return response
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def hello_world():
-    global local_worker
-    global local_assignment
-    local_worker += 1
-    local_assignment += 1
+    worker_id = request.args.get('worker', default=None)
+    assignment_id = request.args.get('assignment', default=None)
+    if worker_id is None:
+        global local_worker
+        local_worker += 1
+        worker_id = local_worker
+    if assignment_id is None:
+        global local_assignment
+        local_assignment += 1
+        assignment_id = local_assignment
     return render_template("main.html", mturk=False,
-                           workerID=f"worker{local_worker}",
-                           assignID=f"assignment{local_assignment}")
+                           workerID=f"worker{worker_id}",
+                           assignID=f"assignment{assignment_id}")
+
+
+@app.route('/condition/<condition>', methods='GET')
+@cross_origin()
+def get_condition(condition):
+    mturk = request.args.get('mturk', default=None)
+    return render_template(f"{condition}.html", mturk=mturk)
+
+
+@app.route('/submit_data', methods='POST')
+@cross_origin()
+def submit_data():
+    answer = request.form['answer']
+    assignment_id = request.form['assignmentID']
+    worker_id = request.form['workerID']
+    success = engine.save_anwer(assignment_id, answer)
+    if success:
+        return jsonify({"link": f"https://imagecaptioningicl.azurewebsites.net/?worker={worker_id}"})
 
 
 @app.route('/get_task', methods=['POST', 'GET'])

@@ -2,7 +2,8 @@ import numpy as np
 from queue import Queue
 
 # CONSTANTS
-STATIC_ROOT = "https://imagecaptioningicl.azurewebsites.net/static/"
+ROOT = "https://imagecaptioningicl.azurewebsites.net/"
+STATIC_ROOT = f"{ROOT}static/"
 
 IMAGE_SETS = {
     "test1": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
@@ -19,7 +20,7 @@ def real_task(func):
         if 'condition' not in task:
             return {"ERROR"}
         task_obj = {
-            "html": f"{STATIC_ROOT}tasks/{task['condition']}.html #main-body",
+            "html": f"{ROOT}condition/{task['condition']} #main-body",
             "js": f"{STATIC_ROOT}js/{task['condition']}.js",
             "images": IMAGE_SETS[task['images']]
         }
@@ -32,6 +33,7 @@ class Assignment(object):
         self.worker_id = worker_id
         self._task = task
         self.id = assign_id
+        self.answer = None
 
     @property
     def task(self) -> dict:
@@ -84,9 +86,15 @@ class Tasks(object):
         """
         return assign_id not in self.assignments
 
+    def save_anwer(self, assign_id, answer):
+        for a in self.assignments:
+            if a.id == assign_id:
+                a.answer = answer
+                return True
+        return False
+
     @real_task
     def get_task(self, worker_id, assign_id) -> dict:
-        # TODO: check CORS error from javascript :(
         if not self._check_worker_exists(worker_id):
             self._set_up_worker(worker_id)
         if self._is_new_assignment(assign_id):

@@ -6,7 +6,7 @@ var state = -1;
 var init_time = $.now();
 
 $(window).load(function(){
-    if (mturk) {
+    if (mturk === 'sandbox' || mturk === 'mturk') {
         $("#dialog-modal" ).dialog({
           autoOpen: false,
           height: 250,
@@ -19,15 +19,15 @@ $(window).load(function(){
         });
         addDialog();
         $( "#dialog-modal" ).hide();
-        workerID = turkGetParam("workerId");
-        assignID = turkGetParam("assignmentId");
+        var workerID = turkGetParam("workerId");
+        var assignID = turkGetParam("assignmentId");
     }
     $.post( "https://imagecaptioningicl.azurewebsites.net/get_task", { workerID: workerID,
                                                                         assignID: assignID}, function( data ) {
         // Set Images
         var im_urls = data.images;
         // Set HTML
-        $( "#main-body" ).load( data.html );
+        $( "#main-body" ).load( data.html , {mturk: mturk});
         // Import JS and execute
         $.getScript( data.js, function() {
             render_header_button(im_urls);
@@ -39,6 +39,24 @@ $(window).load(function(){
             for (var i = 0; i < els.length; i++) {
                 els[i].onclick = check_all_checks;
             }
+        });
+        if (mturk === 'sandbox' || mturk === 'mturk') {
+            turkSetAssignmentID();
+        }
+        $("#submitButton").click(function(){
+            $("#ans").val(JSON.stringify(getAnswers()));
+            var link_to_next;
+            $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
+                {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID},
+                function(data) {
+                    link_to_next = data.link
+                }, "json"
+            );
+            if (mturk === 'sandbox' || mturk === 'mturk') {
+                $("#mturk_form").submit(); // Submit the form
+                // TODO: change link_to_next to Mturk link!!!!
+            }
+            window.location.href = link_to_next;
         });
     }, "json");
 })
