@@ -15,6 +15,13 @@ def replace_mturk_form_action(html_text, mturk_form_action):
     return html_text.replace("MTURK_FORM_ACTION", mturk_form_action)
 
 
+def replace_mturk_variables(html_text):
+    html_text = html_text.replace("{{ mturk|tojson }}", 'true')
+    html_text = html_text.replace("= {{workerID | tojson}}", "")
+    return html_text.replace(" = {{ assignID|tojson }}", "")
+
+
+
 if not os.path.exists("keys.json"):
     raise Exception('Please add your aws keys to create HIT on aws')
 
@@ -48,6 +55,8 @@ mturk = boto3.client('mturk',
 html_text = open(HIT["Question"], "r").read()
 html_text = replace_static_root(html_text, config["STATIC_ROOT"])
 html_text = replace_mturk_form_action(html_text, mturk_form_action)
+html_text = replace_mturk_variables(html_text)
+
 new_hit = mturk.create_hit(
     Title = HIT['Title'],
     Description = HIT["Description"],

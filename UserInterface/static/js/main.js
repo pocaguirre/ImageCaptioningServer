@@ -6,20 +6,22 @@ var state = -1;
 var init_time = $.now();
 
 $(window).load(function(){
-    $("#dialog-modal" ).dialog({
-      autoOpen: false,
-      height: 250,
-      modal: true,
-    buttons: {
-        'ok':function(){
-            $( this ).dialog( "close" );
-        },
+    if (mturk) {
+        $("#dialog-modal" ).dialog({
+          autoOpen: false,
+          height: 250,
+          modal: true,
+            buttons: {
+            'ok':function(){
+                $( this ).dialog( "close" );
+            },
+        }
+        });
+        addDialog();
+        $( "#dialog-modal" ).hide();
+        workerID = turkGetParam("workerId");
+        assignID = turkGetParam("assignmentId");
     }
-    });
-    addDialog();
-    $( "#dialog-modal" ).hide();
-    let workerID = turkGetParam("workerId");
-    let assignID = turkGetParam("assignmentId");
     $.post( "https://imagecaptioningicl.azurewebsites.net/get_task", { workerID: workerID,
                                                                         assignID: assignID}, function( data ) {
         // Set Images

@@ -1,13 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from model import Tasks
 from applicationinsights.flask.ext import AppInsights
 from flask_cors import CORS, cross_origin
 
 engine = Tasks()
-app = Flask(__name__, static_folder='UserInterface/static')
+app = Flask(__name__, static_folder='UserInterface/static', template_folder='UserInterface/static/tasks')
 app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = 'b2010324-c9a2-4838-9da9-d95fbaf83afd'
 appinsights = AppInsights(app)
 cors = CORS(app)
+local_worker = 0
+local_assignment = 0
 
 
 @app.after_request
@@ -18,7 +20,13 @@ def after_request(response):
 
 @app.route('/')
 def hello_world():
-    return 'Hello, this is the server for the Image Captioning project. Go to https://github.com/pocaguirre/ImageCaptioningServer for more info.'
+    global local_worker
+    global local_assignment
+    local_worker += 1
+    local_assignment += 1
+    return render_template("main.html", mturk=False,
+                           workerID=f"worker{local_worker}",
+                           assignID=f"assignment{local_assignment}")
 
 
 @app.route('/get_task', methods=['POST', 'GET'])
