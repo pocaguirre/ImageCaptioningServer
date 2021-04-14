@@ -20,29 +20,29 @@ def after_request(response):
 
 @app.route('/', methods=['GET'])
 def hello_world():
-    # worker_id = request.args.get('worker', default=None)
-    # assignment_id = request.args.get('assignment', default=None)
-    # if worker_id is None:
-    #     global local_worker
-    #     local_worker += 1
-    #     worker_id = local_worker
-    # if assignment_id is None:
-    #     global local_assignment
-    #     local_assignment += 1
-    #     assignment_id = local_assignment
-    return render_template("main.html", mturk=False)
-                           # workerID=f"worker{worker_id}",
-                           # assignID=f"assignment{assignment_id}")
+    worker_id = request.args.get('worker', default=None)
+    assignment_id = request.args.get('assignment', default=None)
+    if worker_id is None:
+        global local_worker
+        local_worker += 1
+        worker_id = local_worker
+    if assignment_id is None:
+        global local_assignment
+        local_assignment += 1
+        assignment_id = local_assignment
+    return render_template("main.html", mturk=False,
+                           workerID=f"worker{worker_id}",
+                           assignID=f"assignment{assignment_id}")
 
 
-@app.route('/condition/<condition>', methods='GET')
+@app.route('/condition/<condition>', methods=['GET'])
 @cross_origin()
 def get_condition(condition):
     mturk = request.args.get('mturk', default=None)
     return render_template(f"{condition}.html", mturk=mturk)
 
 
-@app.route('/submit_data', methods='POST')
+@app.route('/submit_data', methods=['POST'])
 @cross_origin()
 def submit_data():
     answer = request.form['answer']
