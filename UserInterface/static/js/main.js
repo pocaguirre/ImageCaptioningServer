@@ -27,7 +27,12 @@ $(window).load(function(){
         // Set Images
         var im_urls = data.images;
         // Set HTML
-        $( "#main-body" ).load( data.html , {mturk: mturk});
+        $( "#main-body" ).load( data.html, function(responseTxt, statusTxt, xhr){
+            if(statusTxt == "success")
+              alert("External content loaded successfully!");
+            if(statusTxt == "error")
+              alert("Error: " + xhr.status + ": " + xhr.statusText);
+          });
         // Import JS and execute
         $.getScript( data.js, function() {
             render_header_button(im_urls);
