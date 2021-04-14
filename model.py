@@ -20,7 +20,7 @@ def real_task(func):
         if 'condition' not in task:
             return {"ERROR"}
         task_obj = {
-            "html": f"{ROOT}condition/{task['condition']} #main-body",
+            "html": f"{STATIC_ROOT}tasks/{task['condition']}.html #main-body",
             "js": f"{STATIC_ROOT}js/{task['condition']}.js",
             "images": IMAGE_SETS[task['images']]
         }

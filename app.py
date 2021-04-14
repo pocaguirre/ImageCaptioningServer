@@ -34,12 +34,12 @@ def hello_world():
                            workerID=f"worker{worker_id}",
                            assignID=f"assignment{assignment_id}")
 
-
-@app.route('/condition/<condition>', methods=['GET'])
-@cross_origin()
-def get_condition(condition):
-    mturk = request.args.get('mturk', default=None)
-    return render_template(f"{condition}.html", mturk=mturk)
+#
+# @app.route('/condition/<condition>', methods=['GET'])
+# @cross_origin()
+# def get_condition(condition):
+#     mturk = request.args.get('mturk', default=None)
+#     return render_template(f"{condition}.html", mturk=mturk)
 
 
 @app.route('/submit_data', methods=['POST'])
