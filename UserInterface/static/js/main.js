@@ -4,6 +4,7 @@
 var questions = new Array();
 var state = -1;
 var init_time = $.now();
+ jQuery.support.cors = true;
 
 $(window).load(function(){
     if (mturk === 'sandbox' || mturk === 'mturk') {
