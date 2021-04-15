@@ -247,7 +247,7 @@ function getAnswers(){
     for (var i=0; i<questions.length; i++){
         answers.push({
             description: questions[i].ans,
-            im_url: im_urls[i]
+            im_url: questions[i].im.src
         });
     }
     return answers;
