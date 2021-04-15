@@ -15,8 +15,8 @@ IMAGE_SETS = {
 
 def real_task(func):
 
-    def inner(self, worker_id, assign_id):
-        task = func(self, worker_id, assign_id)
+    def inner(*args):
+        task = func(*args)
         if 'condition' not in task:
             return {"ERROR"}
         task_obj = {
@@ -132,8 +132,9 @@ if __name__ == '__main__':
     while flag:
         wid = input("Worker ID: ")
         aid = input("Assgin ID: ")
-        task = tasks.get_task(wid, aid)
-        print(task)
+        condition = input("condition: ")
+        task = tasks.get_test_task(wid, aid, condition)
+        assert task == tasks.get_task(wid, aid)
         cont = input("continue? Y/N")
         if cont[0] == 'N':
             flag = False
