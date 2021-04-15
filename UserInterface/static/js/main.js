@@ -79,14 +79,14 @@ function submit_function(){
     $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
         {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID},
         function(data) {
-            link_to_next = data.link
+            link_to_next = data.link;
+            if (mturk === 'sandbox' || mturk === 'mturk') {
+                $("#mturk_form").submit(); // Submit the form
+                // TODO: change link_to_next to Mturk link!!!!
+            }
+            window.location.href = link_to_next;
         }, "json"
     );
-    if (mturk === 'sandbox' || mturk === 'mturk') {
-        $("#mturk_form").submit(); // Submit the form
-        // TODO: change link_to_next to Mturk link!!!!
-    }
-    window.location.href = link_to_next;
 }
 
 
