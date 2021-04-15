@@ -4,11 +4,16 @@
 var questions = new Array();
 var state = -1;
 var init_time = $.now();
- jQuery.support.cors = true;
+jQuery.support.cors = true;
 
 $(window).load(function(){
     if (mturk === 'sandbox' || mturk === 'mturk') {
-        $("#dialog-modal" ).dialog({
+        addDialog();
+        workerID = turkGetParam("workerId");
+        assignID = turkGetParam("assignmentId");
+    }
+    let dialog_modal = $("#dialog-modal" )
+    dialog_modal.dialog({
           autoOpen: false,
           height: 250,
           modal: true,
@@ -18,22 +23,13 @@ $(window).load(function(){
             },
         }
         });
-        addDialog();
-        $( "#dialog-modal" ).hide();
-        workerID = turkGetParam("workerId");
-        assignID = turkGetParam("assignmentId");
-    }
+    dialog_modal.hide();
     $.post( "https://imagecaptioningicl.azurewebsites.net/get_task", { workerID: workerID,
                                                                         assignID: assignID}, function( data ) {
         // Set Images
         var im_urls = data.images;
         // Set HTML
-        $( "#main-body" ).load( data.html, function(responseTxt, statusTxt, xhr){
-            if(statusTxt == "success")
-              alert("External content loaded successfully!");
-            if(statusTxt == "error")
-              alert("Error: " + xhr.status + ": " + xhr.statusText);
-          });
+        $( "#main-body" ).load( data.html );
         // Import JS and execute
         $.getScript( data.js, function() {
             render_header_button(im_urls);
@@ -41,6 +37,7 @@ $(window).load(function(){
             $('#next').on('click', function(){next();});
             $('#prev').on('click', function(){prev();});
             $("#start-btn").on('click', function (){start();})
+            $("#submitButton").on('click', function (){submit_function();});
             var els = document.getElementsByClassName('instruction-check');
             for (var i = 0; i < els.length; i++) {
                 els[i].onclick = check_all_checks;
@@ -49,21 +46,6 @@ $(window).load(function(){
         if (mturk === 'sandbox' || mturk === 'mturk') {
             turkSetAssignmentID();
         }
-        $("#submitButton").click(function(){
-            $("#ans").val(JSON.stringify(getAnswers()));
-            var link_to_next;
-            $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
-                {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID},
-                function(data) {
-                    link_to_next = data.link
-                }, "json"
-            );
-            if (mturk === 'sandbox' || mturk === 'mturk') {
-                $("#mturk_form").submit(); // Submit the form
-                // TODO: change link_to_next to Mturk link!!!!
-            }
-            window.location.href = link_to_next;
-        });
     }, "json");
 })
 
@@ -89,6 +71,24 @@ function addDialog(){
     });
     $( ".ui-dialog" ).css('position', 'absolute');
 }
+
+
+function submit_function(){
+    $("#ans").val(JSON.stringify(getAnswers()));
+    var link_to_next;
+    $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
+        {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID},
+        function(data) {
+            link_to_next = data.link
+        }, "json"
+    );
+    if (mturk === 'sandbox' || mturk === 'mturk') {
+        $("#mturk_form").submit(); // Submit the form
+        // TODO: change link_to_next to Mturk link!!!!
+    }
+    window.location.href = link_to_next;
+}
+
 
 // ===========================================================
 // disable cut and paste on input text

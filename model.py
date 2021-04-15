@@ -115,16 +115,15 @@ class Tasks(object):
                 if assign.id == assign_id:
                     return assign.task
 
-    def get_test_task(self, worker_id):
+    @real_task
+    def get_test_task(self, worker_id, assign_id, condition):
         if not self._check_worker_exists(worker_id):
             self._set_up_worker(worker_id)
-        if self._check_valid_worker(worker_id):
-            # Get Task
-            task = self.workers[worker_id]['queue'].get()
-            self._update_jobs_assigned(task['condition'], task['images'])
-            return task
-        else:
-            return {"return": "all jobs done"}
+        task = {"condition": condition, "images": "test1"}
+        a = Assignment(assign_id, worker_id=worker_id, task=task)
+        self.assignments.append(a)
+        self.workers[worker_id]['assignments'].append(a)
+        return task
 
 
 if __name__ == '__main__':

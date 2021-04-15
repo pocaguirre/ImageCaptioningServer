@@ -34,12 +34,25 @@ def hello_world():
                            workerID=f"worker{worker_id}",
                            assignID=f"assignment{assignment_id}")
 
-#
-# @app.route('/condition/<condition>', methods=['GET'])
-# @cross_origin()
-# def get_condition(condition):
-#     mturk = request.args.get('mturk', default=None)
-#     return render_template(f"{condition}.html", mturk=mturk)
+
+@app.route('/condition', methods=['GET'])
+def get_condition():
+    condition = request.args.get('condition', default=None)
+    global local_worker
+    local_worker += 1
+    worker_id = local_worker
+    global local_assignment
+    local_assignment += 1
+    assignment_id = local_assignment
+    engine.get_test_task(worker_id, assignment_id, condition)
+    return render_template("main.html", mturk=False,
+                           workerID=f"worker{worker_id}",
+                           assignID=f"assignment{assignment_id}")
+
+
+@app.route('/test')
+def test_interactions():
+    return render_template("choose.html")
 
 
 @app.route('/submit_data', methods=['POST'])
