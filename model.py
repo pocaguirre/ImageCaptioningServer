@@ -58,16 +58,20 @@ class Tasks(object):
     def _update_jobs_assigned(self, cond, img):
         self.jobs[self.conditions.index(cond), self.images.index(img)] += 1
 
-    def _set_up_worker(self, worker_id):
-        c = self.conditions.copy()
-        i = self.images.copy()
-        q = Queue()
-        np.random.shuffle(c)
-        np.random.shuffle(i)
-        for condition, image_set in zip(c, i):
-            q.put({"condition": condition, "images": image_set})
-        self.workers[worker_id] = {"queue": q, "assignments": []}
-        return
+    def _set_up_worker(self, worker_id, test=False):
+        if not test:
+            c = self.conditions.copy()
+            i = self.images.copy()
+            q = Queue()
+            np.random.shuffle(c)
+            np.random.shuffle(i)
+            for condition, image_set in zip(c, i):
+                q.put({"condition": condition, "images": image_set})
+            self.workers[worker_id] = {"queue": q, "assignments": [], "test": test}
+            return
+        else:
+            self.workers[worker_id] = {"assignments": [], "test": test}
+            return
 
     def _check_worker_exists(self, worker_id) -> bool:
         return worker_id in self.workers
@@ -76,6 +80,9 @@ class Tasks(object):
         if self._check_worker_exists(worker_id):
             return not self.workers[worker_id]['queue'].empty()
         return True
+
+    def _is_test_worker(self, worker_id) -> bool:
+        return self.workers[worker_id]['test']
 
     def _is_new_assignment(self, assign_id) -> bool:
         """

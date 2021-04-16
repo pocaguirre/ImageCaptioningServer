@@ -12,7 +12,7 @@ $(window).load(function(){
         workerID = turkGetParam("workerId");
         assignID = turkGetParam("assignmentId");
     }
-    let dialog_modal = $("#dialog-modal" )
+    let dialog_modal = $("#dialog-modal" );
     dialog_modal.dialog({
           autoOpen: false,
           height: 250,
@@ -84,7 +84,20 @@ function submit_function(){
                 $("#mturk_form").submit(); // Submit the form
                 // TODO: change link_to_next to Mturk link!!!!
             }
-            window.location.href = link_to_next;
+            let dialog_task = $("#dialog-task");
+            dialog_task.dialog({
+                autoOpen: false,
+                height: 250,
+                buttons: {
+                    'Next HIT': function() {
+                        $(this).dialog("close");
+                        $(this).text("");
+                        window.location.href = link_to_next;
+                    }
+                }
+            });
+            dialog_task.text("Thank you for completing this HIT");
+            dialog_task.dialog('open');
         }, "json"
     );
 }
