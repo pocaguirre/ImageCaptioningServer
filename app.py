@@ -45,10 +45,12 @@ def get_condition():
     global local_assignment
     local_assignment += 1
     assignment_id = local_assignment
-    engine.get_test_task(worker_id, assignment_id, condition)
+    task = engine.get_test_task(worker_id, assignment_id, condition)
     return render_template("main.html", mturk=False,
                            workerID=f"worker{worker_id}",
-                           assignID=f"assignment{assignment_id}")
+                           assignID=f"assignment{assignment_id}",
+                           condition1=condition,
+                           condition2=task['html'].split()[0].split("/")[-1].split(".")[0])
 
 
 @app.route('/test')
@@ -81,9 +83,6 @@ def get_task():
         task = engine.get_task(worker_id, assignment_id)
         # app.logger.debug(f"Task assigned: condition = {task['condition']} | image_set = {task['image_set']}")
         return jsonify(task)
-    else:
-        worker_id = "1"
-        return jsonify(engine.get_test_task(worker_id))
 
 
 @app.route('/reset_engine')
