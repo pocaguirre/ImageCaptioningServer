@@ -126,7 +126,7 @@ class Tasks(object):
     @real_task
     def get_test_task(self, worker_id, assign_id, condition):
         if not self._check_worker_exists(worker_id):
-            self._set_up_worker(worker_id)
+            self._set_up_worker(worker_id, test=True)
         task = {"condition": condition, "images": "test1"}
         a = Assignment(assign_id, worker_id=worker_id, task=task)
         self.assignments.append(a)
