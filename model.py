@@ -2,7 +2,7 @@ import numpy as np
 from queue import Queue
 
 # CONSTANTS
-ROOT = "https://imagecaptioningicl.azurewebsites.net/"
+ROOT = "/"
 STATIC_ROOT = f"{ROOT}static/"
 
 IMAGE_SETS = {
