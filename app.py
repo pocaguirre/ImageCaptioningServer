@@ -45,7 +45,7 @@ def get_condition():
     global local_assignment
     local_assignment += 1
     assignment_id = local_assignment
-    task = engine.get_test_task(worker_id, assignment_id, condition)
+    task = engine.get_test_task(f"worker{worker_id}", f"assignment{assignment_id}", condition)
     return render_template("main.html", mturk=False,
                            workerID=f"worker{worker_id}",
                            assignID=f"assignment{assignment_id}",
