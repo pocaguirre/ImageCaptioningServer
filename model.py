@@ -95,9 +95,9 @@ class Tasks(object):
 
     @real_task
     def get_task(self, worker_id, assign_id) -> dict:
-        if not self._check_worker_exists(worker_id):
-            self._set_up_worker(worker_id)
         if self._is_new_assignment(assign_id):
+            if not self._check_worker_exists(worker_id):
+                self._set_up_worker(worker_id)
             if self._check_valid_worker(worker_id):
                 # Get Task
                 task = self.workers[worker_id]['queue'].get()
@@ -114,6 +114,7 @@ class Tasks(object):
             for assign in self.assignments:
                 if assign.id == assign_id:
                     return assign.task
+            return {"ERROR": "Assignment not found"}
 
     @real_task
     def get_test_task(self, worker_id, assign_id, condition):
@@ -134,7 +135,7 @@ if __name__ == '__main__':
         aid = input("Assgin ID: ")
         condition = input("condition: ")
         task = tasks.get_test_task(wid, aid, condition)
-        assert task == tasks.get_task(wid, aid)
+        assert(task['html'] == tasks.get_task(wid, aid)['html'])
         cont = input("continue? Y/N")
         if cont[0] == 'N':
             flag = False

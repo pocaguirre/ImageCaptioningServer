@@ -37,6 +37,7 @@ def hello_world():
 
 @app.route('/condition', methods=['GET'])
 def get_condition():
+    global engine
     condition = request.args.get('condition', default=None)
     global local_worker
     local_worker += 1
@@ -58,6 +59,7 @@ def test_interactions():
 @app.route('/submit_data', methods=['POST'])
 @cross_origin()
 def submit_data():
+    global engine
     answer = request.form['answer']
     assignment_id = request.form['assignmentID']
     worker_id = request.form['workerID']
@@ -69,6 +71,7 @@ def submit_data():
 @app.route('/get_task', methods=['POST', 'GET'])
 @cross_origin()
 def get_task():
+    global engine
     # app.logger.debug("Getting new task")
     if request.method == 'POST':
         # app.logger.debug("Into POST request")
