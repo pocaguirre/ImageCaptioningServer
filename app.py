@@ -67,6 +67,8 @@ def submit_data():
     worker_id = request.form['workerID']
     success = engine.save_anwer(assignment_id, answer)
     if success:
+        if engine._is_test_worker(worker_id):
+            return jsonify({"link": "https://imagecaptioningicl.azurewebsites.net/test"})
         return jsonify({"link": f"https://imagecaptioningicl.azurewebsites.net/?worker={worker_id}"})
 
 
