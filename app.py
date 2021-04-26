@@ -5,17 +5,17 @@ from flask_cors import CORS, cross_origin
 
 engine = Tasks()
 app = Flask(__name__, static_folder='UserInterface/static', template_folder='UserInterface/static/tasks')
-# app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = 'b2010324-c9a2-4838-9da9-d95fbaf83afd'
-# appinsights = AppInsights(app)
+app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = 'b2010324-c9a2-4838-9da9-d95fbaf83afd'
+appinsights = AppInsights(app)
 cors = CORS(app)
 local_worker = 0
 local_assignment = 0
 
 
-# @app.after_request
-# def after_request(response):
-#     appinsights.flush()
-#     return response
+@app.after_request
+def after_request(response):
+    appinsights.flush()
+    return response
 
 
 @app.route('/', methods=['GET'])
