@@ -1,16 +1,29 @@
 import numpy as np
 from queue import Queue
+import json
+import pandas as pd
+
+IMAGE_SET_CSV = "image_sets.csv"
 
 # CONSTANTS
 ROOT = "/"
 STATIC_ROOT = f"{ROOT}static/"
 
-IMAGE_SETS = {
-    "test1": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-    "test2": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-    "test3": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-    "test4": [f"{STATIC_ROOT}images/{img}" for img in ['dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg', 'dog.jpg', 'cat.jpg']],
-}
+
+def get_image_sets() -> dict:
+    image_set_df = pd.read_csv(IMAGE_SET_CSV)
+    image_set_dict = {}
+    for i, row in image_set_df.iterrows():
+        if row['image set'] in image_set_dict:
+            image_set_dict[row['image set']].append(f"{STATIC_ROOT}images/{row['filename']}")
+        else:
+            image_set_dict[row['image set']] = [f"{STATIC_ROOT}images/{row['filename']}"]
+    for image_set, images in image_set_dict.items():
+        assert len(images) == 6, "CSV not fell formatted"
+    return image_set_dict
+
+
+IMAGE_SETS = get_image_sets()
 
 
 def real_task(func):
@@ -45,6 +58,23 @@ class Assignment(object):
             return self.id == other
         return self.id == other.id
 
+    def get_answers(self):
+        answers = []
+        for a in self.answer:
+            answers.append({
+                "description": a['description'],
+                "image": a['im_url']
+            })
+        return answers
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "condition": self._task['condition'],
+            "imageset": self._task['images'],
+            "results": self.get_answers()
+        }
+
 
 class Tasks(object):
     def __init__(self, cap_per_img=3):
@@ -54,6 +84,25 @@ class Tasks(object):
         self.conditions = ['control', 'time', 'essential', 'comprehensive']
         self.images = list(IMAGE_SETS.keys())
         self.assignments = []
+
+    def output_jobs(self):
+        output = {'images': self.images}
+        rows = []
+        for i, condition in enumerate(self.conditions):
+            rows.append({"condition": condition, "data": self.jobs[i].tolist()})
+        output['rows'] = rows
+        return output
+
+    def get_workers(self):
+        workers = []
+        for worker_id, worker in self.workers.items():
+            worker_obj = {"id": worker_id}
+            assigs = []
+            for assignment in worker['assignments']:
+                assigs.append(assignment.to_dict())
+            worker_obj['assignments'] = assigs
+            workers.append(worker_obj)
+        return workers
 
     def _update_jobs_assigned(self, cond, img):
         self.jobs[self.conditions.index(cond), self.images.index(img)] += 1
@@ -96,7 +145,8 @@ class Tasks(object):
     def save_anwer(self, assign_id, answer):
         for a in self.assignments:
             if a.id == assign_id:
-                a.answer = answer
+                a.answer = json.loads(answer)
+                self._update_jobs_assigned(a._task['condition'], a._task['images'])
                 return True
         return False
 
@@ -127,7 +177,7 @@ class Tasks(object):
     def get_test_task(self, worker_id, assign_id, condition):
         if not self._check_worker_exists(worker_id):
             self._set_up_worker(worker_id, test=True)
-        task = {"condition": condition, "images": "test1"}
+        task = {"condition": condition, "images": np.random.choice(list(IMAGE_SETS.keys()))}
         a = Assignment(assign_id, worker_id=worker_id, task=task)
         self.assignments.append(a)
         self.workers[worker_id]['assignments'].append(a)

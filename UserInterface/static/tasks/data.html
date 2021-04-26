@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/css/data.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Captioning Experiment <small class="text-muted">test version</small></h1>
+
+        <h3>Tasks Table</h3>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Condition</th>
+                    {% for imageset in table.images %}
+                    <th scope="col">{{ imageset }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in table.rows %}
+                <tr>
+                    <th scope="row">{{ row.condition }}</th>
+                    {% for value in row.data %}
+                    <th>{{ value }}</th>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Workers</h3>
+
+        <div class="accordion" id="workers_accordion">
+            {% for worker in workers %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ worker.id }}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="collapse{{ worker.id }}" aria-expanded="false" aria-controls="collapse{{ worker.id }}">
+                        Worker ID: {{ worker.id }}
+                    </button>
+                </h2>
+                <div id="collapse{{ worker.id }}" class="accordion-collapse collapse show" aria-labelledby="heading{{ worker.id }}" data-bs-parent="#workers_accordion">
+                    <div class="accordion-body">
+                        {% for assignment in worker.assignments %}
+                        <div class="assignment card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ assignment.id }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Condition: {{ assignment.condition }} | Image Set: {{ assignment.imageset }}</h6>
+                                <h6>Results</h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for result in assignment.results %}
+                                        <li class="list-group-item">
+                                            <div class="card">
+                                              <div class="row g-0">
+                                                <div class="col-md-4">
+                                                  <img src="{{ result.image }}" class="result_img">
+                                                </div>
+                                                <div class="col-md-8">
+                                                  <div class="card-body">
+                                                    <h5 class="card-title">Worker Description</h5>
+                                                    <p class="card-text">{{ result.description }}</p>
+                                                    <p class="card-text"><small class="text-muted">duration: {{ result.duration }}</small></p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+    </div>
+</body>
+</html>

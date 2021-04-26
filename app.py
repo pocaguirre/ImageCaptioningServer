@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-from model import Tasks
+from model import Tasks, IMAGE_SETS
 from applicationinsights.flask.ext import AppInsights
 from flask_cors import CORS, cross_origin
 
@@ -68,8 +68,8 @@ def submit_data():
     success = engine.save_anwer(assignment_id, answer)
     if success:
         if engine._is_test_worker(worker_id):
-            return jsonify({"link": "https://imagecaptioningicl.azurewebsites.net/test"})
-        return jsonify({"link": f"https://imagecaptioningicl.azurewebsites.net/?worker={worker_id}"})
+            return jsonify({"link": "/test"})
+        return jsonify({"link": f"/?worker={worker_id}"})
 
 
 @app.route('/get_task', methods=['POST', 'GET'])
@@ -93,6 +93,14 @@ def reset_engine():
     engine = Tasks()
     app.logger.info("RESETTING ENGINE")
     return "done"
+
+
+@app.route("/show_data")
+def show_data():
+    global engine
+    table = engine.output_jobs()
+    workers = engine.get_workers()
+    return render_template("data.html", table=table, workers=workers)
 
 
 if __name__ == '__main__':
