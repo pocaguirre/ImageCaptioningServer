@@ -115,5 +115,10 @@ def show_data():
     return render_template("data.html", table=table, workers=workers)
 
 
+@app.route("/interaction/<condition>")
+def get_interaction_html(condition):
+    return render_template(f"{condition}_extended.html")
+
+
 if __name__ == '__main__':
     app.run()

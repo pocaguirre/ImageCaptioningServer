@@ -6,7 +6,7 @@ import pandas as pd
 IMAGE_SET_CSV = "image_sets.csv"
 
 # CONSTANTS
-ROOT = "https://imagecaptioningicl.azurewebsites.net/"
+ROOT = "/"
 STATIC_ROOT = f"{ROOT}static/"
 
 
@@ -33,7 +33,7 @@ def real_task(func):
         if 'condition' not in task:
             return {"ERROR"}
         task_obj = {
-            "html": f"{STATIC_ROOT}tasks/{task['condition']}.html #main-body",
+            "html": f"{ROOT}interaction/{task['condition']} #main-body",
             "js": f"{STATIC_ROOT}js/{task['condition']}.js",
             "images": IMAGE_SETS[task['images']]
         }
