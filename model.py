@@ -58,6 +58,13 @@ class Assignment(object):
             return self.id == other
         return self.id == other.id
 
+    def is_answered(self) -> bool:
+        """
+        Returns true if assignment is completed
+        :return:
+        """
+        return self.answer is not None
+
     def get_answers(self):
         answers = []
         for a in self.answer:
@@ -99,7 +106,8 @@ class Tasks(object):
             worker_obj = {"id": worker_id}
             assigs = []
             for assignment in worker['assignments']:
-                assigs.append(assignment.to_dict())
+                if assignment.is_answered():
+                    assigs.append(assignment.to_dict())
             worker_obj['assignments'] = assigs
             workers.append(worker_obj)
         return workers
