@@ -6,7 +6,7 @@ import pandas as pd
 IMAGE_SET_CSV = "image_sets.csv"
 
 # CONSTANTS
-ROOT = "/"
+ROOT = "https://imagecaptioningicl.azurewebsites.net/"
 STATIC_ROOT = f"{ROOT}static/"
 
 
