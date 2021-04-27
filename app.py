@@ -10,6 +10,11 @@ appinsights = AppInsights(app)
 cors = CORS(app)
 local_worker = 0
 local_assignment = 0
+MTURK_LINKS = {
+    "mturk": "https://worker.mturk.com/mturk/preview?groupId=",
+    "sandbox": "https://workersandbox.mturk.com/mturk/preview?groupId=",
+    "azure": "https://imagecaptioningicl.azurewebsites.net/"
+}
 
 
 @app.after_request
@@ -30,7 +35,7 @@ def hello_world():
         global local_assignment
         local_assignment += 1
         assignment_id = local_assignment
-    return render_template("main.html", mturk=False,
+    return render_template("main.html", mturk='azure',
                            workerID=f"worker{worker_id}",
                            assignID=f"assignment{assignment_id}")
 
@@ -46,7 +51,7 @@ def get_condition():
     local_assignment += 1
     assignment_id = local_assignment
     task = engine.get_test_task(f"worker{worker_id}", f"assignment{assignment_id}", condition)
-    return render_template("main.html", mturk=False,
+    return render_template("main.html", mturk='azure',
                            workerID=f"worker{worker_id}",
                            assignID=f"assignment{assignment_id}",
                            condition1=condition,
@@ -65,11 +70,18 @@ def submit_data():
     answer = request.form['answer']
     assignment_id = request.form['assignmentID']
     worker_id = request.form['workerID']
+    mturk_type = request.form['mturk']
     success = engine.save_anwer(assignment_id, answer)
     if success:
-        if engine._is_test_worker(worker_id):
-            return jsonify({"link": "/test"})
-        return jsonify({"link": f"/?worker={worker_id}"})
+        if mturk_type not in MTURK_LINKS:
+            return jsonify({"link": "Error Link, wrong data provided: MTURK_TYPE"})
+        else:
+            if mturk_type == 'azure':
+                if engine._is_test_worker(worker_id):
+                    return jsonify({"link": "/test"})
+                return jsonify({"link": f"/?worker={worker_id}"})
+            else:
+                return jsonify({"link": MTURK_LINKS[mturk_type]})
 
 
 @app.route('/get_task', methods=['POST', 'GET'])

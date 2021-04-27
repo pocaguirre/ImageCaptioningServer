@@ -77,12 +77,11 @@ function submit_function(){
     $("#ans").val(JSON.stringify(getAnswers()));
     var link_to_next;
     $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
-        {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID},
+        {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID, mturk: mturk},
         function(data) {
             link_to_next = data.link;
             if (mturk === 'sandbox' || mturk === 'mturk') {
                 $("#mturk_form").submit(); // Submit the form
-                // TODO: change link_to_next to Mturk link!!!!
             }
             let dialog_task = $("#dialog-task");
             dialog_task.dialog({
