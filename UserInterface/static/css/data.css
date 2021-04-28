@@ -3,3 +3,9 @@
     height:auto;
     width:auto;
 }
+
+.center-block {
+    display: table;  /* Instead of display:block */
+    margin-left: auto;
+    margin-right: auto;
+}
