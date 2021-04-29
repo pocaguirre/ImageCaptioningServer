@@ -52,77 +52,70 @@
                         <form id="demographics-form">
                             <p class="lead">Before starting, please answer the following demographic questions. Your answers will not affect your eligibility for the study.</p>
                             <div id="age-question">
-                                <p class="question-text"><strong>What is your age?</strong></p>
                                 <div class="input-group center-block">
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="age-radio" id="age1" value="under18">
-                                      <label class="form-check-label" for="age1">under 18</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="age-radio" id="age2" value="18-24">
-                                      <label class="form-check-label" for="age2">18-24</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="age-radio" id="age3" value="25-34">
-                                      <label class="form-check-label" for="age3">25-34</label>
-                                    </div>
-                                </div>
-                                <div class="input-group center-block">
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="age-radio" id="age4" value="35-44">
-                                      <label class="form-check-label" for="age4">35-44</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="age-radio" id="age5" value="45-54">
-                                      <label class="form-check-label" for="age5">45-54</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="age-radio" id="age6" value="over55">
-                                      <label class="form-check-label" for="age6">55 and over</label>
-                                    </div>
+                                    <label class="question-text" for="age-input"><strong>What is your age?</strong></label>
+                                    <input type="number" id="age-input" name="age-input" min="18" max="99">
                                 </div>
                             </div>
                             <div id="education-question">
                                 <p class="question-text"><strong>What is the highest degree or level of education you have completed?</strong></p>
-                                <div class="input-group center-block">
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education1" value="1">
-                                      <label class="form-check-label" for="education1">Some high school, no diploma</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education5" value="5">
-                                      <label class="form-check-label" for="education5">Associate's Degree</label>
-                                    </div>
-                                </div>
-                                <div class="input-group center-block">
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education2" value="2">
-                                      <label class="form-check-label" for="education2">High school or equivalent</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education6" value="6">
-                                      <label class="form-check-label" for="education6">Bachelor's Degree</label>
-                                    </div>
-                                </div>
-                                <div class="input-group center-block">
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education3" value="3">
-                                      <label class="form-check-label" for="education3">Some college credit, no degree</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education7" value="7">
-                                      <label class="form-check-label" for="education7">Graduate degree</label>
-                                    </div>
-                                </div>
-                                <div class="input-group center-block">
-                                    <div class="form-check-inline">
-                                      <input class="form-check-input" type="radio" name="education-radio" id="education4" value="4">
-                                      <label class="form-check-label" for="education4">Trade/technical/vocational training</label>
-                                    </div>
-                                </div>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="education-radio" id="education1" value="1">
+                                                    <label class="form-check-label" for="education1">Some high school, no diploma</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education5" value="5">
+                                                  <label class="form-check-label" for="education5">Associate's Degree</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education2" value="2">
+                                                  <label class="form-check-label" for="education2">High school or equivalent</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education6" value="6">
+                                                  <label class="form-check-label" for="education6">Bachelor's Degree</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education3" value="3">
+                                                  <label class="form-check-label" for="education3">Some college credit, no degree</label>
+                                                </div>
+                                          </td>
+                                          <td>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education7" value="7">
+                                                  <label class="form-check-label" for="education7">Graduate degree</label>
+                                                </div>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education4" value="4">
+                                                  <label class="form-check-label" for="education4">Trade/technical/vocational training</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                             <div id="glasses-question">
-                                <p class="question-text"><strong>Do you wear eyeglasses or contact lenses?</strong></p>
+                                <p class="question-text"><strong>Do you wear <em>correcting</em> eyeglasses or contact lenses?</strong></p>
                                 <div class="form-check form-check-inline">
                                   <input class="form-check-input" type="radio" name="glasses-radio" id="glasses1" value="yes">
                                   <label class="form-check-label" for="glasses1">yes</label>

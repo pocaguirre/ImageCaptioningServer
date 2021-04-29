@@ -14,3 +14,8 @@
     margin-top: 2rem;
     margin-bottom: 0;
 }
+
+#age-input {
+    margin-left: 15px;
+    padding-left: 10px;
+}
