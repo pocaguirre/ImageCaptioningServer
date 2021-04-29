@@ -2,6 +2,7 @@
 // create question set and state to go through the questions
 // ============================================================================
 var questions = new Array();
+var worker_obj = new Object();
 var state = -1;
 var init_time = $.now();
 jQuery.support.cors = true;
@@ -13,6 +14,8 @@ $(window).load(function(){
         assignID = turkGetParam("assignmentId");
     }
     let dialog_modal = $("#dialog-modal" );
+    worker_obj.id = workerID
+    worker_obj.assignmentID = assignID
     dialog_modal.dialog({
           autoOpen: false,
           height: 250,
@@ -36,11 +39,27 @@ $(window).load(function(){
             initialize_images(im_urls);
             $('#next').on('click', function(){next();});
             $('#prev').on('click', function(){prev();});
-            $("#start-btn").on('click', function (){start();})
+            $("#start-btn").on('click', function (){
+                $('#demographics-form input:required').each(function() {
+                    worker_obj.something = $(this).val();
+                });
+                start();
+            })
             $("#submitButton").on('click', function (){submit_function();});
             var els = document.getElementsByClassName('instruction-check');
             for (var i = 0; i < els.length; i++) {
-                els[i].onclick = check_all_checks;
+                els[i].onclick = function () {
+                    let empty_input = false;
+                    // CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
+                    $('#demographics-form input:required').each(function() {
+                          if ($(this).val() === '')
+                              empty_input = true;
+                    });
+                    if (empty_input === false){
+                        // CHECK INSTRUCTIONS ARE CLICKED
+                        check_all_checks();
+                    }
+                }
             }
         });
         if (mturk === 'sandbox' || mturk === 'mturk') {

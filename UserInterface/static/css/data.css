@@ -3,3 +3,25 @@
     height:auto;
     width:auto;
 }
+
+.center-block {
+    display: table;  /* Instead of display:block */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.question-text {
+    margin-top: 2rem;
+    margin-bottom: 0;
+}
+
+#age-input {
+    margin-left: 15px;
+    padding-left: 10px;
+}
+
+.centered-table {
+    text-align: left;
+    width: auto;
+    margin: auto;
+}

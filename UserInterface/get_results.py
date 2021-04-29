@@ -21,7 +21,7 @@ mturk = boto3.client('mturk',
 )
 
 # hit_id = 'PASTE_IN_YOUR_HIT_ID'
-hit_id = '3DIIW4IV9SS7M7VDSY5GGX9RWIMI4G'
+hit_id = '3B6F54KMS59FOM1QASGSM18BT5ES1N'
 worker_results = mturk.list_assignments_for_hit(HITId=hit_id)
 response = mturk.get_assignment(
     AssignmentId = worker_results['Assignments'][0]['AssignmentId']

@@ -116,7 +116,7 @@ def show_data():
 
 
 @app.route("/interaction/<condition>")
-def get_interaction_html(condition):
+def get_interaction_condition(condition):
     return render_template(f"{condition}_extended.html")
 
 

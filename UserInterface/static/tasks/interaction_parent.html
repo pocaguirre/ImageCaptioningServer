@@ -13,6 +13,7 @@
         <script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
         {% block header %}
         {% endblock %}
+        <link rel="stylesheet" href="https://imagecaptioningicl.azurewebsites.net/static/css/data.css">
     </head>
     <body>
         <div id="dialog-modal" title="Message"></div>
@@ -26,7 +27,7 @@
                     </a>
                 </p>
             </div>
-            <div class="collapse show alert alert-warning" role="alert" id="generalInstructionsTop">
+            <div class="collapse alert alert-warning" role="alert" id="generalInstructionsTop">
                 <p><strong>Motivation:</strong> Your work will help to build smart systems that can automatically describe our visual world to people who are blind.</p>
 
                 <p class="mb-0"><strong>We ask you to:</strong> carefully review images and then describe the image as per the instructions.</p>
@@ -42,122 +43,104 @@
             </div>
             <div class="card-body">
                 <div id="images" hidden>
-                    <div class="row">
-                        <div class="col-6 text-end">
-                            <div style='padding-top:5px'>
-                                <div class="text-center">
-                                    <div id="countdown"></div>
-                                    <canvas id='canvas'></canvas>
-                                </div>
-                                <div id="see-image-div" class="text-center">
-                                    <button id="see-image" class="btn btn-primary">See Image</button>
-                                    <p><em>Remember: You can only see the image once.</em></p>
-                                </div>
-                                <div id="already-seen" class="text-center">
-                                    <p><em>Image already seen.</em></p>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-6 text-start">
-                            <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
-                                <h style='font-weight:800'>Instructions:</h>
-                                <li>Describe all parts of the image that may be <strong style='color:blue'>important to a person who is blind</strong>
-                                    <p><em>E.g., imagine how you would describe this image on the phone to a friend</em></p>
-                                </li>
-                                <li><strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.</li>
-                                <li><strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.</li>
-                                <li><strong style='color:red'>Do not</strong> give people proper names.</li>
-                                <li><strong style='color:red'>Do not</strong> use more than one sentence.</li>
-                                <li>Your description should contain at least <strong style='color:blue'>8 words</strong>.</li>
-                                <li>You can observe the image for <strong style='color:red'>only 1 second</strong>.</li>
-                                <div style='padding-top:5px'>
-                                    <div id='userinput_div'>
-                                        <div id='userinput'>
-                                            <textarea id='description'  placeholder='Type here. Do not start the description with:
-    - "There is/are ..."
-    - "This is / These are ..."
-    - "The/This image/picture ..."
-    - "It is ..."'>
-                                            </textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <div class='state-button' style='text-align:;display:inline-block'>
-                                <input type='button' id='prev' value='prev'>
-                            </div>
-                            <div class='state-button' style='text-align:right;display:inline-block'>
-                                <input type='button' id='next' value='next'>
-                            </div>
-                        </div>
-                    </div>
+                    {% block images %}
+                    {% endblock %}
                 </div>
                 <div id="instructions">
-                    <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
-                        <h2 style='font-weight:800'>Instructions:</h2>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction1">
-                            <label class="form-check-label" for="instruction1">
-                                Describe all parts of the image that may be <strong style='color:blue'>important to a person who is blind</strong>
-                                <p><em>E.g., imagine how you would describe this image on the phone to a friend</em></p>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction2">
-                            <label class="form-check-label" for="instruction2">
-                            <strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction3">
-                            <label class="form-check-label" for="instruction3">
-                            <strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction4">
-                            <label class="form-check-label" for="instruction4">
-                            <strong style='color:red'>Do not</strong> give people proper names.
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction5">
-                            <label class="form-check-label" for="instruction5">
-                            <strong style='color:red'>Do not</strong> use more than one sentence.
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction6">
-                            <label class="form-check-label" for="instruction6">
-                            Your description should contain at least <strong style='color:blue'>8 words</strong>.
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction7">
-                            <label class="form-check-label" for="instruction6">
-                            You can observe the image for <strong style='color:red'>only 1 second</strong>.
-                            </label>
-                        </div>
-                    </div>
-                    <hr>
-                    <h2 style='font-weight:800'>Image Test</h2>
-                    <p class="lead">This is an example of an interaction with an image in this HIT.</p>
-                    <div class="text-center">
-                        <div id="countdown-instruction"></div>
-                        <canvas id='canvas-instruction'></canvas>
-                    </div>
-                    <div id="see-image-div-instruction" class="text-center">
-                        <button id="see-image-instruction" class="btn btn-primary">See Image</button>
-                        <p><em>Remember: You can only see the image once.</em></p>
-                    </div>
-                    <div class="text-center">
-                        <button id="start-btn" class="btn btn-primary" disabled>start</button>
-                    </div>
+                    <p><strong>Motivation:</strong> Your work will help to build smart systems that can automatically describe our visual world to people who are blind.</p>
+                    <p class="mb-0"><strong>We ask you to:</strong> carefully review images and then describe the image as per the instructions.</p>
+                    IMPORTANT: Please do not refresh the webpage once you have started working, as you will lose all your progress, and have to start at the beginning.
+                    {% block instructions %}
+                        <hr>
+                        <form id="demographics-form">
+                            <p class="lead">Before starting, please answer the following demographic questions. Your answers will not affect your eligibility for the study.</p>
+                            <div id="age-question">
+                                <div class="input-group center-block">
+                                    <label class="question-text" for="age-input"><strong>What is your age?</strong></label>
+                                    <input type="number" id="age-input" name="age-input" min="18" max="99" required>
+                                </div>
+                            </div>
+                            <div id="education-question">
+                                <p class="question-text"><strong>What is the highest degree or level of education you have completed?</strong></p>
+                                <table class="table table-borderless centered-table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="education-radio" id="education1" value="1" required>
+                                                    <label class="form-check-label" for="education1">Some high school, no diploma</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education5" value="5">
+                                                  <label class="form-check-label" for="education5">Associate's Degree</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education2" value="2">
+                                                  <label class="form-check-label" for="education2">High school or equivalent</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education6" value="6">
+                                                  <label class="form-check-label" for="education6">Bachelor's Degree</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                          <td>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education3" value="3">
+                                                  <label class="form-check-label" for="education3">Some college credit, no degree</label>
+                                                </div>
+                                          </td>
+                                          <td>
+                                              <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education7" value="7">
+                                                  <label class="form-check-label" for="education7">Graduate degree</label>
+                                                </div>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="form-check">
+                                                  <input class="form-check-input" type="radio" name="education-radio" id="education4" value="4">
+                                                  <label class="form-check-label" for="education4">Trade/technical/vocational training</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="glasses-question">
+                                <p class="question-text"><strong>Do you wear <em>correcting</em> eyeglasses or contact lenses?</strong></p>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="glasses-radio" id="glasses1" value="yes" required>
+                                  <label class="form-check-label" for="glasses1">yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="glasses-radio" id="glasses2" value="no">
+                                  <label class="form-check-label" for="glasses2">no</label>
+                                </div>
+                            </div>
+                            <div id="colorblind-question">
+                                <p class="question-text"><strong>Are you colorblind or have any difficulty seeing different colors?</strong></p>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="colorblind-radio" id="colorblind1" value="yes" required>
+                                  <label class="form-check-label" for="colorblind1">yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="colorblind-radio" id="colorblind2" value="no">
+                                  <label class="form-check-label" for="colorblind2">no</label>
+                                </div>
+                            </div>
+                        </form>
+                    {% endblock %}
                 </div>
                 <div id="finish" hidden>
                     <form name='mturk_form' method='post' id='mturk_form'>
