@@ -27,7 +27,7 @@
                     </a>
                 </p>
             </div>
-            <div class="collapse show alert alert-warning" role="alert" id="generalInstructionsTop">
+            <div class="collapse alert alert-warning" role="alert" id="generalInstructionsTop">
                 <p><strong>Motivation:</strong> Your work will help to build smart systems that can automatically describe our visual world to people who are blind.</p>
 
                 <p class="mb-0"><strong>We ask you to:</strong> carefully review images and then describe the image as per the instructions.</p>
@@ -47,6 +47,9 @@
                     {% endblock %}
                 </div>
                 <div id="instructions">
+                    <p><strong>Motivation:</strong> Your work will help to build smart systems that can automatically describe our visual world to people who are blind.</p>
+                    <p class="mb-0"><strong>We ask you to:</strong> carefully review images and then describe the image as per the instructions.</p>
+                    IMPORTANT: Please do not refresh the webpage once you have started working, as you will lose all your progress, and have to start at the beginning.
                     {% block instructions %}
                         <hr>
                         <form id="demographics-form">
@@ -54,7 +57,7 @@
                             <div id="age-question">
                                 <div class="input-group center-block">
                                     <label class="question-text" for="age-input"><strong>What is your age?</strong></label>
-                                    <input type="number" id="age-input" name="age-input" min="18" max="99">
+                                    <input type="number" id="age-input" name="age-input" min="18" max="99" required>
                                 </div>
                             </div>
                             <div id="education-question">
@@ -64,7 +67,7 @@
                                         <tr>
                                             <td>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="education-radio" id="education1" value="1">
+                                                    <input class="form-check-input" type="radio" name="education-radio" id="education1" value="1" required>
                                                     <label class="form-check-label" for="education1">Some high school, no diploma</label>
                                                 </div>
                                             </td>
@@ -117,7 +120,7 @@
                             <div id="glasses-question">
                                 <p class="question-text"><strong>Do you wear <em>correcting</em> eyeglasses or contact lenses?</strong></p>
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="radio" name="glasses-radio" id="glasses1" value="yes">
+                                  <input class="form-check-input" type="radio" name="glasses-radio" id="glasses1" value="yes" required>
                                   <label class="form-check-label" for="glasses1">yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -128,7 +131,7 @@
                             <div id="colorblind-question">
                                 <p class="question-text"><strong>Are you colorblind or have any difficulty seeing different colors?</strong></p>
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="radio" name="colorblind-radio" id="colorblind1" value="yes">
+                                  <input class="form-check-input" type="radio" name="colorblind-radio" id="colorblind1" value="yes" required>
                                   <label class="form-check-label" for="colorblind1">yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
