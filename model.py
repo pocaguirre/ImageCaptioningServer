@@ -210,7 +210,7 @@ class Tasks(object):
         new_worker = []
         for worker_id, worker in self.workers.items():
             nw = {"id": worker_id}
-            for key, value in worker:
+            for key, value in worker.items():
                 if key == 'assignments' or key == 'queue':
                     continue
                 nw[key] = value

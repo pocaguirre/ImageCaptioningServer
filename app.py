@@ -22,14 +22,14 @@ def hello_world():
     if worker_id is None:
         global local_worker
         local_worker += 1
-        worker_id = local_worker
+        worker_id = f"worker{local_worker}"
     if assignment_id is None:
         global local_assignment
         local_assignment += 1
-        assignment_id = local_assignment
+        assignment_id = f"assignment{local_assignment}"
     return render_template("main.html", mturk='azure',
-                           workerID=f"worker{worker_id}",
-                           assignID=f"assignment{assignment_id}")
+                           workerID=f"{worker_id}",
+                           assignID=f"{assignment_id}")
 
 
 @app.route('/condition', methods=['GET'])
