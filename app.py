@@ -1,26 +1,17 @@
 from flask import Flask, jsonify, request, render_template
 from model import Tasks, IMAGE_SETS
-from applicationinsights.flask.ext import AppInsights
 from flask_cors import CORS, cross_origin
 
 engine = Tasks()
 app = Flask(__name__, static_folder='UserInterface/static', template_folder='UserInterface/static/tasks')
-app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = 'b2010324-c9a2-4838-9da9-d95fbaf83afd'
-appinsights = AppInsights(app)
 cors = CORS(app)
 local_worker = 0
 local_assignment = 0
 MTURK_LINKS = {
     "mturk": "https://worker.mturk.com/mturk/preview?groupId=",
     "sandbox": "https://workersandbox.mturk.com/mturk/preview?groupId=",
-    "azure": "https://imagecaptioningicl.azurewebsites.net/"
+    "azure": "/"
 }
-
-
-@app.after_request
-def after_request(response):
-    appinsights.flush()
-    return response
 
 
 @app.route('/', methods=['GET'])
@@ -71,7 +62,8 @@ def submit_data():
     assignment_id = request.form['assignmentID']
     worker_id = request.form['workerID']
     mturk_type = request.form['mturk']
-    success = engine.save_anwer(assignment_id, answer)
+    worker_object = request.form['demographics']
+    success = engine.save_anwer(assignment_id, answer, worker_id, worker_object)
     if success:
         if mturk_type not in MTURK_LINKS:
             return jsonify({"link": "Error Link, wrong data provided: MTURK_TYPE"})

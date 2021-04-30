@@ -150,7 +150,8 @@ class Tasks(object):
         """
         return assign_id not in self.assignments
 
-    def save_anwer(self, assign_id, answer):
+    def save_anwer(self, assign_id, answer, worker_id, demographics):
+        self.workers[worker_id].update(json.loads(demographics))
         for a in self.assignments:
             if a.id == assign_id:
                 a.answer = json.loads(answer)

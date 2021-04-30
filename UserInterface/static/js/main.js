@@ -35,32 +35,40 @@ $(window).load(function(){
         $( "#main-body" ).load( data.html );
         // Import JS and execute
         $.getScript( data.js, function() {
+            function check_completed() {
+                let empty_input = false;
+                // CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
+                if (
+                    $("[name='age-input']").val() === "" ||
+                    $("[name='education-radio']:checked").length === 0 ||
+                    $("[name='glasses-radio']:checked").length === 0 ||
+                    $("[name='colorblind-radio']:checked").length === 0
+                ){
+                    empty_input = true;
+                }
+                if (empty_input === false){
+                    // CHECK INSTRUCTIONS ARE CLICKED
+                    check_all_checks();
+                }
+            }
+
             render_header_button(im_urls);
             initialize_images(im_urls);
             $('#next').on('click', function(){next();});
             $('#prev').on('click', function(){prev();});
             $("#start-btn").on('click', function (){
-                $('#demographics-form input:required').each(function() {
-                    worker_obj.something = $(this).val();
-                });
+                worker_obj['age-input'] = $("[name='age-input']").val();
+                worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
+                worker_obj["glasses-radio"] = $("[name='glasses-radio']:checked").val();
+                worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
                 start();
             })
             $("#submitButton").on('click', function (){submit_function();});
             var els = document.getElementsByClassName('instruction-check');
             for (var i = 0; i < els.length; i++) {
-                els[i].onclick = function () {
-                    let empty_input = false;
-                    // CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
-                    $('#demographics-form input:required').each(function() {
-                          if ($(this).val() === '')
-                              empty_input = true;
-                    });
-                    if (empty_input === false){
-                        // CHECK INSTRUCTIONS ARE CLICKED
-                        check_all_checks();
-                    }
-                }
+                els[i].onclick = check_completed;
             }
+            $('#demographics-form input').on("click", check_completed);
         });
         if (mturk === 'sandbox' || mturk === 'mturk') {
             turkSetAssignmentID();
@@ -96,7 +104,13 @@ function submit_function(){
     $("#ans").val(JSON.stringify(getAnswers()));
     var link_to_next;
     $.post('/submit_data',
-        {answer: $('#ans').val(), assignmentID: assignID, workerID: workerID, mturk: mturk},
+        {
+            answer: $('#ans').val(),
+            assignmentID: assignID,
+            workerID: workerID,
+            mturk: mturk,
+            demographics: JSON.stringify(worker_obj)
+        },
         function(data) {
             link_to_next = data.link;
             if (mturk === 'sandbox' || mturk === 'mturk') {
