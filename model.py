@@ -60,6 +60,15 @@ class Assignment(object):
             return self.id == other
         return self.id == other.id
 
+    def __dict__(self):
+        return {
+            "id": self.id,
+            "condition": self._task['condition'],
+            "imageset": self._task['images'],
+            "results": self.get_answers(),
+            "worker": self.worker_id
+        }
+
     def is_answered(self) -> bool:
         """
         Returns true if assignment is completed
@@ -81,7 +90,8 @@ class Assignment(object):
             "id": self.id,
             "condition": self._task['condition'],
             "imageset": self._task['images'],
-            "results": self.get_answers()
+            "results": self.get_answers(),
+            "worker": self.worker_id
         }
 
 
@@ -195,7 +205,7 @@ class Tasks(object):
         return task
 
     def export_raw_data(self):
-        return {"workers": self.workers, "assignments": self.assignments}
+        return {"workers": self.workers, "assignments": [a.to_dict() for a in self.assignments]}
 
 
 if __name__ == '__main__':
