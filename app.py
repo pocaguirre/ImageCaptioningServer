@@ -7,10 +7,11 @@ app = Flask(__name__, static_folder='UserInterface/static', template_folder='Use
 cors = CORS(app)
 local_worker = 0
 local_assignment = 0
+# TODO: Fix mturk and sandbox links on javascript main
 MTURK_LINKS = {
     "mturk": "https://worker.mturk.com/mturk/preview?groupId=",
     "sandbox": "https://workersandbox.mturk.com/mturk/preview?groupId=",
-    "azure": "/"
+    "azure": "https://imagecaptioningicl.azurewebsites.net/"
 }
 
 
@@ -110,6 +111,11 @@ def show_data():
 @app.route("/interaction/<condition>")
 def get_interaction_condition(condition):
     return render_template(f"{condition}_extended.html")
+
+
+@app.route("/export_raw_data")
+def export_raw():
+    return jsonify(engine.export_raw_data())
 
 
 if __name__ == '__main__':

@@ -9,6 +9,8 @@ IMAGE_SET_CSV = "image_sets.csv"
 ROOT = "/"
 STATIC_ROOT = f"{ROOT}static/"
 
+# TODO: save demographics per assignment (in case workers change answers)
+
 
 def get_image_sets() -> dict:
     image_set_df = pd.read_csv(IMAGE_SET_CSV)
@@ -191,6 +193,9 @@ class Tasks(object):
         self.assignments.append(a)
         self.workers[worker_id]['assignments'].append(a)
         return task
+
+    def export_raw_data(self):
+        return {"workers": self.workers, "assignments": self.assignments}
 
 
 if __name__ == '__main__':
