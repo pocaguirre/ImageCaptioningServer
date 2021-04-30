@@ -72,6 +72,8 @@ def submit_data():
             if mturk_type == 'azure':
                 if engine._is_test_worker(worker_id):
                     return jsonify({"link": "/test"})
+                if not engine._check_valid_worker(worker_id):
+                    return jsonify({"link": "done"})
                 return jsonify({"link": f"/?worker={worker_id}"})
             else:
                 return jsonify({"link": MTURK_LINKS[mturk_type]})
