@@ -77,6 +77,8 @@ class Assignment(object):
         return self.answer is not None
 
     def get_answers(self):
+        if not self.is_answered():
+            return "NO RESULTS"
         answers = []
         for a in self.answer:
             answers.append({
