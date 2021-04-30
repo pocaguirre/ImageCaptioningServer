@@ -206,8 +206,19 @@ class Tasks(object):
         self.workers[worker_id]['assignments'].append(a)
         return task
 
+    def export_workers(self):
+        new_worker = []
+        for worker_id, worker in self.workers.items():
+            nw = {"id": worker_id}
+            for key, value in worker:
+                if key == 'assignments' or key == 'queue':
+                    continue
+                nw[key] = value
+            new_worker.append(nw)
+        return new_worker
+
     def export_raw_data(self):
-        return {"workers": self.workers, "assignments": [a.to_dict() for a in self.assignments]}
+        return {"workers": self.export_workers(), "assignments": [a.to_dict() for a in self.assignments]}
 
 
 if __name__ == '__main__':
