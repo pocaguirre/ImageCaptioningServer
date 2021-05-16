@@ -10,7 +10,7 @@ app.config['engine'] = Tasks()
 app.config['MTURK_LINKS'] = {
     "mturk": "https://worker.mturk.com/mturk/preview?groupId=",
     "sandbox": "https://workersandbox.mturk.com/mturk/preview?groupId=",
-    "azure": "/"
+    "azure": "https://imagecaptioningicl.azurewebsites.net/"
 }
 
 app.register_blueprint(api)
