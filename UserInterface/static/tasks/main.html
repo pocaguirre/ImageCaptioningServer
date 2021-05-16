@@ -22,14 +22,11 @@
         {% if assignID %}
         assignID = {{ assignID|tojson }};
         {% endif %}
-        {% if condition1 %}
-        var condition1 = {{ condition1|tojson }};
-        var condition2 = {{ condition2|tojson }};
-        {% endif %}
     </script>
-    <script type='text/javascript' src='https://imagecaptioningicl.azurewebsites.net/static/js/main.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script type='text/javascript' src='/static/js/main.js'></script>
     <script type="text/javascript" src="https://www.pocaguirre.com/static/jquery.countdown360/dist/jquery.countdown360.js"></script>
-    <link rel="stylesheet" href="https://imagecaptioningicl.azurewebsites.net/static/css/data.css">
+    <link rel="stylesheet" href="/static/css/data.css">
 </head>
 <body>
     <div id="dialog-modal" title="Message"></div>

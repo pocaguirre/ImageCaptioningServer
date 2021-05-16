@@ -60,6 +60,7 @@
                     </div>
                     {% block instructions %}
                         <hr>
+                        {% if demographics == true %}
                         <form id="demographics-form">
                             <p class="lead">Before starting, please answer the following demographic questions. Your answers will not affect your eligibility for the study.</p>
                             <div id="age-question">
@@ -148,6 +149,7 @@
                                 </div>
                             </div>
                         </form>
+                        {% endif %}
                     {% endblock %}
                 </div>
                 <div id="finish" hidden>

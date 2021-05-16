@@ -4,7 +4,6 @@
 var questions = new Array();
 var worker_obj = new Object();
 var state = -1;
-var init_time = $.now();
 jQuery.support.cors = true;
 
 $(window).load(function(){
@@ -27,48 +26,52 @@ $(window).load(function(){
         }
         });
     dialog_modal.hide();
-    $.post( "https://imagecaptioningicl.azurewebsites.net/get_task", { workerID: workerID,
+    $.post( "/get_task", { workerID: workerID,
                                                                         assignID: assignID}, function( data ) {
         // Set Images
         var im_urls = data.images;
         // Set HTML
-        $( "#main-body" ).load( data.html );
-        // Import JS and execute
-        $.getScript( data.js, function() {
-            function check_completed() {
-                let empty_input = false;
-                // CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
-                if (
-                    $("[name='age-input']").val() === "" ||
-                    $("[name='education-radio']:checked").length === 0 ||
-                    $("[name='glasses-radio']:checked").length === 0 ||
-                    $("[name='colorblind-radio']:checked").length === 0
-                ){
-                    empty_input = true;
+        $( "#main-body" ).load( data.html, function(){
+           // Import JS and execute
+            $.getScript( data.js, function() {
+                function check_completed() {
+                    let empty_input = false;
+                    // CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
+                    if (
+                        $("[name='age-input']").val() === "" ||
+                        $("[name='education-radio']:checked").length === 0 ||
+                        $("[name='glasses-radio']:checked").length === 0 ||
+                        $("[name='colorblind-radio']:checked").length === 0
+                    ){
+                        empty_input = true;
+                    }
+                    if(Cookies.get('demographics_finished') === "True"){
+                        empty_input = false;
+                    }
+                    if (empty_input === false){
+                        // CHECK INSTRUCTIONS ARE CLICKED
+                        check_all_checks();
+                    }
                 }
-                if (empty_input === false){
-                    // CHECK INSTRUCTIONS ARE CLICKED
-                    check_all_checks();
-                }
-            }
 
-            render_header_button(im_urls);
-            initialize_images(im_urls);
-            $('#next').on('click', function(){next();});
-            $('#prev').on('click', function(){prev();});
-            $("#start-btn").on('click', function (){
-                worker_obj['age-input'] = $("[name='age-input']").val();
-                worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
-                worker_obj["glasses-radio"] = $("[name='glasses-radio']:checked").val();
-                worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
-                start();
-            })
-            $("#submitButton").on('click', function (){submit_function();});
-            var els = document.getElementsByClassName('instruction-check');
-            for (var i = 0; i < els.length; i++) {
-                els[i].onclick = check_completed;
-            }
-            $('#demographics-form input').on("click", check_completed);
+                render_header_button(im_urls);
+                initialize_images(im_urls);
+                $('#next').on('click', function(){next();});
+                $('#prev').on('click', function(){prev();});
+                $("#start-btn").on('click', function (){
+                    worker_obj['age-input'] = $("[name='age-input']").val();
+                    worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
+                    worker_obj["glasses-radio"] = $("[name='glasses-radio']:checked").val();
+                    worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
+                    start();
+                })
+                $("#submitButton").on('click', function (){submit_function();});
+                var els = document.getElementsByClassName('instruction-check');
+                for (var i = 0; i < els.length; i++) {
+                    els[i].onclick = check_completed;
+                }
+                $('#demographics-form input').on("click", check_completed);
+            });
         });
         if (mturk === 'sandbox' || mturk === 'mturk') {
             turkSetAssignmentID();
@@ -103,7 +106,7 @@ function addDialog(){
 function submit_function(){
     $("#ans").val(JSON.stringify(getAnswers()));
     var link_to_next;
-    $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
+    $.post('/submit_data',
         {
             answer: $('#ans').val(),
             assignmentID: assignID,
@@ -115,6 +118,9 @@ function submit_function(){
             link_to_next = data.link;
             if (mturk === 'sandbox' || mturk === 'mturk') {
                 $("#mturk_form").submit(); // Submit the form
+            } else {
+                Cookies.set('assignment_finished', 'True')
+                Cookies.set('demographics_finished', 'True')
             }
             let dialog_task = $("#dialog-task");
             if (link_to_next === "done") {

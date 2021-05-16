@@ -81,9 +81,14 @@ class Assignment(object):
             return "NO RESULTS"
         answers = []
         for a in self.answer:
+            if 'im_time' in a:
+                time = a['im_time']
+            else:
+                time = -1
             answers.append({
                 "description": a['description'],
-                "image": a['im_url']
+                "image": a['im_url'],
+                "time": time
             })
         return answers
 
@@ -151,6 +156,11 @@ class Tasks(object):
         if self._check_worker_exists(worker_id):
             return not self.workers[worker_id]['queue'].empty()
         return True
+
+    def worker_has_demographics(self, worker_id) -> bool:
+        if not self._check_worker_exists(worker_id):
+            return False
+        return "age-input" in self.workers[worker_id]
 
     def _is_test_worker(self, worker_id) -> bool:
         return self.workers[worker_id]['test']
