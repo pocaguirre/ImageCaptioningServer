@@ -1,3 +1,4 @@
+var start_time = new Date().getTime();
 // ============================================================================
 // initialize images
 // ============================================================================
@@ -9,6 +10,7 @@ function initialize_images(im_urls) {
         q.im = im;
         q.ans = '';
         q.done = false;
+        q.time = 0;
         // TODO: add fields for identifying images here
         questions.push(q);
     }
@@ -23,6 +25,8 @@ function next(){
         var q = questions[state];
         // store user input
         q.ans = ans;
+        // Save time
+        q.time += new Date().getTime() - start_time;
         if (!check_correct(q)){
             return -1;
         }
@@ -44,6 +48,8 @@ function prev(){
         var q = questions[state];
         // store user input
         q.ans = ans;
+        // Save time
+        q.time += new Date().getTime() - start_time;
         if (!check_correct(q)){
             return -1;
         }
@@ -69,6 +75,8 @@ function update(event){
             var q = questions[state];
             // store user input
             q.ans = ans;
+            // Save time
+            q.time += new Date().getTime() - start_time;
             if (!check_correct(q)){
                 return -1;
             }
@@ -163,6 +171,7 @@ function render_question(idx){
     $('#description').css('width', 480);
     $('#description').css('height', 150);
     $('#description').val(q.ans);
+    start_time = new Date().getTime();
 }
 
 function render_im(im){
@@ -247,7 +256,8 @@ function getAnswers(){
     for (var i=0; i<questions.length; i++){
         answers.push({
             description: questions[i].ans,
-            im_url: questions[i].im.src
+            im_url: questions[i].im.src,
+            im_time: questions[i].time
         });
     }
     return answers;
