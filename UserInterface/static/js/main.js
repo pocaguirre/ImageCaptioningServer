@@ -72,10 +72,10 @@ $(window).load(function(){
                 }
                 $('#demographics-form input').on("click", check_completed);
             });
+            if (mturk === 'sandbox' || mturk === 'mturk') {
+                turkSetAssignmentID();
+            }
         });
-        if (mturk === 'sandbox' || mturk === 'mturk') {
-            turkSetAssignmentID();
-        }
     }, "json");
 })
 
