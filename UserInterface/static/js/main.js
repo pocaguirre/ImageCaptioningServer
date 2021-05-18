@@ -112,15 +112,18 @@ function submit_function(){
             assignmentID: assignID,
             workerID: workerID,
             mturk: mturk,
-            demographics: JSON.stringify(worker_obj)
+            demographics: JSON.stringify(worker_obj),
+            difficulty: $("[name='difficulty-radio']:checked").val(),
+            length: $("[name='length-radio']:checked").val(),
+            comments: $('#final_comments').val()
         },
         function(data) {
             link_to_next = data.link;
+            Cookies.set('demographics_finished', 'True');
             if (mturk === 'sandbox' || mturk === 'mturk') {
                 $("#mturk_form").submit(); // Submit the form
             } else {
-                Cookies.set('assignment_finished', 'True')
-                Cookies.set('demographics_finished', 'True')
+                Cookies.set('assignment_finished', 'True');
             }
             let dialog_task = $("#dialog-task");
             if (link_to_next === "done") {

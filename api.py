@@ -31,6 +31,7 @@ def submit_data():
     worker_id = request.form['workerID']
     mturk_type = request.form['mturk']
     worker_object = request.form['demographics']
+    extra = {k: v for k,v in request.form.items() if k not in ['answer', 'assignmentID', 'workerID', 'mturk', 'demographics']}
     success = current_app.config['engine'].save_anwer(assignment_id, answer, worker_id, worker_object)
     if success:
         if mturk_type not in current_app.config['MTURK_LINKS']:

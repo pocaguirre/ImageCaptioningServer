@@ -47,19 +47,20 @@
                     {% endblock %}
                 </div>
                 <div id="instructions">
+                    {% block instructions_title %}
+                    {% endblock %}
                     <div class="row justify-content-md-center" style="margin-bottom: 25px;">
-                        <div class="card w-75 text-start">
-                            <div class="card-body">
-                                <p><strong>Motivation:</strong> Your work will help to build smart systems that can automatically describe our visual world to people who are blind.</p>
-                                <hr>
-                                <p class="mb-0"><strong>We ask you to:</strong> carefully review images and then describe the image as per the instructions.</p>
-                                <hr>
-                                IMPORTANT: Please do not refresh the webpage once you have started working, as you will lose all your progress, and have to start at the beginning.
-                            </div>
+                        <div class="col-4">
+                            <h6>Motivation</h6>
+                            <p>Your work will help to build smart systems that can automatically describe our visual world to people who are blind.</p>
+                        </div>
+                        <div class="col-4">
+                            <h6>We ask you to:</h6>
+                            <p>carefully review images and then describe the image as per the instructions.</p>
                         </div>
                     </div>
+                    <p>IMPORTANT: Please do not refresh the webpage once you have started working, as you will lose all your progress, and have to start at the beginning.</p>
                     {% block instructions %}
-                        <hr>
                         {% if demographics == true %}
                         <form id="demographics-form">
                             <p class="lead">Before starting, please answer the following demographic questions. Your answers will not affect your eligibility for the study.</p>
@@ -150,12 +151,70 @@
                             </div>
                         </form>
                         {% endif %}
+                        <hr>
                     {% endblock %}
                 </div>
                 <div id="finish" hidden>
+
                     <form name='mturk_form' method='post' id='mturk_form'>
                         <input type='hidden' value='' name='assignmentId' id='assignmentId'/>
                         <input type='hidden' value='' name='ans' id='ans'/>
+                        <h4>Rate this HIT</h4>
+                        <p>Please help us assess the difficulty and length of this HIT. Thank you.</p>
+                        <row>
+                            <div class="col">
+                                <strong>Difficulty:</strong>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="difficulty_radio1" name="difficulty_radio" value="1">
+                                <label class="form-check-label" for="difficulty_radio1">1: Very Difficult</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="difficulty_radio2" name="difficulty_radio" value="2">
+                                <label class="form-check-label" for="difficulty_radio2">2</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="difficulty_radio3" name="difficulty_radio" value="3">
+                                <label class="form-check-label" for="difficulty_radio3">3</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="difficulty_radio4" name="difficulty_radio" value="4">
+                                <label class="form-check-label" for="difficulty_radio4">4</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="difficulty_radio5" name="difficulty_radio" value="5">
+                                <label class="form-check-label" for="difficulty_radio5">5: Very Easy</label>
+                            </div>
+                        </row>
+                        <row>
+                            <div class="col">
+                                <strong>Length:</strong>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="length_radio1" name="length_radio" value="1">
+                                <label class="form-check-label" for="length_radio1">1: Very Long</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="length_radio2" name="length_radio" value="2">
+                                <label class="form-check-label" for="length_radio2">2</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="length_radio3" name="length_radio" value="3">
+                                <label class="form-check-label" for="length_radio3">3</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="length_radio4" name="length_radio" value="4">
+                                <label class="form-check-label" for="length_radio4">4</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-check-input" type="checkbox" id="length_radio5" name="length_radio" value="5">
+                                <label class="form-check-label" for="length_radio5">5: Very Short</label>
+                            </div>
+                        </row>
+                        <div class="input-group">
+                            <label for="final_comments">Opinions or comments about HIT:</label>
+                            <textarea class="form-control" aria-label="final_comments" name="final_comments" id="final_comments"></textarea>
+                        </div>
                         <input type='button' id='submitButton' value="Submit HIT"/>
                     </form>
                 </div>

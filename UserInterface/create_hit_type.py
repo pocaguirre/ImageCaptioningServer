@@ -1,13 +1,6 @@
 import boto3
 import json
 import os
-from jinja2 import Environment, FileSystemLoader
-
-
-def create_xml_question(html_text):
-    return '<HTMLQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2011-11-11/HTMLQuestion.xsd"><HTMLContent><![CDATA[\n' + \
-           html_text +\
-           '\n]]></HTMLContent><FrameHeight>600</FrameHeight></HTMLQuestion>'
 
 
 if __name__ == "__main__":
@@ -39,18 +32,12 @@ if __name__ == "__main__":
        endpoint_url = endpoint_url
     )
 
-    # create hit with config
-    file_loader = FileSystemLoader('static/tasks')
-    env = Environment(loader=file_loader)
-    template = env.get_template('main.html')
-    html_text = template.render(mturk=mturk_var)
-
-    new_hit = mturk.create_hit_with_hit_type(
-        HITTypeId='3UZRKKY9AW418KEZKLO1KAY3PAK4OI',
-        MaxAssignments = HIT["MaxAssignments"],
-        LifetimeInSeconds = HIT["LifetimeInSeconds"],
-        Question = create_xml_question(html_text),
+    new_hit_type = mturk.create_hit_type(
+        Title = HIT['Title'],
+        Description = HIT["Description"],
+        Keywords = HIT["Keywords"],
+        Reward = HIT["Reward"],
+        AssignmentDurationInSeconds = HIT["AssignmentDurationInSeconds"],
+        AutoApprovalDelayInSeconds = HIT["AutoApprovalDelayInSeconds"]
     )
-    print("HITId: " + new_hit['HIT']['HITId'])
-    print("A new HIT has been created. You can preview it here:")
-    print(mturk_url + "mturk/preview?groupId=" + new_hit['HIT']['HITGroupId'])
+    print("HIT type Id: " + new_hit_type['HITTypeId'])

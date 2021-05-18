@@ -174,11 +174,12 @@ class Tasks(object):
         """
         return assign_id not in self.assignments
 
-    def save_anwer(self, assign_id, answer, worker_id, demographics):
+    def save_anwer(self, assign_id, answer, worker_id, demographics, extra=None):
         self.workers[worker_id].update(json.loads(demographics))
         for a in self.assignments:
             if a.id == assign_id:
                 a.answer = json.loads(answer)
+                a.answer.update(extra)
                 self._update_jobs_assigned(a._task['condition'], a._task['images'])
                 return True
         return False
