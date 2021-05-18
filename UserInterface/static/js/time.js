@@ -153,7 +153,7 @@ function check_correct(question){
 }
 
 function check_all_checks(){
-    if ($(".instruction-check:checked").length > 6) {
+    if ($(".instruction-check:checked").length > 5) {
         $("#start-btn").prop("disabled", false);
     }
 }

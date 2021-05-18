@@ -179,7 +179,7 @@ class Tasks(object):
         for a in self.assignments:
             if a.id == assign_id:
                 a.answer = json.loads(answer)
-                a.answer.update(extra)
+                a.answer.update(extr)
                 self._update_jobs_assigned(a._task['condition'], a._task['images'])
                 return True
         return False
