@@ -63,7 +63,7 @@
                     <hr>
                     {% block instructions %}
                         {% if demographics == true %}
-                        <form id="demographics-form">
+                        <form style="display:inline-block;vertical-align:top;font-size:12pt;text-align:left;" id="demographics-form">
                             <p class="lead">Before starting, please answer the following demographic questions. Your answers will not affect your eligibility for the study.</p>
                             <div id="age-question">
                                 <div class="input-group center-block">
@@ -162,7 +162,7 @@
                         <input type='hidden' value='' name='ans' id='ans'/>
                         <h4>Rate this HIT</h4>
                         <p>Please help us assess the difficulty and length of this HIT. Thank you.</p>
-                        <row>
+                        <div class="row">
                             <div class="col">
                                 <strong>Difficulty:</strong>
                             </div>
@@ -186,8 +186,8 @@
                                 <input class="form-check-input" type="checkbox" id="difficulty_radio5" name="difficulty_radio" value="5">
                                 <label class="form-check-label" for="difficulty_radio5">5: Very Easy</label>
                             </div>
-                        </row>
-                        <row>
+                        </div>
+                        <div class="row">
                             <div class="col">
                                 <strong>Length:</strong>
                             </div>
@@ -211,8 +211,8 @@
                                 <input class="form-check-input" type="checkbox" id="length_radio5" name="length_radio" value="5">
                                 <label class="form-check-label" for="length_radio5">5: Very Short</label>
                             </div>
-                        </row>
-                        <div class="input-group">
+                        </div>
+                        <div class="row">
                             <label for="final_comments">Opinions or comments about HIT:</label>
                             <textarea class="form-control" aria-label="final_comments" name="final_comments" id="final_comments"></textarea>
                         </div>

@@ -54,6 +54,11 @@ class Assignment(object):
     def task(self) -> dict:
         return self._task
 
+    def update_task(self, new_data: dict) -> None:
+        if new_data is not None:
+            self._task.update(new_data)
+        return
+
     def __eq__(self, other):
         if not isinstance(other, Assignment):
             # assume it's string id
@@ -179,7 +184,7 @@ class Tasks(object):
         for a in self.assignments:
             if a.id == assign_id:
                 a.answer = json.loads(answer)
-                a.answer.update(extr)
+                a.update_task(extra)
                 self._update_jobs_assigned(a._task['condition'], a._task['images'])
                 return True
         return False
