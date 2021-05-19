@@ -51,8 +51,8 @@ def get_condition():
     assignment_id = user['assignment_id']
     _ = app.config['engine'].get_test_task(worker_id, assignment_id, condition)
     resp = make_response(render_template("main.html", mturk='azure',
-                           workerID=f"worker{worker_id}",
-                           assignID=f"assignment{assignment_id}"))
+                           workerID=worker_id,
+                           assignID=assignment_id))
     return make_cookie(worker_id, assignment_id, resp)
 
 
