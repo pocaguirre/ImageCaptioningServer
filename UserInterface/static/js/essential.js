@@ -134,7 +134,7 @@ function finish(){
 }
 
 function check_correct(question){
-    if (question.ans.split(' ').length < 8){
+    if (question.ans.split(/\s+/).length < 8){
         render_dialog(7);
         return false;
     } else {
