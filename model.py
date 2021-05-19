@@ -6,7 +6,7 @@ import pandas as pd
 IMAGE_SET_CSV = "image_sets.csv"
 
 # CONSTANTS
-ROOT = "https://imagecaptioningicl.azurewebsites.net/"
+ROOT = "/"
 STATIC_ROOT = f"{ROOT}static/"
 
 # TODO: save demographics per assignment (in case workers change answers)
@@ -66,13 +66,15 @@ class Assignment(object):
         return self.id == other.id
 
     def __dict__(self):
-        return {
+        copy = self._task.copy()
+        copy.update({
             "id": self.id,
             "condition": self._task['condition'],
             "imageset": self._task['images'],
             "results": self.get_answers(),
             "worker": self.worker_id
-        }
+        })
+        return copy
 
     def is_answered(self) -> bool:
         """
@@ -98,13 +100,15 @@ class Assignment(object):
         return answers
 
     def to_dict(self):
-        return {
+        copy = self._task.copy()
+        copy.update({
             "id": self.id,
             "condition": self._task['condition'],
             "imageset": self._task['images'],
             "results": self.get_answers(),
             "worker": self.worker_id
-        }
+        })
+        return copy
 
 
 class Tasks(object):
