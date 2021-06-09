@@ -7,7 +7,7 @@
     "Description": "Add descriptions to images for BVI individuals",
     "Keywords": "image, description, caption",
     "Reward": "1.20",
-    "MaxAssignments": 10,
+    "MaxAssignments": 5,
     "LifetimeInSeconds": 604800,
     "AssignmentDurationInSeconds": 600,
     "AutoApprovalDelayInSeconds": 0,

@@ -2,6 +2,7 @@ import numpy as np
 from queue import Queue
 import json
 import pandas as pd
+from typing import List, Dict
 
 IMAGE_SET_CSV = "image_sets.csv"
 
@@ -111,14 +112,98 @@ class Assignment(object):
         return copy
 
 
+class Worker(object):
+    def __init__(self, worker_id, test=False):
+        self.worker_id = worker_id
+        self.age = None
+        self.colorblind = None
+        self.education = None
+        self.glasses = None
+        self.test = test
+        self.queue = Queue()
+        self.assignments = []
+
+    def update_assignments(self, assignment: Assignment):
+        self.assignments.append(assignment)
+
+    def update_demographics(self, demographics: Dict=None) -> None:
+        if demographics is not {}:
+            self.age = demographics['age-input']
+            self.colorblind = demographics['colorblind-radio']
+            self.education = demographics['education-radio']
+            self.glasses = demographics['glasses-radio']
+
+
 class Tasks(object):
     def __init__(self, cap_per_img=3):
-        self.workers = {}
+        self.workers: List[Worker] = []
         self.cap_per_img = cap_per_img
         self.jobs = np.zeros((4, 4))
         self.conditions = ['control', 'time', 'essential', 'comprehensive']
         self.images = list(IMAGE_SETS.keys())
-        self.assignments = []
+        self.assignments: List[Assignment] = []
+
+    def _update_jobs_assigned(self, cond, img) -> None:
+        self.jobs[self.conditions.index(cond), self.images.index(img)] += 1
+
+    def _set_up_worker(self, worker_id, test=False) -> None:
+        if not test:
+            worker = Worker(worker_id, test)
+
+            c = self.conditions.copy()
+            i = self.images.copy()
+            np.random.shuffle(c)
+            np.random.shuffle(i)
+
+            for condition, image_set in zip(c, i):
+                worker.queue.put({"condition": condition, "images": image_set})
+            self.workers.append(worker)
+            return
+        else:
+            worker = Worker(worker_id, test)
+            self.workers.append(worker)
+            return
+
+    def _check_worker_exists(self, worker_id) -> bool:
+        for w in self.workers:
+            if w.worker_id == worker_id:
+                return True
+        return False
+
+    def _get_worker(self, worker_id) -> Worker:
+        for w in self.workers:
+            if w.worker_id == worker_id:
+                return w
+        raise Exception("Worker Not Found Error")
+
+    def _check_valid_worker(self, worker_id) -> bool:
+        if self._check_worker_exists(worker_id):
+            worker = self._get_worker(worker_id)
+            if worker.test:
+                return True
+            return not worker.queue.empty()
+        return True
+
+    def _is_test_worker(self, worker_id) -> bool:
+        if self._check_worker_exists(worker_id):
+            worker = self._get_worker(worker_id)
+            return not worker.test
+        return False
+
+    def _is_new_assignment(self, assign_id) -> bool:
+        """
+        Returns True if this is a new assignment for worker id (being robust against
+        reloading on client side)
+        :param assign_id:
+        :return:
+        """
+        return assign_id not in self.assignments
+
+    def _update_worker_id(self, old_id, new_id):
+        for worker in self.workers:
+            if worker.worker_id == old_id:
+                worker.worker_id = new_id
+        self._set_up_worker(new_id)
 
     def output_jobs(self):
         output = {'images': self.images}
@@ -130,66 +215,37 @@ class Tasks(object):
 
     def get_workers(self):
         workers = []
-        for worker_id, worker in self.workers.items():
-            worker_obj = {"id": worker_id}
+        for worker in self.workers:
+            worker_obj = {"id": worker.worker_id}
             assigs = []
-            for assignment in worker['assignments']:
+            for assignment in worker.assignments:
                 if assignment.is_answered():
                     assigs.append(assignment.to_dict())
             worker_obj['assignments'] = assigs
             workers.append(worker_obj)
         return workers
 
-    def _update_jobs_assigned(self, cond, img):
-        self.jobs[self.conditions.index(cond), self.images.index(img)] += 1
-
-    def _set_up_worker(self, worker_id, test=False):
-        if not test:
-            c = self.conditions.copy()
-            i = self.images.copy()
-            q = Queue()
-            np.random.shuffle(c)
-            np.random.shuffle(i)
-            for condition, image_set in zip(c, i):
-                q.put({"condition": condition, "images": image_set})
-            self.workers[worker_id] = {"queue": q, "assignments": [], "test": test}
-            return
-        else:
-            self.workers[worker_id] = {"assignments": [], "test": test}
-            return
-
-    def _check_worker_exists(self, worker_id) -> bool:
-        return worker_id in self.workers
-
-    def _check_valid_worker(self, worker_id) -> bool:
-        if self._check_worker_exists(worker_id):
-            return not self.workers[worker_id]['queue'].empty()
-        return True
-
     def worker_has_demographics(self, worker_id) -> bool:
         if not self._check_worker_exists(worker_id):
             return False
-        return "age-input" in self.workers[worker_id]
-
-    def _is_test_worker(self, worker_id) -> bool:
-        return self.workers[worker_id]['test']
-
-    def _is_new_assignment(self, assign_id) -> bool:
-        """
-        Returns True if this is a new assignment for worker id (being robust against
-        reloading on client side)
-        :param assign_id:
-        :return:
-        """
-        return assign_id not in self.assignments
+        return self._get_worker(worker_id).age is not None
 
     def save_anwer(self, assign_id, answer, worker_id, demographics, extra=None):
-        self.workers[worker_id].update(json.loads(demographics))
         for a in self.assignments:
             if a.id == assign_id:
                 a.answer = json.loads(answer)
                 a.update_task(extra)
                 self._update_jobs_assigned(a._task['condition'], a._task['images'])
+                if a.worker_id != worker_id:
+                    # update worker id!!
+                    self._update_worker_id(a.worker_id, worker_id)
+                    a.worker_id = worker_id
+                for worker in self.workers:
+                    if worker.worker_id == worker_id:
+                        # update Assignments
+                        worker.update_assignments(a)
+                        # update Demographics
+                        worker.update_demographics(json.loads(demographics))
                 return True
         return False
 
@@ -200,21 +256,24 @@ class Tasks(object):
                 self._set_up_worker(worker_id)
             if self._check_valid_worker(worker_id):
                 # Get Task
-                task = self.workers[worker_id]['queue'].get()
-                self._update_jobs_assigned(task['condition'], task['images'])
+                worker = self._get_worker(worker_id)
+                task = worker.queue.get()
 
-                # Get new Assignment
+                # Make new Assignment
                 a = Assignment(assign_id, worker_id=worker_id, task=task)
                 self.assignments.append(a)
-                self.workers[worker_id]['assignments'].append(a)
                 return task
             else:
                 return {"return": "all jobs done"}
         else:
             for assign in self.assignments:
                 if assign.id == assign_id:
+                    if assign.worker_id != worker_id:
+                        # update worker id!!
+                        self._update_worker_id(assign.worker_id, worker_id)
+                        assign.worker_id = worker_id
                     return assign.task
-            return {"ERROR": "Assignment not found"}
+            return {"ERROR": "Assignment ID not found"}
 
     @real_task
     def get_test_task(self, worker_id, assign_id, condition):
@@ -223,18 +282,10 @@ class Tasks(object):
         task = {"condition": condition, "images": np.random.choice(list(IMAGE_SETS.keys()))}
         a = Assignment(assign_id, worker_id=worker_id, task=task)
         self.assignments.append(a)
-        self.workers[worker_id]['assignments'].append(a)
         return task
 
     def export_workers(self):
-        new_worker = []
-        for worker_id, worker in self.workers.items():
-            nw = {"id": worker_id}
-            for key, value in worker.items():
-                if key == 'assignments' or key == 'queue':
-                    continue
-                nw[key] = value
-            new_worker.append(nw)
+        new_worker = [vars(worker) for worker in self.workers]
         return new_worker
 
     def export_raw_data(self):

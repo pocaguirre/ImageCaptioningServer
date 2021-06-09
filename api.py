@@ -13,10 +13,10 @@ def get_task():
     if request.method == 'POST':
         worker_id = request.form['workerID']
         assignment_id = request.form['assignID']
-        if not current_app.config['engine']._check_worker_exists(worker_id):
-            current_app.logger.info(f'NEW WORKER: {worker_id}')
         if current_app.config['engine']._is_new_assignment(assignment_id):
-            current_app.logger.info(f"NEW ASSIGNMENT: {assignment_id}")
+            current_app.logger.info(f"NEW ASSIGNMENT ID: {assignment_id}")
+        if not current_app.config['engine']._check_worker_exists(worker_id):
+            current_app.logger.info(f'NEW WORKER ID: {worker_id}')
         task = current_app.config['engine'].get_task(worker_id, assignment_id)
         task['worker'] = worker_id
         task['assignment'] = assignment_id
@@ -38,7 +38,6 @@ def submit_data():
             return jsonify({"link": "Error Link, wrong data provided: MTURK_TYPE"})
         else:
             if mturk_type == 'azure':
-
                 if current_app.config['engine']._is_test_worker(worker_id):
                     return jsonify({"link": "/test"})
                 if not current_app.config['engine']._check_valid_worker(worker_id):
