@@ -124,7 +124,7 @@ class Worker(object):
         self.assignments = []
 
     def update_assignments(self, assignment: Assignment):
-        self.assignments.append(assignment)
+        self.assignments.append(assignment.id)
 
     def update_demographics(self, demographics: Dict=None) -> None:
         if demographics is not {}:
