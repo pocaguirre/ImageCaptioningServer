@@ -160,12 +160,12 @@ function check_new_answer(new_answer, descriptions){
     var desc = [];
     for(var i = 0; i < descriptions.length; i+=1){
         desc = descriptions[i].ans.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
-        if(new_answer.length !== desc.length){return false;}
+        if(new_answer.length !== desc.length){return true;}
         for(var j=0; j<desc.length; j+=1){
-            if(new_answer[j] !== desc[j]){return false;}
+            if(new_answer[j] !== desc[j]){return true;}
         }
     }
-    return true;
+    return false;
 }
 
 function check_all_checks(){
