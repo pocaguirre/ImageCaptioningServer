@@ -158,16 +158,18 @@ function check_correct(question){
 function check_new_answer(new_answer, descriptions){
     new_answer = new_answer.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
     var desc = [];
+    loop1:
     for(var i = 0; i < descriptions.length; i+=1){
         desc = descriptions[i].ans.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
-        if(new_answer.length !== desc.length){return true;}
+        if(new_answer.length !== desc.length){continue loop1;}
+        loop2:
         for(var j=0; j<desc.length; j+=1){
-            if(new_answer[j] !== desc[j]){return true;}
+            if(new_answer[j] !== desc[j]){continue loop1;}
         }
+        return false;
     }
-    return false;
+    return true;
 }
-
 function check_all_checks(){
     if ($(".instruction-check:checked").length > 5) {
         $("#start-btn").prop("disabled", false);
