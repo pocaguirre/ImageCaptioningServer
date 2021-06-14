@@ -137,11 +137,28 @@ function check_correct(question){
     if (question.ans.split(/\s+/).length < 8){
         render_dialog(7);
         return false;
+    } else if (!check_new_answer(question.ans, questions)){
+        render_dialog(1);
+        return false;
     } else {
         question.done = true;
         return true;
     }
 }
+
+function check_new_answer(new_answer, descriptions){
+    new_answer = new_answer.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
+    var desc = [];
+    for(var i = 0; i < descriptions.length; i+=1){
+        desc = descriptions[i].ans.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
+        if(new_answer.length !== desc.length){return false;}
+        for(var j=0; j<desc.length; j+=1){
+            if(new_answer[j] !== desc[j]){return false;}
+        }
+    }
+    return true;
+}
+
 
 function check_all_checks(){
     if ($(".instruction-check:checked").length > 4) {
@@ -230,7 +247,7 @@ function update_header_buttons(activeIdx){
 
 function render_dialog(idx){
     if (idx==1){
-        var text = 'Do not describe unimportant details.';
+        var text = 'Please provide different descriptions for each image.';
     }else if(idx == 2){
         var text = 'Do not describe things that might have happened in the future or past.';
     }else if(idx == 3){
