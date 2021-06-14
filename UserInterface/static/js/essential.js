@@ -23,12 +23,7 @@ function initialize_images(im_urls) {
 function next(){
     let ans = $('#description').val();
     if (ans.length > 0){
-        var q = questions[state];
-        // store user input
-        q.ans = ans;
-        // Save time
-        q.time += new Date().getTime() - start_time;
-        if (!check_correct(q)){
+        if (!check_correct(ans)){
             return -1;
         }
     }
@@ -46,12 +41,7 @@ function next(){
 function prev(){
     let ans = $('#description').val();
     if (ans.length > 0){
-        var q = questions[state];
-        // store user input
-        q.ans = ans;
-        // Save time
-        q.time += new Date().getTime() - start_time;
-        if (!check_correct(q)){
+        if (!check_correct(ans)){
             return -1;
         }
     }
@@ -73,12 +63,7 @@ function update(event){
     if (0 <= state && state < questions.length) {
         let ans = $('#description').val();
         if (ans.length > 0){
-            var q = questions[state];
-            // store user input
-            q.ans = ans;
-            // Save time
-            q.time += new Date().getTime() - start_time;
-            if (!check_correct(q)){
+            if (!check_correct(ans)){
                 return -1;
             }
         }
@@ -133,15 +118,20 @@ function finish(){
     $("#dialog-confirm" ).dialog('open');
 }
 
-function check_correct(question){
-    if (question.ans.split(/\s+/).length < 8){
+function check_correct(ans){
+    if (ans.split(/\s+/).length < 8){
         render_dialog(7);
         return false;
-    } else if (!check_new_answer(question.ans, questions)){
+    } else if (!check_new_answer(ans, questions)){
         render_dialog(1);
         return false;
     } else {
-        question.done = true;
+        var q = questions[state];
+        // store user input
+        q.ans = ans;
+        // Save time
+        q.time += new Date().getTime() - start_time;
+        q.done = true;
         return true;
     }
 }
@@ -151,6 +141,7 @@ function check_new_answer(new_answer, descriptions){
     var desc = [];
     loop1:
     for(var i = 0; i < descriptions.length; i+=1){
+        if(i === state){continue loop1;}
         desc = descriptions[i].ans.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
         if(new_answer.length !== desc.length){continue loop1;}
         loop2:
