@@ -123,6 +123,19 @@ class Worker(object):
         self.queue = Queue()
         self.assignments = []
 
+    def to_dict(self):
+        worker = {
+            "worker_id": self.worker_id,
+            "age": self.age,
+            "colorblind": self.colorblind,
+            "education": self.education,
+            "glasses": self.glasses,
+            "test": self.test,
+            "queue": list(self.queue.queue),
+            "assignments": self.assignments
+        }
+        return worker
+
     def update_assignments(self, assignment: Assignment):
         self.assignments.append(assignment.id)
 
@@ -286,7 +299,7 @@ class Tasks(object):
         return task
 
     def export_workers(self):
-        new_worker = [vars(worker) for worker in self.workers]
+        new_worker = [worker.to_dict() for worker in self.workers]
         return new_worker
 
     def export_raw_data(self):

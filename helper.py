@@ -30,12 +30,13 @@ def check_new_user(request) -> dict:
 
 
 def get_assignment(user, request):
-    if request.cookies.get('assignment_finished') == 'True':
-        global local_assignment
-        local_assignment += 1
-        user['assignment_id'] = f"assignment{local_assignment}"
-    else:
-        user['assignment_id'] = request.cookies.get('assignID')
+    if request.cookies.get('assignID'):
+        if request.cookies.get('assignment_finished') == 'True':
+            global local_assignment
+            local_assignment += 1
+            user['assignment_id'] = f"assignment{local_assignment}"
+        else:
+            user['assignment_id'] = request.cookies.get('assignID')
     return user
 
 
