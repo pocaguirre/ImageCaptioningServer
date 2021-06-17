@@ -200,7 +200,7 @@ class Tasks(object):
     def _is_test_worker(self, worker_id) -> bool:
         if self._check_worker_exists(worker_id):
             worker = self._get_worker(worker_id)
-            return not worker.test
+            return worker.test
         return False
 
     def _is_new_assignment(self, assign_id) -> bool:
