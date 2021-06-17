@@ -244,8 +244,9 @@ class Tasks(object):
                     if worker.worker_id == worker_id:
                         # update Assignments
                         worker.update_assignments(a)
-                        # update Demographics
-                        worker.update_demographics(json.loads(demographics))
+                        if demographics:
+                            # update Demographics
+                            worker.update_demographics(json.loads(demographics))
                 return True
         return False
 
