@@ -124,34 +124,34 @@ function submit_function(){
                 $("#mturk_form").submit(); // Submit the form
             } else {
                 Cookies.set('assignment_finished', 'True');
-            }
-            let dialog_task = $("#dialog-task");
-            if (link_to_next === "done") {
-                dialog_task.dialog({
-                    autoOpen: false,
-                    height: 250,
-                    buttons: {
-                        'YOU ARE DONE!': function() {
-                            $(this).dialog("close");
-                            $(this).text("");
+                let dialog_task = $("#dialog-task");
+                if (link_to_next === "done") {
+                    dialog_task.dialog({
+                        autoOpen: false,
+                        height: 250,
+                        buttons: {
+                            'YOU ARE DONE!': function() {
+                                $(this).dialog("close");
+                                $(this).text("");
+                            }
                         }
-                    }
-                });
-            } else {
-                dialog_task.dialog({
-                    autoOpen: false,
-                    height: 250,
-                    buttons: {
-                        'Next HIT': function() {
-                            $(this).dialog("close");
-                            $(this).text("");
-                            window.location.href = link_to_next;
+                    });
+                } else {
+                    dialog_task.dialog({
+                        autoOpen: false,
+                        height: 250,
+                        buttons: {
+                            'Next HIT': function() {
+                                $(this).dialog("close");
+                                $(this).text("");
+                                window.location.href = link_to_next;
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                dialog_task.text("Thank you for completing this HIT");
+                dialog_task.dialog('open');
             }
-            dialog_task.text("Thank you for completing this HIT");
-            dialog_task.dialog('open');
         }, "json"
     );
 }
