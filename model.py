@@ -127,8 +127,7 @@ class Worker(object):
         self.assignments.append(assignment.id)
 
     def update_demographics(self, demographics: Dict=None) -> None:
-        if demographics is not {}:
-            print(demographics.keys())
+        if demographics is not {} and 'age-input' in demographics:
             self.age = demographics['age-input']
             self.colorblind = demographics['colorblind-radio']
             self.education = demographics['education-radio']
