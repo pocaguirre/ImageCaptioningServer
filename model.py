@@ -128,6 +128,7 @@ class Worker(object):
 
     def update_demographics(self, demographics: Dict=None) -> None:
         if demographics is not {}:
+            print(demographics.keys())
             self.age = demographics['age-input']
             self.colorblind = demographics['colorblind-radio']
             self.education = demographics['education-radio']
