@@ -162,7 +162,7 @@ function check_new_answer(new_answer, descriptions){
     return true;
 }
 function check_all_checks(){
-    if ($(".instruction-check:checked").length > 5) {
+    if ($(".instruction-check:checked").length > 6) {
         $("#start-btn").prop("disabled", false);
     }
 }

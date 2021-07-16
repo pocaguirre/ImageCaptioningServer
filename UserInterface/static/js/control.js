@@ -155,7 +155,7 @@ function check_new_answer(new_answer, descriptions){
 
 
 function check_all_checks(){
-    if ($(".instruction-check:checked").length > 4) {
+    if ($(".instruction-check:checked").length > 5) {
         $("#start-btn").prop("disabled", false);
     }
 }
