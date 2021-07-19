@@ -55,7 +55,7 @@ if __name__ == "__main__":
     env = Environment(loader=file_loader)
     template = env.get_template('main.html')
     html_text = template.render(mturk=mturk_var)
-
+    # print(create_xml_question(html_text))
     hits = []
     for i in range(args.HIT_number):
         hits.append(mturk.create_hit_with_hit_type(

@@ -1,16 +1,16 @@
 {
   "STATIC_ROOT": "https://imagecaptioningicl.azurewebsites.net/static",
   "HIT":{
-    "USE_SANDBOX": true,
+    "USE_SANDBOX": false,
     "REGION_NAME": "us-east-1",
     "Title": "Image Descriptions",
     "Description": "Add descriptions to images for BVI individuals",
     "Keywords": "image, description, caption",
     "Reward": "1.20",
-    "MaxAssignments": 8,
+    "MaxAssignments": 9,
     "LifetimeInSeconds": 604800,
     "AssignmentDurationInSeconds": 720,
-    "AutoApprovalDelayInSeconds": 0,
+    "AutoApprovalDelayInSeconds": 604800,
     "Question": "static/tasks/main.html"
   }
 }
