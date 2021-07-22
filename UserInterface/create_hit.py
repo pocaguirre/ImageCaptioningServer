@@ -46,10 +46,9 @@ if __name__ == "__main__":
     html_text = template.render(mturk=mturk_var)
 
     new_hit = mturk.create_hit_with_hit_type(
-        HITTypeId='3UZRKKY9AW418KEZKLO1KAY3PAK4OI',
+        HITTypeId='3WZIO7X3RQG34I88UDLOGQBWTPEXAM',
         MaxAssignments = HIT["MaxAssignments"],
-        LifetimeInSeconds = HIT["LifetimeInSeconds"],
-        Question = create_xml_question(html_text),
+        LifetimeInSeconds = HIT["LifetimeInSeconds"]
     )
     print("HITId: " + new_hit['HIT']['HITId'])
     print("A new HIT has been created. You can preview it here:")

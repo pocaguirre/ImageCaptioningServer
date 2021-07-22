@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, render_template
 from flask_cors import CORS, cross_origin
 
 rating = Blueprint('rating', __name__)
@@ -7,5 +7,4 @@ rating = Blueprint('rating', __name__)
 
 @rating.route('/rating', methods=['GET'])
 def get_rating():
-    data = request.args.get('data', default='Nothing Shared')
-    return jsonify({"data": data})
+    return render_template("rating.html")
