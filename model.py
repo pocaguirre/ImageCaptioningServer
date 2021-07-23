@@ -9,6 +9,10 @@ IMAGE_SET_CSV = "image_sets.csv"
 # CONSTANTS
 ROOT = "https://imagecaptioningicl.azurewebsites.net/"
 STATIC_ROOT = f"{ROOT}static/"
+LIMIT = True
+current_counts = json.load(open("current_counts.json"))
+current_max = 7
+
 
 # TODO: save demographics per assignment (in case workers change answers)
 
@@ -157,19 +161,17 @@ class Tasks(object):
         self.assignments: List[Assignment] = []
 
     def _update_jobs_assigned(self, cond, img) -> None:
+        global current_counts
+        global current_max
         self.jobs[self.conditions.index(cond), self.images.index(img)] += 1
+        task_str = f"{cond}-{img}"
+        current_counts[task_str] += 1
+        if min(current_counts.values()) == current_max:
+            current_max = max(current_counts.values())
 
     def _set_up_worker(self, worker_id, test=False) -> None:
         if not test:
             worker = Worker(worker_id, test)
-
-            c = self.conditions.copy()
-            i = self.images.copy()
-            np.random.shuffle(c)
-            np.random.shuffle(i)
-
-            for condition, image_set in zip(c, i):
-                worker.queue.put({"condition": condition, "images": image_set})
             self.workers.append(worker)
             return
         else:
@@ -194,7 +196,7 @@ class Tasks(object):
             worker = self._get_worker(worker_id)
             if worker.test:
                 return True
-            return not worker.queue.empty()
+            return len(worker.assignments) < 4
         return True
 
     def _is_test_worker(self, worker_id) -> bool:
@@ -217,6 +219,26 @@ class Tasks(object):
             if worker.worker_id == old_id:
                 worker.worker_id = new_id
         self._set_up_worker(new_id)
+
+    def get_assignment_task(self, worker):
+        global current_counts
+        global current_max
+        options = list(current_counts.keys())
+        for ass in self.assignments:
+            if ass.id in worker.assignments:
+                options = list(filter(lambda x: (x.split('-')[0] != ass.task['condition'] and
+                                            x.split('-')[1] != ass.task['images']), options))
+        probs = []
+        for key, val in current_counts.items():
+            if key in options:
+                if val < current_max:
+                    probs.append(current_max - val)
+                else:
+                    probs.append(.1)
+        probs = np.array(probs)
+        probs = probs / np.sum(probs)
+        task_str = np.random.choice(options, size=1, p=probs)[0]
+        return {"condition": task_str.split('-')[0], "images": task_str.split('-')[1]}
 
     def output_jobs(self):
         output = {'images': self.images}
@@ -271,8 +293,7 @@ class Tasks(object):
             if self._check_valid_worker(worker_id):
                 # Get Task
                 worker = self._get_worker(worker_id)
-                task = worker.queue.get()
-
+                task = self.get_assignment_task(worker)
                 # Make new Assignment
                 a = Assignment(assign_id, worker_id=worker_id, task=task)
                 self.assignments.append(a)
