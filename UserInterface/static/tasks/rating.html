@@ -5,6 +5,17 @@
     <title>Image Rating</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://assets.ctl.io/chi/1.0.0/chi.css">
+    <style>
+        .my-table {
+            min-width: 100%;
+            table-layout: fixed;
+        }
+        .my-table td{
+            width: 20%;
+        }
+
+    </style>
 </head>
 <body>
     <div class="container text-center">
@@ -54,16 +65,42 @@
                         </div>
                         <div>
                             <label for="grammar_range" class="form-label">Rate <a href="#grammar_instruction">Grammar:</a></label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="irrelevant-appropriate">Irrelevant</span>
-                                <input type="range" class="form-range form-control" min="0" max="10" step="1" id="grammar_approriate">
-                                <span class="input-group-text" id="appropriate-appropriate">Approriate</span>
-                            </div>
+                            <table class="my-table">
+                                <tr>
+                                    <td class="text-start">Bad English</td><td>Many Errors</td><td></td><td>Minor Errors</td><td>Good English</td>
+                                </tr>
+                                <tr><td colspan="5"><input type="range" class="form-range form-control" min="0" max="10" step="1" id="grammar_range"></td></tr>
+                            </table>
                             <label for="appropriate_range" class="form-label">Rate <a href="#appropriate_instruction">Appropriateness:</a></label>
                             <div class="input-group mb-3">
-                                <span class="input-group-text" id="irrelevant-appropriate">Irrelevant</span>
-                                <input type="range" class="form-range form-control" min="0" max="10" step="1" id="grammar_approriate">
-                                <span class="input-group-text" id="appropriate-appropriate">Approriate</span>
+
+                               <div class="a-inputWrapper">
+  <input class="a-input" type="range" min="0" max="4" step="1" width="100">
+  <div class="a-input__tick-bar">
+    <div>
+      <div class="a-input__tick"></div>
+      <div class="a-input__tick-label">Monthly</div>
+    </div>
+    <div>
+      <div class="a-input__tick"></div>
+      <div class="a-input__tick-label">1 year</div>
+    </div>
+    <div>
+      <div class="a-input__tick"></div>
+      <div class="a-input__tick-label">2 years</div>
+    </div>
+    <div>
+      <div class="a-input__tick"></div>
+      <div class="a-input__tick-label">3 years</div>
+    </div>
+    <div>
+      <div class="a-input__tick"></div>
+      <div class="a-input__tick-label">&gt; 3 years</div>
+    </div>
+  </div>
+  <div class="a-input__progress"></div>
+  <div class="a-input__thumb"></div>
+</div>
                             </div>
                             <label for="essential_range" class="form-label">Rate <a href="#essential_instruction">Essential vs Comprehensive:</a></label>
                             <div class="input-group mb-3">
