@@ -53,10 +53,10 @@ def set_up():
                     rating_df = sampled
                 else:
                     rating_df = pd.concat([rating_df, sampled], ignore_index=True)
-        rating_df['grammar'] = []
-        rating_df['correctness'] = []
-        rating_df['detail'] = []
-        rating_df['worker_id'] = []
+        rating_df['grammar'] = [[] for _ in range(len(rating_df))]
+        rating_df['correctness'] = [[] for _ in range(len(rating_df))]
+        rating_df['detail'] = [[] for _ in range(len(rating_df))]
+        rating_df['worker_id'] = [[] for _ in range(len(rating_df))]
 
 
 def is_new_worker(worker_id):
