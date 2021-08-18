@@ -40,7 +40,7 @@ def set_up():
     if os.path.isfile("ratings.csv"):
         rating_df = pd.read_csv("ratings.csv")
     else:
-        df = pd.read_csv("~/developer/HCI/ImageCaptioning/data/experiment/all_data.csv")
+        df = pd.read_csv("all_data.csv")
         df = df[['condition', 'imageset', 'image', 'description']]
         for query_string in ["imageset == 'A' or imageset == 'C'", "imageset == 'B' or imageset == 'D'"]:
             temp_df = df.query(query_string)
