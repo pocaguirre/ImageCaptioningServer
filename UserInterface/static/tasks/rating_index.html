@@ -51,7 +51,7 @@ $(document).ready(function(){
         <div class="card mb-5">
             <div class="card-title h3">Instructions</div>
             <div class="card-body text-start">
-                There are 8 images and descriptions, we ask that you rate them based on:
+                There are 6 images and descriptions, we ask that you rate them based on:
             </div>
             <ul class="list-group text-start">
               <li class="list-group-item" id="grammar_instruction"><strong>Fluency.</strong> Focusing on <u>description text only</u>, rate the fluency, both grammar and word choice, of the description. Please take into account spelling errors, bad grammar and awkward word usage.</li>
@@ -64,7 +64,7 @@ $(document).ready(function(){
                 <form action="/get_rating" method="get">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="worker_id_label">MTurk WorkerID:</span>
-                        <input type="text" class="form-control" id="worker_id" aria-describedby="worker_id">
+                        <input type="text" class="form-control" id="worker_id" aria-describedby="worker_id" name="worker_id">
                         <button class="btn btn-secondary" type="submit" id="start_button" disabled>Start</button>
                     </div>
                 </form>
