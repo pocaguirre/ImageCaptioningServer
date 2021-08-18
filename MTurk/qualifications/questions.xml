@@ -1,0 +1,202 @@
+<QuestionForm xmlns='http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2005-10-01/QuestionForm.xsd'>
+
+<Question>
+    <QuestionIdentifier>Q1</QuestionIdentifier>
+    <DisplayName>Q1</DisplayName>
+    <IsRequired>true</IsRequired>
+    <QuestionContent>
+        <Text> Is the Description for the image correct? </Text>
+        <Text>Description: Two girls wearing blue skirts hold their phones.</Text>
+        <Binary>
+          <MimeType>
+            <Type>image</Type>
+            <SubType>jpg</SubType>
+          </MimeType>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000095873.jpg</DataURL>
+            <AltText>Image of the description</AltText>
+        </Binary>
+    </QuestionContent>
+    <AnswerSpecification>
+        <SelectionAnswer>
+            <StyleSuggestion>radiobutton</StyleSuggestion>
+            <Selections>
+                <Selection>
+                  <SelectionIdentifier>bad</SelectionIdentifier>
+                  <Text>not correct</Text>
+                </Selection>
+                <Selection>
+                  <SelectionIdentifier>good</SelectionIdentifier>
+                  <Text>correct</Text>
+                </Selection>
+            </Selections>
+        </SelectionAnswer>
+    </AnswerSpecification>
+</Question>
+
+    <Question>
+    <QuestionIdentifier>Q2</QuestionIdentifier>
+    <DisplayName>Q2</DisplayName>
+    <IsRequired>true</IsRequired>
+    <QuestionContent>
+        <Text> Is the Description for the image correct? </Text>
+        <Text>Description: A person placed a bunch of bananas on a woman’s head in a kitchen</Text>
+        <Binary>
+          <MimeType>
+            <Type>image</Type>
+            <SubType>jpg</SubType>
+          </MimeType>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000035567.jpg.jpg</DataURL>
+        <AltText>Image of the description</AltText>
+        </Binary>
+    </QuestionContent>
+    <AnswerSpecification>
+        <SelectionAnswer>
+            <StyleSuggestion>radiobutton</StyleSuggestion>
+            <Selections>
+                <Selection>
+                  <SelectionIdentifier>bad</SelectionIdentifier>
+                  <Text>not correct</Text>
+                </Selection>
+                <Selection>
+                  <SelectionIdentifier>good</SelectionIdentifier>
+                  <Text>correct</Text>
+                </Selection>
+            </Selections>
+        </SelectionAnswer>
+    </AnswerSpecification>
+</Question>
+
+    <Question>
+    <QuestionIdentifier>Q3</QuestionIdentifier>
+    <DisplayName>Q3</DisplayName>
+    <IsRequired>true</IsRequired>
+    <QuestionContent>
+        <Text> Is the Description for the image correct? </Text>
+        <Text>Description: Glazed doughnuts are placed on the table for sale.</Text>
+        <Binary>
+          <MimeType>
+            <Type>image</Type>
+            <SubType>jpg</SubType>
+          </MimeType>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000096360.jpg</DataURL>
+        <AltText>Image of the description</AltText>
+        </Binary>
+    </QuestionContent>
+    <AnswerSpecification>
+        <SelectionAnswer>
+            <StyleSuggestion>radiobutton</StyleSuggestion>
+            <Selections>
+                <Selection>
+                  <SelectionIdentifier>bad</SelectionIdentifier>
+                  <Text>not correct</Text>
+                </Selection>
+                <Selection>
+                  <SelectionIdentifier>good</SelectionIdentifier>
+                  <Text>correct</Text>
+                </Selection>
+            </Selections>
+        </SelectionAnswer>
+    </AnswerSpecification>
+</Question>
+
+    <Question>
+    <QuestionIdentifier>Q4</QuestionIdentifier>
+    <DisplayName>Q4</DisplayName>
+    <IsRequired>true</IsRequired>
+    <QuestionContent>
+        <Text> Is the Description for the image correct? </Text>
+        <Text>Description: Two brown cows are standing inside a shallow river near a bridge.</Text>
+        <Binary>
+          <MimeType>
+            <Type>image</Type>
+            <SubType>jpg</SubType>
+          </MimeType>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000098131.jpg</DataURL>
+        <AltText>Image of the description</AltText>
+        </Binary>
+    </QuestionContent>
+    <AnswerSpecification>
+        <SelectionAnswer>
+            <StyleSuggestion>radiobutton</StyleSuggestion>
+            <Selections>
+                <Selection>
+                  <SelectionIdentifier>bad</SelectionIdentifier>
+                  <Text>not correct</Text>
+                </Selection>
+                <Selection>
+                  <SelectionIdentifier>good</SelectionIdentifier>
+                  <Text>correct</Text>
+                </Selection>
+            </Selections>
+        </SelectionAnswer>
+    </AnswerSpecification>
+</Question>
+
+
+    <Question>
+    <QuestionIdentifier>Q5</QuestionIdentifier>
+    <DisplayName>Q5</DisplayName>
+    <IsRequired>true</IsRequired>
+    <QuestionContent>
+        <Text> Is the Description for the image correct? </Text>
+        <Text>Description: Fruits and vegetables crates are for sale with price tags with various prices</Text>
+        <Binary>
+          <MimeType>
+            <Type>image</Type>
+            <SubType>jpg</SubType>
+          </MimeType>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000064409.jpg</DataURL>
+        <AltText>Image of the description</AltText>
+        </Binary>
+    </QuestionContent>
+    <AnswerSpecification>
+        <SelectionAnswer>
+            <StyleSuggestion>radiobutton</StyleSuggestion>
+            <Selections>
+                <Selection>
+                  <SelectionIdentifier>bad</SelectionIdentifier>
+                  <Text>not correct</Text>
+                </Selection>
+                <Selection>
+                  <SelectionIdentifier>good</SelectionIdentifier>
+                  <Text>correct</Text>
+                </Selection>
+            </Selections>
+        </SelectionAnswer>
+    </AnswerSpecification>
+</Question>
+
+    <Question>
+    <QuestionIdentifier>Q6</QuestionIdentifier>
+    <DisplayName>Q6</DisplayName>
+    <IsRequired>true</IsRequired>
+    <QuestionContent>
+        <Text> Is the Description for the image correct? </Text>
+        <Text>Description: A red bus and a motorbike ambulancew with license plate LJ5B0FT</Text>
+        <Binary>
+          <MimeType>
+            <Type>image</Type>
+            <SubType>jpg</SubType>
+          </MimeType>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000088931.jpg</DataURL>
+        <AltText>Image of the description</AltText>
+        </Binary>
+    </QuestionContent>
+    <AnswerSpecification>
+        <SelectionAnswer>
+            <StyleSuggestion>radiobutton</StyleSuggestion>
+            <Selections>
+                <Selection>
+                  <SelectionIdentifier>bad</SelectionIdentifier>
+                  <Text>not correct</Text>
+                </Selection>
+                <Selection>
+                  <SelectionIdentifier>good</SelectionIdentifier>
+                  <Text>correct</Text>
+                </Selection>
+            </Selections>
+        </SelectionAnswer>
+    </AnswerSpecification>
+</Question>
+
+</QuestionForm>

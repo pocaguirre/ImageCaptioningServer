@@ -3,8 +3,8 @@ import json
 import xmltodict
 
 # add your aws keys to
-aws_key = json.load(open("keys.json"))
-config = json.load(open("config.json"))
+aws_key = json.load(open("../MTurk/keys.json"))
+config = json.load(open("../MTurk/config.json"))
 HIT = config["HIT"]
 
 if HIT["USE_SANDBOX"]:

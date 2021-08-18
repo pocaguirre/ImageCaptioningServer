@@ -17,6 +17,14 @@
         }
 
     </style>
+    <script>
+$(document).ready(function(){
+    $("#worker_id").change(function(){
+        $( "#start_button" ).prop( "disabled", false );
+    });
+});
+
+    </script>
 </head>
 <body>
     <div class="container text-center">
@@ -50,60 +58,17 @@
               <li class="list-group-item" id="appropriate_instruction"><strong>Correctness.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>correct</strong></em> if the details in description are all relevant to the image, and <em><strong>not correct</strong></em> otherwise. Here <u>do not</u> focus on the length or amount of details of the description.</li>
                 <li class="list-group-item" id="essential_instruction"><strong>Detail Level.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>Essential</strong></em> for descriptions that <em>only</em> describe the <em>most important details</em> of the image, and <strong><em>Comprehensive</em></strong> for descriptions that contain <u>all</u> relevant details of the image.</li>
             </ul>
+        </div>
+        <div class="card mb-5">
             <div class="card-footer">
-                At the end, do not forget to input your MTurk ID and click submit to get your code, thanks!
-            </div>
-        </div>
-        {% for image_obj in images %}
-        <div class="card mb-5 questions">
-            <div class="row g-0">
-                <div class="col-md-5">
-                    <img src="{{ image_obj.image_url }}" class="img-fluid rounded-start" alt="...">
-                    <div class="card-footer">
-                        <h6>Description:</h6>
-                            <blockquote class="blockquote mb-0">
-                              <p>{{ image_obj.description }}</p>
-                            </blockquote>
+                <form action="/get_rating" method="get">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="worker_id_label">MTurk WorkerID:</span>
+                        <input type="text" class="form-control" id="worker_id" aria-describedby="worker_id">
+                        <button class="btn btn-secondary" type="button" id="start_button" disabled>Start</button>
                     </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="card-body pb-0 pt-0 pe-0">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <label for="grammar_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Fluency:</a></strong> How well written is the description?</label>
-                                <table class="my-table">
-                                    <tr>
-                                        <td class="text-start">Bad English</td><td>Many Errors</td><td></td><td>Minor Errors</td><td class="text-end">Good English</td>
-                                    </tr>
-                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="0" max="10" step="1" id="grammar_range_{{ loop.index }}"></td></tr>
-                                </table>
-                            </li>
-                            <li class="list-group-item">
-                                <label for="correctness_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Correctness:</a></strong> How correct is the description?</label>
-                                <table class="my-table">
-                                    <tr>
-                                        <td class="text-start">Not Correct</td><td>Many Wrong Details</td><td></td><td>Few Wrong Details</td><td class="text-end">Correct</td>
-                                    </tr>
-                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="0" max="10" step="1" id="correctness_range_{{ loop.index }}"></td></tr>
-                                </table>
-                            </li>
-                            <li class="list-group-item">
-                                <label for="detail_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Detail Level:</a></strong> Is the description essential or comprehensive?</label>
-                                <table class="my-table">
-                                    <tr>
-                                        <td class="text-start">Essential</td><td>Few Extra Details</td><td></td><td>Few Details Missing</td><td class="text-end">Comprehensive</td>
-                                    </tr>
-                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="0" max="10" step="1" id="detail_range_{{ loop.index }}"></td></tr>
-                                </table>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                </form>
             </div>
-        </div>
-        {% endfor %}
-        <div class="text-center">
-            <button class="btn btn-secondary" type="button" id="submit_button" disabled>Submit</button>
         </div>
     </div>
 </body>
