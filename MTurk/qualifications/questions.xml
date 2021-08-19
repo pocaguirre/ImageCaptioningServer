@@ -45,7 +45,7 @@
             <Type>image</Type>
             <SubType>jpg</SubType>
           </MimeType>
-          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000035567.jpg.jpg</DataURL>
+          <DataURL>https://imagecaptioningicl.azurewebsites.net/static/images/000000035567.jpg</DataURL>
         <AltText>Image of the description</AltText>
         </Binary>
     </QuestionContent>

@@ -9,7 +9,7 @@ import json
 
 rating = Blueprint('rating', __name__)
 # cors = CORS(api)
-
+# it works, need 400 HITs
 
 @rating.route('/rating', methods=['GET'])
 def get_rating_index():
@@ -44,14 +44,20 @@ def submit_rating():
     ratings_object.rating_df.loc[assignment.index, 'worker_id'] = assignment.apply(lambda row: row['worker_id'] + [worker_id], axis=1)
     ps = id_generator()
     ratings_object.rating_df.loc[assignment.index, 'assign_ps'] = assignment.apply(lambda row: row['assign_ps'] + [ps], axis=1)
-
-    # TODO: test the MTurk test
+    ratings_object.save()
     return jsonify({"href": f"/rating_done/{ps}"})
 
 
 @rating.route('/rating_done/<ps>', methods=['GET'])
 def done_rating(ps):
     return render_template("rating_ending.html", survey_code=ps)
+
+
+@rating.route('/rating_results', methods=['GET'])
+def rating_results():
+    global ratings_object
+    return ratings_object.rating_df.to_json(orient='records')
+
 
 def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -60,39 +66,47 @@ def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
 class Ratings():
     def __init__(self):
         rating_id = 0
-        if os.path.isfile("ratings.csv"):
-            self.rating_df = pd.read_csv("ratings.csv")
-        else:
-            rating_df = None
-            df = pd.read_csv("all_data.csv")
-            df = df[['condition', 'imageset', 'image', 'description']]
+        rating_df = None
+        df = pd.read_csv("all_data.csv")
+        df = df[['condition', 'imageset', 'image', 'description']]
+
+        while len(df) > 0:
             for query_string in ["imageset == 'A'", "imageset == 'C'", "imageset == 'B'", "imageset == 'D'"]:
                 temp_df = df.query(query_string)
-                while len(temp_df) > 0:
+                if len(temp_df) > 0:
                     sampled = temp_df.groupby('image').sample(1, random_state=42)
-                    temp_df = temp_df.drop(sampled.index)
+                    df = df.drop(sampled.index)
                     sampled['rating_id'] = [rating_id for _ in range(len(sampled))]
                     rating_id += 1
                     if rating_df is None:
                         rating_df = sampled
                     else:
                         rating_df = pd.concat([rating_df, sampled], ignore_index=True)
-            rating_df['grammar'] = [[] for _ in range(len(rating_df))]
-            rating_df['correctness'] = [[] for _ in range(len(rating_df))]
-            rating_df['detail'] = [[] for _ in range(len(rating_df))]
-            rating_df['worker_id'] = [[] for _ in range(len(rating_df))]
-            rating_df['assign_ps'] = [[] for _ in range(len(rating_df))]
-            self.rating_df = rating_df
-        self.rating_id = 0
+        rating_df['grammar'] = [[] for _ in range(len(rating_df))]
+        rating_df['correctness'] = [[] for _ in range(len(rating_df))]
+        rating_df['detail'] = [[] for _ in range(len(rating_df))]
+        rating_df['worker_id'] = [[] for _ in range(len(rating_df))]
+        rating_df['assign_ps'] = [[] for _ in range(len(rating_df))]
+
+        self.rating_df = rating_df
+        self.rating_id = -1
         self.max_rating = self.rating_df['rating_id'].max()
+        self.max_number_raters = 3
 
     def next(self, worker_id):
-        while worker_id in self.rating_df[self.rating_df['rating_id'] == self.rating_id].iloc[0]['worker_id']:
+        self.rating_id += 1
+        if self.rating_id > self.max_rating:
+            self.rating_id = 0
+        while (worker_id in self.rating_df[self.rating_df['rating_id'] == self.rating_id].iloc[0]['worker_id']) or\
+            (len(self.rating_df[self.rating_df['rating_id'] == self.rating_id].iloc[0]['worker_id']) > 2):
             self.rating_id += 1
             if self.rating_id > self.max_rating:
                 self.rating_id = 0
                 break
         return self.rating_id
+
+    def save(self):
+        self.rating_df.to_csv("ratings.csv", index=False)
 
 
 ratings_object = Ratings()

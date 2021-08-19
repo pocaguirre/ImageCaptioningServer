@@ -1,7 +1,7 @@
 import boto3
 import json
 
-# Qual: 3BWYNRB2GNYE0P5RGXR891F4WDU5J3
+# Qual: 35NJKTSSL4WD2NU54PDPPEUE8AHZXS
 
 questions = open('qualifications/questions.xml', mode='r').read()
 answers = open('qualifications/answers.xml', mode='r').read()
