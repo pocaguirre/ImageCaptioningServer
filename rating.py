@@ -22,7 +22,7 @@ def get_rating():
     print(f"worker id = {worker_id}")
     global rating_df
     rating_id = np.random.randint(0, rating_df['rating_id'].max())
-    while worker_id not in rating_df[rating_df['rating_id'] == rating_id].loc[0, 'worker_id']:
+    while worker_id not in rating_df[rating_df['rating_id'] == int(rating_id)].loc[0, 'worker_id']:
         rating_id = np.random.randint(0, rating_df['rating_id'].max())
     imgs = []
     for i, row in rating_df[rating_df['rating_id'] == rating_id]:
@@ -47,7 +47,7 @@ def set_up():
             while len(temp_df) > 0:
                 sampled = temp_df.groupby('image').sample(1, random_state=42)
                 temp_df = temp_df.drop(sampled.index)
-                sampled['rating_id'] = rating_id
+                sampled['rating_id'] = [rating_id for _ in range(len(sampled))]
                 rating_id += 1
                 if rating_df is None:
                     rating_df = sampled
