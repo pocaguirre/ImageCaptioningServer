@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Rating</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://assets.ctl.io/chi/1.0.0/chi.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        .my-table {
+            min-width: 100%;
+            table-layout: fixed;
+        }
+        .my-table td{
+            width: 20%;
+        }
+
+    </style>
+    <script>
+        function myFunction() {
+          /* Get the text field */
+          var copyText = document.getElementById("myInput");
+
+          /* Select the text field */
+          copyText.select();
+          copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+           /* Copy the text inside the text field */
+          navigator.clipboard.writeText(copyText.value);
+          var popover = new bootstrap.Popover(document.querySelector('.btn'));
+        }
+    </script>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Rating Image Descriptions</h1>
+        <div class="card mb-5">
+            <div class="card-title h3">Thank You</div>
+            <div class="card-body text-center">
+                You have completed the HIT. Copy the survey code and submit the HIT on the Mechanical Turk tab.
+            </div>
+            <div class="card-footer ">
+                <div class="text-center">
+                    <!-- The text field -->
+                    <input type="text" value="{{ survey_code }}" id="myInput" readonly>
+
+                    <!-- The button used to copy the text -->
+                    <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Copied!" onclick="myFunction()">
+                      Copy text
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -17,6 +17,8 @@
         }
 
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.0/dist/js.cookie.min.js" integrity="sha256-pUYbeWfQ0TisH2PabhAZLCzI8qGOJop0mEWjbJBcZLQ=" crossorigin="anonymous"></script>
+    <script src="/static/js/ratings.js"></script>
 </head>
 <body>
     <div class="container text-center">
@@ -50,20 +52,23 @@
               <li class="list-group-item" id="appropriate_instruction"><strong>Correctness.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>correct</strong></em> if the details in description are all relevant to the image, and <em><strong>not correct</strong></em> otherwise. Here <u>do not</u> focus on the length or amount of details of the description.</li>
                 <li class="list-group-item" id="essential_instruction"><strong>Detail Level.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>Essential</strong></em> for descriptions that <em>only</em> describe the <em>most important details</em> of the image, and <strong><em>Comprehensive</em></strong> for descriptions that contain <u>all</u> relevant details of the image.</li>
             </ul>
+            <div class="card-footer">
+                Remember to answer to all the slider questions!
+            </div>
         </div>
         {% for image_obj in images %}
         <div class="card mb-5 questions">
             <div class="row g-0">
                 <div class="col-md-5">
                     <img src="{{ image_obj.image_url }}" class="img-fluid rounded-start" alt="...">
-                    <div class="card-footer">
+                </div>
+                <div class="col-md-7">
+                    <div class="card-header">
                         <h6>Description:</h6>
                             <blockquote class="blockquote mb-0">
                               <p>{{ image_obj.description }}</p>
                             </blockquote>
                     </div>
-                </div>
-                <div class="col-md-7">
                     <div class="card-body pb-0 pt-0 pe-0">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
