@@ -22,7 +22,7 @@ def get_rating():
     print(f"worker id = {worker_id}")
     global rating_df
     rating_id = np.random.randint(0, rating_df['rating_id'].max())
-    while worker_id not in rating_df[rating_df['rating_id'] == int(rating_id)].loc[0, 'worker_id']:
+    while worker_id not in rating_df[rating_df['rating_id'] == int(rating_id)][0]['worker_id']:
         rating_id = np.random.randint(0, rating_df['rating_id'].max())
     imgs = []
     for i, row in rating_df[rating_df['rating_id'] == rating_id]:
