@@ -136,3 +136,4 @@ dmypy.json
 
 # Protected files
 MTurk/keys.json
+ratings.csv

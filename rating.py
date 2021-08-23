@@ -1,15 +1,13 @@
 from flask import Blueprint, jsonify, request, current_app, render_template, make_response
-from flask_cors import CORS, cross_origin
 import string
 import random
-import os.path
 import pandas as pd
 import numpy as np
 import json
 
 rating = Blueprint('rating', __name__)
-# cors = CORS(api)
 # it works, need 400 HITs
+
 
 @rating.route('/rating', methods=['GET'])
 def get_rating_index():
@@ -19,11 +17,10 @@ def get_rating_index():
 @rating.route('/get_rating', methods=['GET'])
 def get_rating():
     worker_id = request.args.get('worker_id', default=None)
-    print(f"worker id = {worker_id}")
-    global ratings_object
-    rating_id = ratings_object.next(worker_id)
+    current_app.logger.info(f"worker id = {worker_id}")
+    rating_id = current_app.config['rating_eng'].next(worker_id)
     imgs = []
-    for i, row in ratings_object.rating_df[ratings_object.rating_df['rating_id'] == rating_id].iterrows():
+    for i, row in current_app.config['rating_eng'].rating_df[current_app.config['rating_eng'].rating_df['rating_id'] == rating_id].iterrows():
         imgs.append({'image_url': row['image'], 'description': row['description']})
     resp = make_response(render_template("rating.html", images=imgs))
     resp.set_cookie('worker_id', str(worker_id))
@@ -33,18 +30,17 @@ def get_rating():
 
 @rating.route('/rating_submit', methods=['POST'])
 def submit_rating():
-    global ratings_object
     worker_id = request.form['worker_id']
     rating_id = int(request.form['rating_id'])
     answers = json.loads(request.form['data'])
-    assignment = ratings_object.rating_df[ratings_object.rating_df['rating_id'] == rating_id]
+    assignment = current_app.config['rating_eng'].rating_df[current_app.config['rating_eng'].rating_df['rating_id'] == rating_id]
     for k, v in answers.items():
         parts = k.split("_")
-        ratings_object.rating_df.iloc[assignment.index[int(parts[2]) - 1]][parts[0]].append(v)
-    ratings_object.rating_df.loc[assignment.index, 'worker_id'] = assignment.apply(lambda row: row['worker_id'] + [worker_id], axis=1)
+        current_app.config['rating_eng'].rating_df.iloc[assignment.index[int(parts[2]) - 1]][parts[0]].append(v)
+    current_app.config['rating_eng'].rating_df.loc[assignment.index, 'worker_id'] = assignment.apply(lambda row: row['worker_id'] + [worker_id], axis=1)
     ps = id_generator()
-    ratings_object.rating_df.loc[assignment.index, 'assign_ps'] = assignment.apply(lambda row: row['assign_ps'] + [ps], axis=1)
-    ratings_object.save()
+    current_app.config['rating_eng'].rating_df.loc[assignment.index, 'assign_ps'] = assignment.apply(lambda row: row['assign_ps'] + [ps], axis=1)
+    current_app.config['rating_eng'].save()
     return jsonify({"href": f"/rating_done/{ps}"})
 
 
@@ -55,8 +51,14 @@ def done_rating(ps):
 
 @rating.route('/rating_results', methods=['GET'])
 def rating_results():
-    global ratings_object
-    return ratings_object.rating_df.to_json(orient='records')
+    return current_app.config['rating_eng'].rating_df.to_json(orient='records')
+
+
+@rating.route('/rating_reset', methods=['GET'])
+def rating_reset():
+    current_app.config['rating_eng'] = Ratings()
+    current_app.logger.info("RESETTING ENGINE")
+    return "done"
 
 
 def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
@@ -107,6 +109,3 @@ class Ratings():
 
     def save(self):
         self.rating_df.to_csv("ratings.csv", index=False)
-
-
-ratings_object = Ratings()

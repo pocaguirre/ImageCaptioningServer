@@ -5,11 +5,13 @@ from rating import rating
 from helper import make_cookie, check_new_user, make_new_user, get_assignment
 import logging
 from flask_cors import CORS, cross_origin
+from rating import Ratings
 
 app = Flask(__name__, static_folder='UserInterface/static', template_folder='UserInterface/static/tasks')
 cors = CORS(app)
 logging.basicConfig(level=logging.DEBUG)
 app.config['engine'] = Tasks()
+app.config['rating_eng'] = Ratings()
 app.config['MTURK_LINKS'] = {
     "mturk": "https://worker.mturk.com/mturk/preview?groupId=",
     "sandbox": "https://workersandbox.mturk.com/mturk/preview?groupId=",
