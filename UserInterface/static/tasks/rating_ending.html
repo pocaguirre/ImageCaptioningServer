@@ -26,9 +26,6 @@
           copyText.select();
           copyText.setSelectionRange(0, 99999); /* For mobile devices */
 
-           /* Copy the text inside the text field */
-          navigator.clipboard.writeText(copyText.value);
-          var popover = new bootstrap.Popover(document.querySelector('.btn'));
         }
     </script>
 </head>
@@ -44,11 +41,6 @@
                 <div class="text-center">
                     <!-- The text field -->
                     <input type="text" value="{{ survey_code }}" id="myInput" readonly>
-
-                    <!-- The button used to copy the text -->
-                    <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Copied!" onclick="myFunction()">
-                      Copy text
-                    </button>
                 </div>
             </div>
         </div>

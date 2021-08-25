@@ -9,6 +9,11 @@ rating = Blueprint('rating', __name__)
 # it works, need 400 HITs
 
 
+def quick_save(worker_id, code, assign_id, answers):
+    with open("UserInterface/static/logs.txt", 'a') as f:
+        f.write(f"{worker_id}\t{code}\t{assign_id}\t{json.dumps(answers)}\n")
+
+
 @rating.route('/rating', methods=['GET'])
 def get_rating_index():
     return render_template("rating_index.html")
@@ -39,6 +44,7 @@ def submit_rating():
         current_app.config['rating_eng'].rating_df.iloc[assignment.index[int(parts[2]) - 1]][parts[0]].append(v)
     current_app.config['rating_eng'].rating_df.loc[assignment.index, 'worker_id'] = assignment.apply(lambda row: row['worker_id'] + [worker_id], axis=1)
     ps = id_generator()
+    quick_save(worker_id, ps, rating_id, answers)
     current_app.config['rating_eng'].rating_df.loc[assignment.index, 'assign_ps'] = assignment.apply(lambda row: row['assign_ps'] + [ps], axis=1)
     current_app.config['rating_eng'].save()
     return jsonify({"href": f"/rating_done/{ps}"})
@@ -61,7 +67,7 @@ def rating_reset():
     return "done"
 
 
-def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
+def id_generator(size=18, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 

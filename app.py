@@ -12,6 +12,7 @@ cors = CORS(app)
 logging.basicConfig(level=logging.DEBUG)
 app.config['engine'] = Tasks()
 app.config['rating_eng'] = Ratings()
+app.config['static_folder'] = 'UserInterface/static'
 app.config['MTURK_LINKS'] = {
     "mturk": "https://worker.mturk.com/mturk/preview?groupId=",
     "sandbox": "https://workersandbox.mturk.com/mturk/preview?groupId=",

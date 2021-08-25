@@ -39,11 +39,11 @@
     <QuestionIdentifier>Q4</QuestionIdentifier>
     <AnswerOption>
       <SelectionIdentifier>bad</SelectionIdentifier>
-      <AnswerScore>0</AnswerScore>
+      <AnswerScore>1</AnswerScore>
     </AnswerOption>
     <AnswerOption>
       <SelectionIdentifier>good</SelectionIdentifier>
-      <AnswerScore>1</AnswerScore>
+      <AnswerScore>0</AnswerScore>
     </AnswerOption>
   </Question>
 

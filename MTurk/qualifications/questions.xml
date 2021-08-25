@@ -5,7 +5,7 @@
     <DisplayName>Q1</DisplayName>
     <IsRequired>true</IsRequired>
     <QuestionContent>
-        <Text> Is the Description for the image correct? </Text>
+        <Text>Rate "correct" if the details in description are all relevant to the image, and "not correct" otherwise. Here do not focus on the length or amount of details of the description, but only on whether the details provided in the description are correct.</Text>
         <Text>Description: Two girls wearing blue skirts hold their phones.</Text>
         <Binary>
           <MimeType>
@@ -38,7 +38,7 @@
     <DisplayName>Q2</DisplayName>
     <IsRequired>true</IsRequired>
     <QuestionContent>
-        <Text> Is the Description for the image correct? </Text>
+        <Text>Rate "correct" if the details in description are all relevant to the image, and "not correct" otherwise. Here do not focus on the length or amount of details of the description, but only on whether the details provided in the description are correct.</Text>
         <Text>Description: A person placed a bunch of bananas on a woman’s head in a kitchen</Text>
         <Binary>
           <MimeType>
@@ -71,8 +71,8 @@
     <DisplayName>Q3</DisplayName>
     <IsRequired>true</IsRequired>
     <QuestionContent>
-        <Text> Is the Description for the image correct? </Text>
-        <Text>Description: Glazed doughnuts are placed on the table for sale.</Text>
+        <Text>Rate "correct" if the details in description are all relevant to the image, and "not correct" otherwise. Here do not focus on the length or amount of details of the description, but only on whether the details provided in the description are correct.</Text>
+        <Text>Description: Doughnuts are placed on the table for sale.</Text>
         <Binary>
           <MimeType>
             <Type>image</Type>
@@ -104,8 +104,8 @@
     <DisplayName>Q4</DisplayName>
     <IsRequired>true</IsRequired>
     <QuestionContent>
-        <Text> Is the Description for the image correct? </Text>
-        <Text>Description: Two brown cows are standing inside a shallow river near a bridge.</Text>
+        <Text>Rate "correct" if the details in description are all relevant to the image, and "not correct" otherwise. Here do not focus on the length or amount of details of the description, but only on whether the details provided in the description are correct.</Text>
+        <Text>Description: Two dogs are standing inside a shallow river near a bridge.</Text>
         <Binary>
           <MimeType>
             <Type>image</Type>
@@ -138,7 +138,7 @@
     <DisplayName>Q5</DisplayName>
     <IsRequired>true</IsRequired>
     <QuestionContent>
-        <Text> Is the Description for the image correct? </Text>
+        <Text>Rate "correct" if the details in description are all relevant to the image, and "not correct" otherwise. Here do not focus on the length or amount of details of the description, but only on whether the details provided in the description are correct.</Text>
         <Text>Description: Fruits and vegetables crates are for sale with price tags with various prices</Text>
         <Binary>
           <MimeType>
@@ -171,7 +171,7 @@
     <DisplayName>Q6</DisplayName>
     <IsRequired>true</IsRequired>
     <QuestionContent>
-        <Text> Is the Description for the image correct? </Text>
+        <Text>Rate "correct" if the details in description are all relevant to the image, and "not correct" otherwise. Here do not focus on the length or amount of details of the description, but only on whether the details provided in the description are correct.</Text>
         <Text>Description: A red bus and a motorbike ambulancew with license plate LJ5B0FT</Text>
         <Binary>
           <MimeType>
