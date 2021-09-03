@@ -14,6 +14,11 @@ def quick_save(worker_id, code, assign_id, answers):
         f.write(f"{worker_id}\t{code}\t{assign_id}\t{json.dumps(answers)}\n")
 
 
+def sample_save(answers):
+    with open("UserInterface/static/sample_answers.txt", 'a') as f:
+        f.write(f"{json.dumps(answers)}\n")
+
+
 @rating.route('/rating', methods=['GET'])
 def get_rating_index():
     return render_template("rating_index.html")
@@ -65,6 +70,26 @@ def rating_reset():
     current_app.config['rating_eng'] = Ratings()
     current_app.logger.info("RESETTING ENGINE")
     return "done"
+
+
+
+@rating.route("/special/rating", methods=['GET'])
+def get_special_rating():
+    sample_ratings = pd.read_csv('/Users/caguirre/developer/HCI/ImageCaptioning/data/experiment/description_sample.csv')
+    sample_ratings = sample_ratings.to_dict('records')
+    return render_template("special_rating.html", images=sample_ratings)
+
+
+@rating.route('/special/rating_submit', methods=['POST'])
+def submit_special_rating():
+    answers = json.loads(request.form['data'])
+    sample_save(answers)
+    return jsonify({"href": f"/special/rating_done"})
+
+
+@rating.route("/special/rating_done", methods=['GET'])
+def done_special_rating():
+    return render_template("special_rating_done.html")
 
 
 def id_generator(size=18, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
