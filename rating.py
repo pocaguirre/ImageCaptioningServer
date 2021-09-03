@@ -75,7 +75,7 @@ def rating_reset():
 
 @rating.route("/special/rating", methods=['GET'])
 def get_special_rating():
-    sample_ratings = pd.read_csv('/Users/caguirre/developer/HCI/ImageCaptioning/data/experiment/description_sample.csv')
+    sample_ratings = pd.read_csv('description_sample.csv')
     sample_ratings = sample_ratings.to_dict('records')
     return render_template("special_rating.html", images=sample_ratings)
 
