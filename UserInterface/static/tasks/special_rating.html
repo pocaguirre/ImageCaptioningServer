@@ -50,7 +50,7 @@
             <ul class="list-group text-start">
               <li class="list-group-item" id="grammar_instruction"><strong>Fluency.</strong> Focusing on <u>description text only</u>, rate the fluency, both grammar and word choice, of the description. Please take into account spelling errors, bad grammar and awkward word usage.</li>
               <li class="list-group-item" id="appropriate_instruction"><strong>Correctness.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>correct</strong></em> if the details mentioned in description are correct based on the image, and <em><strong>not correct</strong></em> otherwise. Here <u>do not</u> focus on the length or amount of details of the description.</li>
-                <li class="list-group-item" id="essential_instruction"><strong>Detail Level.</strong> Focusing on <u>description text only</u>, rate <em><strong>Concise</strong></em> for captions that communicate descriptions with few details, and <strong><em>thorough</em></strong> for captions that communicate descriptions with thorough details</li>
+                <li class="list-group-item" id="essential_instruction"><strong>Detail Level.</strong> Focusing on <u>description text only</u>, rate <em><strong>Concise</strong></em> for captions that communicate descriptions with few details, and <strong><em>descriptive</em></strong> for very detailed captions.</li>
             </ul>
             <div class="card-body">
                 <a class="btn btn-info" data-bs-toggle="collapse" href="#instructionExamples" role="button" aria-expanded="false" aria-controls="instructionExamplesAria">
@@ -101,7 +101,7 @@
                                 <label for="detail_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Detail Level:</a></strong> Is the description concise or thorough?</label>
                                 <table class="my-table">
                                     <tr>
-                                        <td class="text-start">Concise</td><td></td><td>Neutral</td><td></td><td class="text-end">Thorough</td>
+                                        <td class="text-start">Concise</td><td></td><td>Neutral</td><td></td><td class="text-end">Descriptive</td>
                                     </tr>
                                     <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="detail_range_{{ loop.index }}"></td></tr>
                                 </table>
