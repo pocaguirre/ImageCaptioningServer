@@ -1,37 +1,37 @@
 condition,imageset,image,description,image_id,type
-comprehensive,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000006780.jpg,A group of people are playing a sports game.,000000006780,events
-time,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000007069.jpg,a man keeping a yellow thing on his hand and wearing glass,000000007069,people
-essential,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000003080.jpg,A large analog clock sits on top of a building column in front of a tall office building with a lot windows.,000000003080,things
-comprehensive,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000007069.jpg,A man in a cap is holding a throwing disc in front of a sign.,000000007069,people
-comprehensive,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000012109.jpg,A small red car parked in front of a parking meter.,000000012109,things
-control,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000003080.jpg,A freestanding clock sits outside of a large office building.,000000003080,things
-essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,A woman playing tennis in a professional aspect. ,000000016308,people
-time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,"Serena Williams is on the tennis court, with onlookers in the stands right behind her. ",000000016308,people
-control,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000002142.jpg,A man sits on a park bench feeding a large group of pigeons surrounding him.,000000002142,people
-essential,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000002142.jpg,"An older Asian man is sitting on a wooden park bench.  He is wearing a white hat with a red ""B"" on it and a black leather jacket.  He is feeding a large group of pigeons who have gathered around him.",000000002142,people
-time,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000003080.jpg,a modern clock tower that has a metal face is in front of a multi-level building,000000003080,things
-time,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000006780.jpg,one girl on the ground others are playing,000000006780,events
-control,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000001053.jpg,a cycling boys playing in road in the morning,000000001053,events
-control,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000006780.jpg,A young woman is on the ground holding a white frisbee in the middle of an ultimate frisbee game.,000000006780,events
-control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A red motorcycle sits on the side of a road at the White Mountain National Forest.,000000005213,things
-essential,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000001053.jpg,Five cyclists riding across the street at a traffic light,000000001053,events
-time,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000002142.jpg,An old man is sitting on a bench smiling and feeding pigeons.,000000002142,people
-essential,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000007069.jpg,A man holds a frisbee in front of a disc golf marker.,000000007069,people
-comprehensive,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000003080.jpg,A clock place in front of the building in height.,000000003080,things
-comprehensive,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000001053.jpg,A group of 5 cyclists crossing a street closed by a red light.,000000001053,events
-time,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000001053.jpg,People riding bikes around in a parking lot .,000000001053,events
-essential,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000006780.jpg,A woman is lying on the floor with a frisbee as other players run up to her.,000000006780,events
-comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000011494.jpg,"People on top of double decker bus waving, with LGBTQ+ sign and rainbow flag. ",000000011494,events
-comprehensive,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000002142.jpg,An old man feed the food to the number of Doves.,000000002142,people
-time,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000012109.jpg,A smart car sitting at a charging station.,000000012109,things
-control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,A woman holds a tennis racket in front of a large crowd on a grass court.,000000016308,people
+essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000009172.jpg,A clock sitting in front of an bridge. ,000000009172,things
 essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000011494.jpg,A group of elderly people riding on a bus with a pride flag.,000000011494,events
-control,D,https://imagecaptioningicl.azurewebsites.net/static/images/000000007069.jpg,A man is outdoors holding a yellow frisbee while standing in front of a sign on a wooden post.,000000007069,people
-comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A stationary motorcycles next to a sign of White Mountain National Forest. ,000000005213,things
 control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000011494.jpg,"A bunch of people are on a double decker bus that has a pride flag on the side, while people watch them on the street.",000000011494,events
-time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000011494.jpg,A red double decker bus with lots of people on it display a huge gay pride flag. ,000000011494,events
-comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,A woman tennis player on a tennis court as spectators watch. ,000000016308,people
-time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A motorcycle without a driver is parked on an empty country road and on the right side is lots of vegetation and trees. ,000000005213,things
+comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000009172.jpg,An empty street sidewalk with a clock that says Elliott City and a bridge in the background. ,000000009172,things
+comprehensive,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000000049.jpg,Two horse riders riding on the black and white horse.,000000000049,events
+control,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000000049.jpg,Two uniformed riders pull up on their horses in the middle of an equestrian course.,000000000049,events
+control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A red motorcycle sits on the side of a road at the White Mountain National Forest.,000000005213,things
+time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000009172.jpg,"The setting close to an old highway overpass, with an old clock on the left side. ",000000009172,things
+control,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000011034.jpg,a father and his child playing video games,000000011034,people
 control,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000012109.jpg,a nano car in the road on people showing,000000012109,things
-essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A motorcycle pulled over by a national forest sign.,000000005213,things
+comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,A woman tennis player on a tennis court as spectators watch. ,000000016308,people
+comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000004975.jpg,"People dressed in graduation robes, two hold umbrellas and one smiles at the camera. ",000000004975,people
+time,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000007524.jpg,A police officer stopped in front of a horse and its rider.,000000007524,events
 essential,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000012109.jpg,A small red car parked in front of a parking meter on the street,000000012109,things
+control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,A woman holds a tennis racket in front of a large crowd on a grass court.,000000016308,people
+comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A stationary motorcycles next to a sign of White Mountain National Forest. ,000000005213,things
+comprehensive,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000011034.jpg,A kid and an adult holding racing wheels and playing games while sitting on a sofa.,000000011034,people
+time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,"Serena Williams is on the tennis court, with onlookers in the stands right behind her. ",000000016308,people
+control,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000007524.jpg,a girl horse raid on the road in public,000000007524,events
+comprehensive,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000011494.jpg,"People on top of double decker bus waving, with LGBTQ+ sign and rainbow flag. ",000000011494,events
+essential,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000000049.jpg,Two men wearing blue and white costumes with large hats are riding horses in a park.  Both horses are standing on their hind legs.  One of the horses is black and the other horse is white.,000000000049,events
+essential,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000011034.jpg,A man and a boy playing a video game in the living room,000000011034,people
+time,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000012109.jpg,A smart car sitting at a charging station.,000000012109,things
+control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000009172.jpg,An old fashioned pillar with a clock on it sits on the sidewalk.,000000009172,things
+essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000016308.jpg,A woman playing tennis in a professional aspect. ,000000016308,people
+time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A motorcycle without a driver is parked on an empty country road and on the right side is lots of vegetation and trees. ,000000005213,things
+control,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000004975.jpg,A woman under an umbrella in a robe smiles next to other people in robes.,000000004975,people
+time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000004975.jpg,"A group of elderly and middle aged university faculty members are gathered together in cap and gown, in a graduation ceremony. ",000000004975,people
+essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000005213.jpg,A motorcycle pulled over by a national forest sign.,000000005213,things
+essential,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000004975.jpg,A women smiling holding an umbrella at a graduation. ,000000004975,people
+time,C,https://imagecaptioningicl.azurewebsites.net/static/images/000000011494.jpg,A red double decker bus with lots of people on it display a huge gay pride flag. ,000000011494,events
+time,A,https://imagecaptioningicl.azurewebsites.net/static/images/000000000049.jpg,Two people are on horseback with the horses' front legs in the air.,000000000049,events
+comprehensive,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000012109.jpg,A small red car parked in front of a parking meter.,000000012109,things
+essential,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000007524.jpg,A horseback cop and a motorcycle cop talking in the middle of the streeet,000000007524,events
+time,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000011034.jpg,A man sitting down and playing games with a boy sitting down.,000000011034,people
+comprehensive,B,https://imagecaptioningicl.azurewebsites.net/static/images/000000007524.jpg,"A girl riding a horse talking to a pollice officer in a bike, near a large group of people, some of them with bicyles.",000000007524,events
