@@ -69,7 +69,7 @@ class Ratings():
     def next(self):
         self.rating_id += 10
         if self.rating_id > self.max_rating:
-            self.rating_id = 10
+            return self.rating_df[self.rating_df['correctness'].isna()].iloc[:10]
         return self.rating_df[self.rating_id - 10: self.rating_id]
 
     def save_answer(self, worker_id, fname, lname, answers):
