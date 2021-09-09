@@ -17,32 +17,13 @@
         }
 
     </style>
-    <script>
-        function myFunction() {
-          /* Get the text field */
-          var copyText = document.getElementById("myInput");
-
-          /* Select the text field */
-          copyText.select();
-          copyText.setSelectionRange(0, 99999); /* For mobile devices */
-
-        }
-    </script>
 </head>
 <body>
     <div class="container text-center">
         <h1>Rating Image Descriptions</h1>
         <div class="card mb-5">
-            <div class="card-title h3">Thank You</div>
-            <div class="card-body text-center">
-                You have completed the HIT. Copy the survey code and submit the HIT on the Mechanical Turk tab.
-            </div>
-            <div class="card-footer ">
-                <div class="text-center">
-                    <!-- The text field -->
-                    <input type="text" value="{{ survey_code }}" id="myInput" readonly>
-                </div>
-            </div>
+            <div class="card-title h3">Thank You!</div>
+            <a href="/rating" class="btn btn-primary btn-lg" tabindex="-1" role="button">Do More!</a>
         </div>
     </div>
 </body>

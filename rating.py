@@ -14,50 +14,26 @@ def quick_save(worker_id, code, assign_id, answers):
         f.write(f"{worker_id}\t{code}\t{assign_id}\t{json.dumps(answers)}\n")
 
 
-def sample_save(answers):
-    with open("UserInterface/static/sample_answers.txt", 'a') as f:
-        f.write(f"{json.dumps(answers)}\n")
-
-
 @rating.route('/rating', methods=['GET'])
 def get_rating_index():
-    return render_template("rating_index.html")
-
-
-@rating.route('/get_rating', methods=['GET'])
-def get_rating():
-    worker_id = request.args.get('worker_id', default=None)
-    current_app.logger.info(f"worker id = {worker_id}")
-    rating_id = current_app.config['rating_eng'].next(worker_id)
-    imgs = []
-    for i, row in current_app.config['rating_eng'].rating_df[current_app.config['rating_eng'].rating_df['rating_id'] == rating_id].iterrows():
-        imgs.append({'image_url': row['image'], 'description': row['description']})
-    resp = make_response(render_template("rating.html", images=imgs))
-    resp.set_cookie('worker_id', str(worker_id))
-    resp.set_cookie("rating_id", str(rating_id))
-    return resp
+    sample_ratings = current_app.config['rating_eng'].next()
+    sample_ratings = sample_ratings.to_dict(orient='index')
+    return render_template("special_rating.html", images=sample_ratings)
 
 
 @rating.route('/rating_submit', methods=['POST'])
 def submit_rating():
-    worker_id = request.form['worker_id']
-    rating_id = int(request.form['rating_id'])
+    worker_id = request.form['email']
+    fname = request.form['first_name']
+    lname = request.form['last_name']
     answers = json.loads(request.form['data'])
-    assignment = current_app.config['rating_eng'].rating_df[current_app.config['rating_eng'].rating_df['rating_id'] == rating_id]
-    for k, v in answers.items():
-        parts = k.split("_")
-        current_app.config['rating_eng'].rating_df.iloc[assignment.index[int(parts[2]) - 1]][parts[0]].append(v)
-    current_app.config['rating_eng'].rating_df.loc[assignment.index, 'worker_id'] = assignment.apply(lambda row: row['worker_id'] + [worker_id], axis=1)
-    ps = id_generator()
-    quick_save(worker_id, ps, rating_id, answers)
-    current_app.config['rating_eng'].rating_df.loc[assignment.index, 'assign_ps'] = assignment.apply(lambda row: row['assign_ps'] + [ps], axis=1)
-    current_app.config['rating_eng'].save()
-    return jsonify({"href": f"/rating_done/{ps}"})
+    current_app.config['rating_eng'].save_answer(worker_id, fname, lname, answers)
+    return jsonify({"href": f"/rating_done"})
 
 
-@rating.route('/rating_done/<ps>', methods=['GET'])
-def done_rating(ps):
-    return render_template("rating_ending.html", survey_code=ps)
+@rating.route('/rating_done', methods=['GET'])
+def done_rating():
+    return render_template("rating_ending.html")
 
 
 @rating.route('/rating_results', methods=['GET'])
@@ -72,71 +48,35 @@ def rating_reset():
     return "done"
 
 
-
-@rating.route("/special/rating", methods=['GET'])
-def get_special_rating():
-    sample_ratings = pd.read_csv('description_sample.csv')
-    sample_ratings = sample_ratings.to_dict('records')
-    return render_template("special_rating.html", images=sample_ratings)
-
-
-@rating.route('/special/rating_submit', methods=['POST'])
-def submit_special_rating():
-    answers = json.loads(request.form['data'])
-    sample_save(answers)
-    return jsonify({"href": f"/special/rating_done"})
-
-
-@rating.route("/special/rating_done", methods=['GET'])
-def done_special_rating():
-    return render_template("special_rating_done.html")
-
-
 def id_generator(size=18, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
 class Ratings():
     def __init__(self):
-        rating_id = 0
-        rating_df = None
         df = pd.read_csv("all_data.csv")
         df = df[['condition', 'imageset', 'image', 'description']]
-
-        while len(df) > 0:
-            for query_string in ["imageset == 'A'", "imageset == 'C'", "imageset == 'B'", "imageset == 'D'"]:
-                temp_df = df.query(query_string)
-                if len(temp_df) > 0:
-                    sampled = temp_df.groupby('image').sample(1, random_state=42)
-                    df = df.drop(sampled.index)
-                    sampled['rating_id'] = [rating_id for _ in range(len(sampled))]
-                    rating_id += 1
-                    if rating_df is None:
-                        rating_df = sampled
-                    else:
-                        rating_df = pd.concat([rating_df, sampled], ignore_index=True)
-        rating_df['grammar'] = [[] for _ in range(len(rating_df))]
-        rating_df['correctness'] = [[] for _ in range(len(rating_df))]
-        rating_df['detail'] = [[] for _ in range(len(rating_df))]
-        rating_df['worker_id'] = [[] for _ in range(len(rating_df))]
-        rating_df['assign_ps'] = [[] for _ in range(len(rating_df))]
+        rating_df = pd.concat([df.sample(frac=1).reset_index(), df.sample(frac=1).reset_index()], axis=0, ignore_index=True)
+        rating_df['grammar'] = np.nan
+        rating_df['correctness'] = np.nan
+        rating_df['detail'] = np.nan
+        rating_df['email'] = np.nan
 
         self.rating_df = rating_df
-        self.rating_id = -1
-        self.max_rating = self.rating_df['rating_id'].max()
-        self.max_number_raters = 3
+        self.rating_id = 0
+        self.max_rating = len(self.rating_df)
 
-    def next(self, worker_id):
-        self.rating_id += 1
+    def next(self):
+        self.rating_id += 10
         if self.rating_id > self.max_rating:
-            self.rating_id = 0
-        while (worker_id in self.rating_df[self.rating_df['rating_id'] == self.rating_id].iloc[0]['worker_id']) or\
-            (len(self.rating_df[self.rating_df['rating_id'] == self.rating_id].iloc[0]['worker_id']) > 2):
-            self.rating_id += 1
-            if self.rating_id > self.max_rating:
-                self.rating_id = 0
-                break
-        return self.rating_id
+            self.rating_id = 10
+        return self.rating_df[self.rating_id - 10: self.rating_id]
+
+    def save_answer(self, worker_id, fname, lname, answers):
+        for key, val in answers.items():
+            parts = key.split("_")
+            self.rating_df.loc[int(parts[2]), parts[0]] = val
+            self.rating_df.loc[int(parts[2]), "email"] = worker_id
 
     def save(self):
-        self.rating_df.to_csv("ratings.csv", index=False)
+        self.rating_df.to_csv("UserInterface/static/ratings.csv", index=False)

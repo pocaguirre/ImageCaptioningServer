@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Image Rating</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://assets.ctl.io/chi/1.0.0/chi.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         .my-table {
             min-width: 100%;
@@ -47,9 +49,9 @@
                 There are 36 images and descriptions, we ask that you rate them based on:
             </div>
             <ul class="list-group text-start">
-              <li class="list-group-item" id="grammar_instruction"><strong>Fluency.</strong> Focusing on <u>description text only</u>, rate the fluency, both grammar and word choice, of the description. Please take into account spelling errors, bad grammar and awkward word usage.</li>
-              <li class="list-group-item" id="appropriate_instruction"><strong>Correctness.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>correct</strong></em> if the details mentioned in description are correct based on the image, and <em><strong>not correct</strong></em> otherwise. Here <u>do not</u> focus on the length or amount of details of the description.</li>
-                <li class="list-group-item" id="essential_instruction"><strong>Detail Level.</strong> Focusing on <u>description text only</u>, rate <em><strong>Concise</strong></em> for captions that communicate descriptions with few details, and <strong><em>descriptive</em></strong> for very detailed captions.</li>
+                <li class="list-group-item" id="grammar_instruction"><strong>Fluency.</strong> Focusing on <u>description text only</u>, rate the fluency, both grammar and word choice, of the description. Please take into account spelling errors, bad grammar and awkward word usage.</li>
+                <li class="list-group-item" id="appropriate_instruction"><strong>Correctness.</strong> Focusing on <u>both the description and the image</u>, rate <em><strong>correct</strong></em> if the details mentioned in description are correct based on the image, and <em><strong>not correct</strong></em> otherwise. Here <u>do not</u> focus on the length or whether there are missing details.</li>
+                <li class="list-group-item" id="essential_instruction"><strong>Number of Details.</strong> Focusing on <u>description text only</u>, rate <em><strong>Concise</strong></em> for captions with few details, and <strong><em>descriptive</em></strong> for very detailed captions.</li>
             </ul>
             <div class="card-body">
                 <a class="btn btn-info" data-bs-toggle="collapse" href="#instructionExamples" role="button" aria-expanded="false" aria-controls="instructionExamplesAria">
@@ -63,7 +65,7 @@
                 Remember to answer to all the slider questions!
             </div>
         </div>
-        {% for image_obj in images %}
+        {% for idx, image_obj in images.items() %}
         <div class="card mb-5 questions">
             <div class="row g-0">
                 <div class="col-md-5">
@@ -79,30 +81,30 @@
                     <div class="card-body pb-0 pt-0 pe-0">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <label for="grammar_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Fluency:</a></strong> How well written is the description?</label>
+                                <label for="grammar_range_{{ idx }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Fluency:</a></strong> How well written is the description?</label>
                                 <table class="my-table">
                                     <tr>
                                         <td class="text-start">Bad English</td><td>Many Errors</td><td></td><td>Mostly Good</td><td class="text-end">Good English</td>
                                     </tr>
-                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="grammar_range_{{ loop.index }}"></td></tr>
+                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="grammar_range_{{ idx }}"></td></tr>
                                 </table>
                             </li>
                             <li class="list-group-item">
-                                <label for="correctness_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Correctness:</a></strong> Is what is said correct?</label>
+                                <label for="correctness_range_{{ idx }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Correctness:</a></strong> Is what is said right?</label>
                                 <table class="my-table">
                                     <tr>
                                         <td class="text-start">Not Correct</td><td>Mostly Incorrect</td><td></td><td>Mostly Correct</td><td class="text-end">Correct</td>
                                     </tr>
-                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="correctness_range_{{ loop.index }}"></td></tr>
+                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="correctness_range_{{ idx }}"></td></tr>
                                 </table>
                             </li>
                             <li class="list-group-item">
-                                <label for="detail_range_{{ loop.index }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Detail Level:</a></strong> Is the description concise or thorough?</label>
+                                <label for="detail_range_{{ idx }}" class="form-label"><strong>Rate <a href="#grammar_instruction">Number of Details:</a></strong> How many details are there?</label>
                                 <table class="my-table">
                                     <tr>
                                         <td class="text-start">Concise</td><td></td><td>Neutral</td><td></td><td class="text-end">Descriptive</td>
                                     </tr>
-                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="detail_range_{{ loop.index }}"></td></tr>
+                                    <tr><td colspan="5"><input type="range" class="form-range form-control" min="1" max="100" step="1" id="detail_range_{{ idx }}"></td></tr>
                                 </table>
                             </li>
                         </ul>
@@ -111,9 +113,29 @@
             </div>
         </div>
         {% endfor %}
-        <div class="text-center">
+        <form id="info-form" class="text-center">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="firstname" class="form-label">First name</label>
+                    <input type="text" class="form-control" id="firstname" required>
+                </div>
+                <div class="col-md-9">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="lastname" class="form-label">Last name</label>
+                    <input type="text" class="form-control" id="lastname"  required>
+                </div>
+                <div class="col-md-9">
+                    <label for="emailConfirm" class="form-label">Confirm Email address</label>
+                    <input type="email" class="form-control" id="emailConfirm" placeholder="name@example.com">
+                </div>
+            </div>
             <button class="btn btn-secondary" type="button" id="submit_button">Submit</button>
-        </div>
+        </form>
     </div>
 </body>
 </html>
