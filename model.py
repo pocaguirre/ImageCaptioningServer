@@ -7,7 +7,7 @@ from typing import List, Dict
 IMAGE_SET_CSV = "image_sets.csv"
 
 # CONSTANTS
-ROOT = "https://imagecaptioningicl.azurewebsites.net/"
+ROOT = "/"
 STATIC_ROOT = f"{ROOT}static/"
 LIMIT = True
 current_counts = json.load(open("current_counts.json"))

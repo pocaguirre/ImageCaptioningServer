@@ -26,7 +26,7 @@ $(window).load(function(){
         }
         });
     dialog_modal.hide();
-    $.post( "https://imagecaptioningicl.azurewebsites.net/get_task", { workerID: workerID,
+    $.post( "/get_task", { workerID: workerID,
                                                                         assignID: assignID}, function( data ) {
         // Set Images
         var im_urls = data.images;
@@ -106,7 +106,7 @@ function addDialog(){
 function submit_function(){
     $("#ans").val(JSON.stringify(getAnswers()));
     var link_to_next;
-    $.post('https://imagecaptioningicl.azurewebsites.net/submit_data',
+    $.post('/submit_data',
         {
             answer: $('#ans').val(),
             assignmentID: assignID,
