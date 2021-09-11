@@ -77,6 +77,7 @@ class Ratings():
             parts = key.split("_")
             self.rating_df.loc[int(parts[2]), parts[0]] = val
             self.rating_df.loc[int(parts[2]), "email"] = worker_id
+        self.save()
 
     def save(self):
         self.rating_df.to_csv("UserInterface/static/ratings.csv", index=False)
