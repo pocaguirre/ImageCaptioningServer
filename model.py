@@ -14,7 +14,6 @@ current_counts = json.load(open("current_counts.json"))
 current_max = 7
 
 
-# TODO: save demographics per assignment (in case workers change answers)
 
 
 def get_image_sets() -> dict:

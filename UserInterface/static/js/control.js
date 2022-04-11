@@ -1,3 +1,11 @@
+// ============================================================================
+// create question set and state to go through the questions
+// ============================================================================
+var worker_obj = new Object();
+var state = -1;
+jQuery.support.cors = true;
+var questions = new Array();
+
 var start_time = new Date().getTime();
 
 // ============================================================================
@@ -12,6 +20,8 @@ function initialize_images(im_urls){
         q.ans = '';
         q.done = false;
         q.time = 0;
+        q.start_time = 0;
+        q.end_time = 0;
         // TODO: add fields for identifying images here
         questions.push(q);
     }
@@ -130,8 +140,10 @@ function check_correct(ans){
         // store user input
         q.ans = ans;
         // Save time
-        q.time += new Date().getTime() - start_time;
+        rn = new Date().getTime();
+        q.time += rn - start_time;
         q.done = true;
+        q.end_time = rn;
         return true;
     }
 }
@@ -183,22 +195,28 @@ function render_question(idx){
     $('#description').css('width', 480);
     $('#description').css('height', 150);
     $('#description').val(q.ans);
-    start_time = new Date().getTime();
+    rn = new Date().getTime();
+    start_time = rn;
+    q.start_time = rn;
 }
 
 function render_im(im){
-    im.height = im.height * 480 / im.width
-    im.width = 480;
+    im.width = im.width * $(window).height() * .8 / im.height;
+    im.height = $(window).height() * .8;
+    // im.height = im.height * 480 / im.width
+    // im.width = 480;
     var c = $('#canvas')[0]
-    if (im.width > im.height){
-        c.width =  480;
-        c.height = im.height * 480 / im.width;
-    }else{
-        c.height = 360;
-        c.width = im.width * 360 / im.height
+    c.width = im.width;
+    c.height = im.height;
+    if (im.width > $(window).width() * .47){
+        // c.width =  $(window).width() * .5;
+        // c.height = im.height * $(window).width() * .5 / im.width;
+        c.height = im.height * $(window).width() * .47 / im.width
+        c.width = $(window).width() * .47;
     }
     var ctx=c.getContext("2d");
     ctx.drawImage(im, 0, 0, c.width, c.height);
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function update_header_buttons(activeIdx){
@@ -270,6 +288,8 @@ function getAnswers(){
             description: questions[i].ans,
             im_url: questions[i].im.src,
             im_time: questions[i].time,
+            im_start_time: questions[i].start_time,
+            im_end_time: questions[i].end_time
         });
     }
     return answers;

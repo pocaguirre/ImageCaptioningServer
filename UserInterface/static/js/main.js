@@ -1,20 +1,7 @@
-// ============================================================================
-// create question set and state to go through the questions
-// ============================================================================
-var questions = new Array();
-var worker_obj = new Object();
-var state = -1;
-jQuery.support.cors = true;
+// TODO: set workerID to email.  Get images based on email.
 
 $(window).load(function(){
-    if (mturk === 'sandbox' || mturk === 'mturk') {
-        addDialog();
-        workerID = turkGetParam("workerId");
-        assignID = turkGetParam("assignmentId");
-    }
     let dialog_modal = $("#dialog-modal" );
-    worker_obj.id = workerID
-    worker_obj.assignmentID = assignID
     dialog_modal.dialog({
           autoOpen: false,
           height: 250,
@@ -26,57 +13,29 @@ $(window).load(function(){
         }
         });
     dialog_modal.hide();
-    $.post( "/get_task", { workerID: workerID,
-                                                                        assignID: assignID}, function( data ) {
-        // Set Images
-        var im_urls = data.images;
-        // Set HTML
-        $( "#main-body" ).load( data.html, function(){
-           // Import JS and execute
-            $.getScript( data.js, function() {
-                function check_completed() {
-                    let empty_input = false;
-                    // CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
-                    if (
-                        $("[name='age-input']").val() === "" ||
-                        $("[name='education-radio']:checked").length === 0 ||
-                        $("[name='glasses-radio']:checked").length === 0 ||
-                        $("[name='colorblind-radio']:checked").length === 0
-                    ){
-                        empty_input = true;
-                    }
-                    if(Cookies.get('demographics_finished') === "True"){
-                        empty_input = false;
-                    }
-                    if (empty_input === false){
-                        // CHECK INSTRUCTIONS ARE CLICKED
-                        check_all_checks();
-                    }
-                }
-
-                render_header_button(im_urls);
-                initialize_images(im_urls);
-                $('#next').on('click', function(){next();});
-                $('#prev').on('click', function(){prev();});
-                $("#start-btn").on('click', function (){
-                    worker_obj['age-input'] = $("[name='age-input']").val();
-                    worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
-                    worker_obj["glasses-radio"] = $("[name='glasses-radio']:checked").val();
-                    worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
-                    start();
-                })
-                $("#submitButton").on('click', function (){submit_function();});
-                var els = document.getElementsByClassName('instruction-check');
-                for (var i = 0; i < els.length; i++) {
-                    els[i].onclick = check_completed;
-                }
-                $('#demographics-form input').on("click", check_completed);
-            });
-            if (mturk === 'sandbox' || mturk === 'mturk') {
-                turkSetAssignmentID();
-            }
-        });
-    }, "json");
+    
+    $("#start-btn").on('click', function (){
+        worker_obj['email-input'] = $("[name='email-input']").val();
+        worker_obj['age-input'] = $("[name='age-input']").val();
+        worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
+        worker_obj["glasses-radio"] = $("[name='glasses-radio']:checked").val();
+        worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
+        $.post( "/inperson/get_images", { workerID: worker_obj['email-input']}, function( images ) {
+            // Set Images
+            var im_urls = images;
+            render_header_button(im_urls);
+            initialize_images(im_urls);
+            $('#next').on('click', function(){next();});
+            $('#prev').on('click', function(){prev();});
+            start();
+        }, "json");
+    })
+    $("#submitButton").on('click', function (){submit_function();});
+    var els = document.getElementsByClassName('instruction-check');
+    for (var i = 0; i < els.length; i++) {
+        els[i].onclick = check_completed;
+    }
+    $('#demographics-form input').on("click", check_completed);
 })
 
 // ===========================================================
@@ -105,57 +64,78 @@ function addDialog(){
 
 function submit_function(){
     $("#ans").val(JSON.stringify(getAnswers()));
-    var link_to_next;
-    $.post('/submit_data',
+    $.post('/inperson/submit',
         {
             answer: $('#ans').val(),
-            assignmentID: assignID,
-            workerID: workerID,
-            mturk: mturk,
-            demographics: JSON.stringify(worker_obj),
-            difficulty: $("[name='difficulty_radio']:checked").val(),
-            length: $("[name='length_radio']:checked").val(),
-            comments: $('#final_comments').val()
+            workerID: worker_obj['email-input'],
+            condition: condition,
+            assignmentID: assignmentID,
+            demographics: JSON.stringify(worker_obj)
         },
         function(data) {
-            link_to_next = data.link;
-            Cookies.set('demographics_finished', 'True');
-            if (mturk === 'sandbox' || mturk === 'mturk') {
-                $("#mturk_form").submit(); // Submit the form
+            if (data.success === true){
+                success_dialog();
             } else {
-                Cookies.set('assignment_finished', 'True');
-                let dialog_task = $("#dialog-task");
-                if (link_to_next === "done") {
-                    dialog_task.dialog({
-                        autoOpen: false,
-                        height: 250,
-                        buttons: {
-                            'YOU ARE DONE!': function() {
-                                $(this).dialog("close");
-                                $(this).text("");
-                            }
-                        }
-                    });
-                } else {
-                    dialog_task.dialog({
-                        autoOpen: false,
-                        height: 250,
-                        buttons: {
-                            'Next HIT': function() {
-                                $(this).dialog("close");
-                                $(this).text("");
-                                window.location.href = link_to_next;
-                            }
-                        }
-                    });
-                }
-                dialog_task.text("Thank you for completing this HIT");
-                dialog_task.dialog('open');
+                error_dialog();
             }
         }, "json"
     );
 }
 
+// ===========================================================
+// RUN DIALOG
+// ===========================================================
+function success_dialog(){
+    let dialog_task = $("#dialog-task");
+    dialog_task.dialog({
+        autoOpen: false,
+        height: 250,
+        buttons: {
+            "SUCCESS!": function() {
+                $(this).dialog("close");
+                $(this).text("");
+            }
+        }
+    });
+    dialog_task.text("Thank you for completing this HIT");
+    dialog_task.dialog('open');
+}
+
+function error_dialog(){
+    let dialog_task = $("#dialog-error");
+    dialog_task.dialog({
+        autoOpen: false,
+        height: 250,
+        buttons: {
+            "ERROR!": function() {
+                $(this).dialog("close");
+                $(this).text("");
+            }
+        }
+    });
+    dialog_task.text("There was an unexpected error. Please submit again");
+    dialog_task.dialog('open');
+}
+
+// ===========================================================
+// CHECK DEMOGRAPHIC FORM INPUTS ARE FILLED
+// ===========================================================
+function check_completed() {
+    let empty_input = true;
+    if (
+        $("[name='email-input']").val() !== "" &&
+        $("[name='age-input']").val() !== "" &&
+        $("[name='education-radio']:checked").length !== 0 &&
+        $("[name='glasses-radio']:checked").length !== 0 &&
+        $("[name='colorblind-radio']:checked").length !== 0
+    ){
+        empty_input = false;
+    }
+    if (empty_input === false){
+        // CHECK INSTRUCTIONS ARE CLICKED
+        check_all_checks();
+    }
+}
 
 // ===========================================================
 // disable cut and paste on input text

@@ -13,11 +13,13 @@
         <script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
         {% block header %}
         {% endblock %}
-        <link rel="stylesheet" href="https://imagecaptioningicl.azurewebsites.net/static/css/data.css">
+        <script type='text/javascript' src='/static/js/main.js'></script>
+        <link rel="stylesheet" href="/static/css/data.css">
     </head>
     <body>
         <div id="dialog-modal" title="Message"></div>
-        <div id="dialog-confirm" title="Save the Result?"></div>
+        <div id="dialog-task" title="Thank You"></div>
+        <div id="dialog-error" title="Error"></div>
         <div id="welcome-alert">
             <div class="text-center">
                 <p class="small">Click on button for more details</p>
@@ -56,15 +58,20 @@
                         </div>
                         <div class="col-4 callout callout-warning">
                             <h4>We ask you to:</h4>
-                            <p>carefully review images and then describe the image as per the instructions.</p>
+                            <p>Carefully review images and then describe the image as per the instructions.</p>
                         </div>
                     </div>
                     <p class="small">IMPORTANT: Please do not refresh the webpage once you have started working, as you will lose all your progress, and have to start at the beginning.</p>
-                    <hr>
                     {% block instructions %}
                         {% if demographics == true %}
                         <form style="display:inline-block;vertical-align:top;font-size:12pt;text-align:left;" id="demographics-form">
-                            <p class="lead">Before starting, please answer the following demographic questions. Your answers will not affect your eligibility for the study.</p>
+                            <p class="lead">Before starting, please answer the following questions. Your answers will not affect your eligibility for the study.</p>
+                            <div id="email-question">
+                                <div class="input-group center-block">
+                                    <label class="question-text" for="email-input"><strong>Email:</strong></label>
+                                    <input class="input-control" type="email" id="email-input" name="email-input" required>
+                                </div>
+                            </div>
                             <div id="age-question">
                                 <div class="input-group center-block">
                                     <label class="question-text" for="age-input"><strong>What is your age?</strong></label>
@@ -73,7 +80,7 @@
                             </div>
                             <div id="education-question">
                                 <p class="question-text"><strong>What is the highest degree or level of education you have completed?</strong></p>
-                                <table class="table table-borderless centered-table">
+                                <table class="table table-borderless left-table">
                                     <tbody>
                                         <tr>
                                             <td>
@@ -152,7 +159,6 @@
                             </div>
                         </form>
                         {% endif %}
-                        <hr>
                     {% endblock %}
                 </div>
                 <div id="finish" hidden>

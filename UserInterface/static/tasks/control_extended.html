@@ -1,6 +1,13 @@
 {% extends "interaction_parent.html" %}
-{% block head %}
-    <script type='text/javascript' src='https://imagecaptioningicl.azurewebsites.net/static/js/control.js'></script>
+{% block header %}
+    <script type="text/javascript">
+        function myFunc(vars) {
+            return vars
+        }
+        var condition = myFunc({{ condition|tojson }});
+        var assignmentID = myFunc({{ assignmentID|tojson }});
+    </script>
+    <script type='text/javascript' src='/static/js/control.js'></script>
 {% endblock %}
 
 {% block images %}
@@ -32,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row pt-3">
         <div class="col-12 text-center">
             <div class='state-button' style='text-align:;display:inline-block'>
                 <input type='button' id='prev' value='prev'>

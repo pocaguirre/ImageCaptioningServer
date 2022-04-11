@@ -1,4 +1,13 @@
-STATIC_ROOT = "https://imagecaptioningicl.azurewebsites.net/static";
+STATIC_ROOT = "/static";
+
+// ============================================================================
+// create question set and state to go through the questions
+// ============================================================================
+var worker_obj = new Object();
+var state = -1;
+jQuery.support.cors = true;
+var questions = new Array();
+
 var start_time = new Date().getTime();
 
 // change im_urls to your images
@@ -9,6 +18,12 @@ instruction_im.src = instruction_im_path;
 // ============================================================================
 // initialize images
 // ============================================================================
+$(window).load(function() {
+    $("#see-image").on("click", function(){see_image_btn();});
+    $("#see-image-instruction").on("click", function(){see_image_instruction_btn();});
+})
+
+
 function initialize_images(im_urls) {
     for (i = 0; i < im_urls.length; i++) {
         var im = new Image();
@@ -19,11 +34,10 @@ function initialize_images(im_urls) {
         q.done = false;
         q.seen = false;
         q.time = 0;
-        // TODO: add fields for identifying images here
+        q.start_time = 0;
+        q.end_time = 0;
         questions.push(q);
     }
-    $("#see-image").on("click", function(){see_image_btn();});
-    $("#see-image-instruction").on("click", function(){see_image_instruction_btn();});
 }
 
 // ================================================================
@@ -217,7 +231,11 @@ function see_image_btn(){
           q = questions[state];
           q.seen = true;
           render_im(q.im);
-          setTimeout(() => {  clear_im(); }, 500);
+          q.start_time = new Date().getTime();
+          setTimeout(() => {  
+              clear_im();
+              q.end_time = new Date().getTime();
+            }, 500);
       }
     }).start();
 }
@@ -251,18 +269,22 @@ function clear_im(canvas="#canvas"){
 }
 
 function render_im(im, canvas="#canvas"){
-    im.height = im.height * 480 / im.width;
-    im.width = 480;
-    var c = $(canvas)[0];
-    if (im.width > im.height){
-        c.width =  480;
-        c.height = im.height * 480 / im.width;
-    }else{
-        c.height = 360;
-        c.width = im.width * 360 / im.height
+    im.width = im.width * $(window).height() * .8 / im.height;
+    im.height = $(window).height() * .8;
+    // im.height = im.height * 480 / im.width
+    // im.width = 480;
+    var c = $(canvas)[0]
+    c.width = im.width;
+    c.height = im.height;
+    if (im.width > $(window).width() * .47){
+        // c.width =  $(window).width() * .5;
+        // c.height = im.height * $(window).width() * .5 / im.width;
+        c.height = im.height * $(window).width() * .47 / im.width
+        c.width = $(window).width() * .47;
     }
     var ctx=c.getContext("2d");
     ctx.drawImage(im, 0, 0, c.width, c.height);
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 
@@ -334,7 +356,9 @@ function getAnswers(){
         answers.push({
             description: questions[i].ans,
             im_url: questions[i].im.src,
-            im_time: questions[i].time
+            im_time: questions[i].time,
+            im_start_time: questions[i].start_time,
+            im_end_time: questions[i].end_time
         });
     }
     return answers;

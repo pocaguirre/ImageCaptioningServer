@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template, make_response
 from model import Tasks, IMAGE_SETS
 from api import api
 from rating import rating
+from inperson import inperson
 from helper import make_cookie, check_new_user, make_new_user, get_assignment
 import logging
 from flask_cors import CORS, cross_origin
@@ -21,7 +22,9 @@ app.config['MTURK_LINKS'] = {
 
 app.register_blueprint(api)
 app.register_blueprint(rating)
+app.register_blueprint(inperson)
 
+# TODO: create backend engine for this task, maybe use a database. time thing in JS code in frontend. test with a database.
 
 @app.route('/', methods=['GET'])
 def hello_world():
