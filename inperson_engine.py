@@ -1,12 +1,8 @@
-import sqlalchemy
-from sqlalchemy import Column, ForeignKey, Integer, String, select, inspect
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import Session
+import pygsheets
 import pandas as pd
 import json
 
 IMAGE_SET_CSV = "inperson_image_sets.csv"
-Base = declarative_base()
 
 
 def get_image_sets() -> dict:
@@ -21,36 +17,6 @@ def get_image_sets() -> dict:
         assert len(images) == 6, "CSV not fell formatted"
     return image_set_dict
 
-class User(Base):
-    __tablename__ = 'user'
-    user_id = Column(String(50), primary_key=True)
-    age = Column(String(50))
-    education = Column(String(50))
-    glasses = Column(String(50))
-    colorblind = Column(String(50))
-
-    def __repr__(self):
-        return f"<User(id='{self.user_id}')>"
-
-class Assignment(Base):
-    __tablename__ = 'assignment'
-    assignment_id = Column(Integer, primary_key=True)
-    user_id = Column(String(50), ForeignKey('user.user_id'))
-    condition = Column(String(50))
-
-    def __repr__(self):
-        return f"<Assignment(id='{self.assignment_id}', condition='{self.condition}', worker='{self.user_id}')>"
-
-class Answer(Base):
-    __tablename__ = 'answer'
-    assignment_id = Column(Integer, ForeignKey('assignment.assignment_id'), primary_key=True)
-    im_url =  Column(String(50), primary_key=True)
-    description = Column(String(50))
-    im_time = Column(Integer)
-    im_start_time = Column(Integer)
-    im_end_time = Column(Integer)
-    def __repr__(self):
-        return f"<Answer(assignment='{self.assignment_id}', im_url='{self.im_url}')>"
 
 class InPersonEngine:
     """
@@ -61,60 +27,34 @@ class InPersonEngine:
     - workers: contains the workers.
     - ratings: contains the ratings of the workers.
     """
-    def __init__(self, debug=False):
-        self.debug = debug
-        self.db_name = "inperson.sql"
+    def __init__(self):
+        self.gc = pygsheets.authorize(service_file="double-time-210719-da46da0509cb.json")
+        self.sh = self.gc.open_by_url("https://docs.google.com/spreadsheets/d/1xoE0Po9UotHxL8UFG6A1VaK5BHizyd92qV8GUAzFgfc/edit?usp=sharing")
         self.image_sets = get_image_sets()
-        self.engine = self.create_engine()
-        self.create_tables()
-        self.table_names = {
-            'user': User,
-            'assignment': Assignment,
-            'answer': Answer
-        }
-
-    def create_engine(self):
-        """
-        Creates a SQL engine.
-        """
-        engine = sqlalchemy.create_engine(f"sqlite:///{self.db_name}")
-        return engine
-
-    def create_tables(self):
-        """
-        Creates the tables in the database.
-        add IF NOT EXISTS later
-        """
-        if self.debug:
-            with Session(self.engine) as con:
-                # Drop all tables
-                con.execute("DROP TABLE IF EXISTS user")
-                con.execute("DROP TABLE IF EXISTS assignment")
-                con.execute("DROP TABLE IF EXISTS answer")
-        Base.metadata.create_all(self.engine)
-        return
+        self.get_worksheets()
     
+    def get_worksheets(self):
+        self.user_wks = self.sh.worksheet('title','user')
+        self.assignmet_wks = self.sh.worksheet('title','assignment')
+        self.images_wks = self.sh.worksheet('title','image')
+        self.calibrations_wks = self.sh.worksheet('title', 'calibration')
+
     def check_worker_id(self, worker_id):
         """
         Checks if a worker_id is in the database.
+        Returns True if worker is already in database
         """
-        if inspect(self.engine).has_table('user'):
-            with Session(self.engine) as con:
-                stmt = select(User.user_id).where(User.user_id == worker_id)
-                result = con.execute(stmt).scalars().all()
-            return len(result) > 0
-        return False
+        user_df = self.user_wks.get_as_df()
+        return worker_id in user_df.user_id.values
     
     def check_worker_assignment(self, worker_id, assignment_id):
         """
         Checks if a worker has already completed a task.
+        Returns True if assignment and Worker are already in database
         """
-        if inspect(self.engine).has_table('assignment'):
-            with Session(self.engine) as con:
-                stmt = select(Assignment.assignment_id).where(Assignment.assignment_id == assignment_id and Assignment.user_id == worker_id)
-                result = con.execute(stmt).scalars().all()
-            return len(result) > 0
-        return False
+        assignment_df = self.assignmet_wks.get_as_df()
+        return len(assignment_df[(assignment_df.assignment_id == assignment_id)&(assignment_df.user_id == worker_id)]) > 0
+
     
     def get_images(self, worker_id):
         """
@@ -125,42 +65,46 @@ class InPersonEngine:
         else:
             return self.image_sets['B']
     
-    def save_data(self, worker_id, assignment_id, condition, answer, demographics):
+    def save_data(self, worker_id, assignment_id, condition, answer, demographics, calibrations):
         """
         Saves the data of a worker.
         """
         if self.check_worker_assignment(worker_id, assignment_id):
             return False
         else:
-            with Session(self.engine) as con:
-                things = []
-                things.append(Assignment(assignment_id=assignment_id, user_id=worker_id, condition=condition))
-                if not self.check_worker_id(worker_id):
-                    demographics_obj = json.loads(demographics)
-                    things.append(User(user_id=worker_id, 
-                                        age=demographics_obj['age-input'], 
-                                        education=demographics_obj['education-radio'], 
-                                        glasses=demographics_obj['glasses-radio'], 
-                                        colorblind=demographics_obj['colorblind-radio']))
-                answer_obj = json.loads(answer)
-                for answer in answer_obj:
-                    things.append(Answer(assignment_id=assignment_id, 
-                                        im_url=answer['im_url'], 
-                                        description=answer['description'], 
-                                        im_time=answer['im_time'],
-                                        im_start_time=answer['im_start_time'],
-                                        im_end_time=answer['im_end_time']))
-                con.add_all(things)
-                con.commit()
+            assignment = [assignment_id, worker_id, condition]
+            self.append_to_table(self.assignmet_wks, assignment)
+            if not self.check_worker_id(worker_id):
+                demographics_obj = json.loads(demographics)
+                user = [worker_id, demographics_obj['age-input'], demographics_obj['education-radio'], demographics_obj['glasses-radio'], demographics_obj['colorblind-radio']]
+                self.append_to_table(self.user_wks, user)
+            answer_obj = json.loads(answer)
+            answers = []
+            for answer in answer_obj:
+                answers.append([
+                    assignment_id, 
+                    answer['im_url'], 
+                    answer['description'], 
+                    answer['im_time'], 
+                    answer['im_start_time'], 
+                    answer['im_end_time'],
+                    answer['im_width'],
+                    answer['im_height']
+                    ])
+            self.append_to_table(self.images_wks, answers, len(answer_obj))
+            cal_obj = json.loads(calibrations)
+            cals = []
+            for i, cal in enumerate(cal_obj):
+                cals.append([
+                    assignment_id,
+                    i + 1,
+                    cal['start'],
+                    cal['end']
+                ])
+            self.append_to_table(self.calibrations_wks, cals, len(cals))
             return True
-        
-    def dump_table(self, table):
-        """
-        Dumps the contents of a table.
-        """
-        with Session(self.engine) as con:
-            stmt = select(self.table_names[table])
-            result = con.execute(stmt).scalars().all()
-        result = [vars(r) for r in result]
-        _ = [r.pop('_sa_instance_state') for r in result]
-        return result
+
+    def append_to_table(self, wks, values, nv=1):
+        cells = wks.get_all_values(include_tailing_empty_rows=False, include_tailing_empty=False, returnas='matrix')
+        last_row = len(cells)
+        wks.insert_rows(last_row, number=nv, values=values)

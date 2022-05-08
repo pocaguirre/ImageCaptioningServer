@@ -6,3 +6,4 @@ flask_cors
 numpy
 pandas
 sqlalchemy
+pygsheets

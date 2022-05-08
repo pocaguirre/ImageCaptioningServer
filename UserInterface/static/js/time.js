@@ -5,10 +5,13 @@ STATIC_ROOT = "/static";
 // ============================================================================
 var worker_obj = new Object();
 var state = -1;
+var current_question = 0
 jQuery.support.cors = true;
 var questions = new Array();
+var calibrations = new Array();
 
 var start_time = new Date().getTime();
+var WINDOW_WIDTH = $(window).width();
 
 // change im_urls to your images
 let instruction_im_path = STATIC_ROOT + "/images/dog.jpg";
@@ -44,86 +47,73 @@ function initialize_images(im_urls) {
 // function to control next and previous question
 // ===============================================================
 function next(){
-    let ans = $('#description').val();
-    if (ans.length > 0){
-        if (!check_correct(ans)){
+    if (state === -1) {
+        // Was calibrating, start q 0
+        state += 1;
+        render_question(current_question); // cq = 0
+        update_header_buttons(state);
+    }
+    else if (state === 0 || state === 1) {
+        // Was q 0 or 1, start q 1 or 2
+        let ans = $('#description').val();
+        if (!check_correct(ans, state)){
             return -1;
         }
-    }
-    if (state < questions.length - 1){
         state += 1;
-        render_question(state);
+        current_question += 1;
+        render_question(current_question);// cq = 1 || 2
+        update_header_buttons(state);
+    }    
+    else if (state === 2) {
+        // Was q 2, start calibrating
+        let ans = $('#description').val();
+        if (!check_correct(ans, state)){
+            return -1;
+        }
+        state += 1
+        $("#circles").prop('hidden', false);
+        $("#images").prop('hidden', true);
+        $("#instructions").prop('hidden', true);
+        $("#finish").prop('hidden', true);
+        update_header_buttons(state); // cq = 2
+    }
+    else if (state === 3){
+        // Was calibrating, start q 3
+        current_question += 1
+        state += 1;
+        render_question(current_question); // cq = 3
+        update_header_buttons(state);
+    }
+    else if ( state == 4 || state == 5){
+        // was q 3 or 4, start q 4 or 5
+        let ans = $('#description').val();
+        if (!check_correct(ans, state - 1)){
+            return -1;
+        }
+        state += 1;
+        current_question += 1;
+        render_question(current_question); // cq = 4 || 5
         update_header_buttons(state);
     }else{
+        let ans = $('#description').val();
+        if (!check_correct(ans, state - 1)){
+            return -1;
+        }
+        // was last question, am I done?
         if (!finish()){
             return -1;
         }
     }
 }
 
-function prev(){
-    let ans = $('#description').val();
-    if (ans.length > 0){
-        if (!check_correct(ans)){
-            return -1;
-        }
-    }
-    if (state > 0){
-        state -= 1;
-        render_question(state);
-    } else if (state === 0){
-        state -= 1;
-    }
-    update_header_buttons(state);
-}
-
-function update(event){
-    var button = event.currentTarget;
-    if (button.disabled){
-        return -1;
-    }
-
-    if (0 <= state && state < questions.length) {
-        let ans = $('#description').val();
-        if (ans.length > 0){
-            if (!check_correct(ans)){
-                return -1;
-            }
-        }
-    }
-
-    var id = button.id;
-    if (id === "inst"){
-        state = -1
-        $("#images").prop('hidden', true);
-        $("#instructions").prop('hidden', false);
-        $("#finish").prop('hidden', true);
-    } else if (id === "fin"){
-        $("#images").prop('hidden', true);
-        $("#instructions").prop('hidden', true);
-        $("#finish").prop('hidden', false);
-    } else {
-        $("#images").prop('hidden', false);
-        $("#instructions").prop('hidden', true);
-        $("#finish").prop('hidden', true);
-        state = parseInt(id[id.length - 1]) -1;
-        render_question(state);
-    }
-    update_header_buttons(state);
-}
 
 function start(){
-    state = 0;
-    $("#images").prop('hidden', false);
+    state = -1;
+    $("#circles").prop('hidden', false);
+    $("#images").prop('hidden', true);
     $("#instructions").prop('hidden', true);
     $("#finish").prop('hidden', true);
-    render_question(state);
     update_header_buttons(state);
-    $( ".header-btn" ).each(function( index ) {
-        if (index !== 0 && index !== questions.length + 1) {
-            $(this).prop("disabled", false);
-        }
-    });
 }
 
 function finish(){
@@ -141,7 +131,7 @@ function finish(){
     $("#dialog-confirm" ).dialog('open');
 }
 
-function check_correct(ans){
+function check_correct(ans, local_state){
     if (ans.split(/\s+/).length < 8){
         render_dialog(7);
         return false;
@@ -149,7 +139,7 @@ function check_correct(ans){
         render_dialog(1);
         return false;
     } else {
-        var q = questions[state];
+        var q = questions[local_state];
         // store user input
         q.ans = ans;
         // Save time
@@ -164,7 +154,7 @@ function check_new_answer(new_answer, descriptions){
     var desc = [];
     loop1:
     for(var i = 0; i < descriptions.length; i+=1){
-        if(i === state){continue loop1;}
+        if(i === current_question){continue loop1;}
         desc = descriptions[i].ans.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
         if(new_answer.length !== desc.length){continue loop1;}
         loop2:
@@ -180,20 +170,49 @@ function check_all_checks(){
         $("#start-btn").prop("disabled", false);
     }
 }
+
+
+// ===============================================================
+// CALIBRATION
+// ==============================================================
+
+function start_calibration(){
+    cal_start = new Date().getTime();
+    $("#circle").prop('hidden', false);
+    $("#main-body").prop('hidden', true);
+    $("#circles-instructions").prop('hidden', true)
+    setTimeout(function(){
+        cal_end = new Date().getTime();
+        calibrations.push({
+            start: cal_start,
+            end: cal_end
+        })
+        $("#main-body").prop('hidden', false);
+        $("#circles-instructions").prop('hidden', false)
+        $("#circle").prop('hidden', true);
+        $("#circles").prop('hidden', true);
+        $("#images").prop('hidden', false);
+        $("#instructions").prop('hidden', true);
+        $("#finish").prop('hidden', true);
+        next();
+      }, 3000);
+}
+
+
 // ===============================================================
 // rendering question, image, and dialog
 // ==============================================================
 function render_header_button(im_urls){
-    $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-info">Instructions</button>`);
-    for (var i=1; i <= im_urls.length; i++){
+    $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-outline-secondary" disabled>Instructions</button>`);
+    $( "#button-header-group" ).append(`<button type="button" id="calibrate-1" class="header-btn btn btn-outline-secondary" disabled>Calibration 1</button>`);
+    for (var i=1; i <= 3; i++){
+        $( "#button-header-group" ).append(`<button type="button" id="image-${i}" class="header-btn btn btn-outline-secondary" disabled>Image ${i}</button>`);
+    }
+    $( "#button-header-group" ).append(`<button type="button" id="calibrate-2" class="header-btn btn btn-outline-secondary" disabled>Calibration 2</button>`);
+    for (var i=4; i <= 6; i++){
         $( "#button-header-group" ).append(`<button type="button" id="image-${i}" class="header-btn btn btn-outline-secondary" disabled>Image ${i}</button>`);
     }
     $( "#button-header-group" ).append(`<button type="button" id="fin" class="header-btn btn btn-outline-secondary" disabled>Finish</button>`);
-    $(".header-btn").on('click', function(event){
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        update(event);
-    });
 }
 
 function render_question(idx){
@@ -215,7 +234,8 @@ function render_question(idx){
 
 function see_image_btn(){
     $("#see-image-div").prop('hidden', true);
-    let countdown = $("#countdown")
+    let countdown = $("#countdown");
+    $("#countdown-bbox").prop('hidden', false);
     countdown.prop('hidden', false);
     countdown.countdown360({
       radius      : 60.5,
@@ -228,12 +248,15 @@ function see_image_btn(){
       autostart: false,
       onComplete  : function () {
           $("#countdown").prop('hidden', true);
-          q = questions[state];
+          $("#countdown-bbox").prop('hidden', true);
+          $("#canvas-bbox").prop('hidden', false);
+          q = questions[current_question];
           q.seen = true;
           render_im(q.im);
           q.start_time = new Date().getTime();
           setTimeout(() => {  
               clear_im();
+              $("#canvas-bbox").prop('hidden', true);
               q.end_time = new Date().getTime();
             }, 500);
       }
@@ -276,11 +299,13 @@ function render_im(im, canvas="#canvas"){
     var c = $(canvas)[0]
     c.width = im.width;
     c.height = im.height;
-    if (im.width > $(window).width() * .47){
+    if (im.width > WINDOW_WIDTH * .47){
         // c.width =  $(window).width() * .5;
         // c.height = im.height * $(window).width() * .5 / im.width;
-        c.height = im.height * $(window).width() * .47 / im.width
-        c.width = $(window).width() * .47;
+        c.height = im.height * WINDOW_WIDTH * .47 / im.width
+        c.width = WINDOW_WIDTH * .47;
+        im.height = c.height;
+        im.width = c.width;
     }
     var ctx=c.getContext("2d");
     ctx.drawImage(im, 0, 0, c.width, c.height);
@@ -290,32 +315,11 @@ function render_im(im, canvas="#canvas"){
 
 function update_header_buttons(activeIdx){
     $( ".header-btn" ).each(function( index ) {
-        let cl;
-        if (index === 0) {
-            $(this).removeClass("btn-info").addClass("btn-outline-info");
-            if (index === activeIdx + 1){
-                $(this).removeClass("btn-outline-info").addClass("btn-info");
-            }
-        } else if (index > questions.length){
-            $(this).removeClass("btn-success").addClass("btn-outline-secondary");
-            if (index === activeIdx + 1){
-                $(this).removeClass("btn-outline-secondary").addClass("btn-success");
-            }
-        } else {
-            $(this).removeClass("btn-secondary btn-outline-secondary btn-success btn-outline-success");
-            if (index === activeIdx + 1){
-                if ( index - 1 < questions.length && questions[index - 1].done){
-                    $(this).addClass("btn-success");
-                } else {
-                    $(this).addClass("btn-secondary");
-                }
-            } else {
-                if ( index - 1 < questions.length && questions[index - 1].done){
-                    $(this).addClass("btn-outline-success");
-                } else {
-                    $(this).addClass("btn-outline-secondary");
-                }
-            }
+        if (index === activeIdx + 1){
+            $(this).removeClass("btn-success").addClass("btn-outline-success");
+        }
+        if (index === activeIdx + 2){
+            $(this).removeClass("btn-outline-secondary").addClass("btn-success");
         }
     });
     for (i=0; i < questions.length; i++){
@@ -358,7 +362,9 @@ function getAnswers(){
             im_url: questions[i].im.src,
             im_time: questions[i].time,
             im_start_time: questions[i].start_time,
-            im_end_time: questions[i].end_time
+            im_end_time: questions[i].end_time,
+            im_height: questions[i].im.height,
+            im_width: questions[i].im.width
         });
     }
     return answers;

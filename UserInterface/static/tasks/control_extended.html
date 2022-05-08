@@ -12,13 +12,12 @@
 
 {% block images %}
     <div class="row">
-        <div class="col-6 text-end">
-            <div style='padding-top:5px'>
+        <div class="col-7 text-end">
+            <div  style='padding-top:5px' id="canvas-bbox" class="d-flex align-items-center justify-content-center">
                 <canvas id='canvas'></canvas>
             </div>
-
         </div>
-        <div class="col-6 text-start">
+        <div class="col-5 text-start">
             <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
                 <h style='font-weight:800'>Instructions:</h>
                 <li>Describe all parts of the image that may be <strong style='color:blue'>important to a person who is blind</strong>
@@ -37,65 +36,58 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row pt-3">
-        <div class="col-12 text-center">
-            <div class='state-button' style='text-align:;display:inline-block'>
-                <input type='button' id='prev' value='prev'>
-            </div>
-            <div class='state-button' style='text-align:right;display:inline-block'>
+            <div class='state-button text-center pt-3' style='text-align:right;display:inline-block'>
                 <input type='button' id='next' value='next'>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block instructions_title %}
-    <h1>Provide appropriate descriptions for images</h1>
+    <h1>Provide Appropriate Descriptions for Images</h1>
 {% endblock %}
 {% block instructions %}
     {{ super() }}
-    <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
-        <h2 style='font-weight:800'>Instructions Per Image:</h2>
-        <p>Please read the following instructions and confirm your understanding by clicking each square.</p>
-        <p><strong>Assignments with descriptions with bad English or grammar will be rejected.</strong></p>
-        <p>A total of 4 HITs are available per worker. The instructions <u>will change</u> in each HIT. You will be asked to read the instructions and re-confirm for each HIT. Thank you.</p>
-        <div class="form-check">
-            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction1">
-            <label class="form-check-label" for="instruction1">
-                Describe all parts of the image that may be <strong style='color:blue'>important to a person who is blind</strong>
-                <p><em>E.g., imagine how you would describe this image on the phone to a friend</em></p>
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction9">
-            <label class="form-check-label" for="instruction9">
-            Descriptions should be written in clear and correct English (poorly written assignments will be rejected).
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction2">
-            <label class="form-check-label" for="instruction2">
-            <strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction3">
-            <label class="form-check-label" for="instruction3">
-            <strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction4">
-            <label class="form-check-label" for="instruction4">
-            <strong style='color:red'>Do not</strong> start the description with: <mark>"There is/are ..."</mark>, <mark>"This is / These are ..."</mark>, <mark>"The/This image/picture ..."</mark>, or <mark>"It is ..."</mark>
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction6">
-            <label class="form-check-label" for="instruction6">
-            Your description should contain at least <strong style='color:blue'>8 words</strong>.
-            </label>
+    <div class="col-6 p-3">
+        <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
+            <h2 style='font-weight:800'>Instructions Per Image:</h2>
+            <p><strong>Please read the following instructions and confirm your understanding by clicking each square.</strong></p>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction1">
+                <label class="form-check-label" for="instruction1">
+                    Describe all parts of the image that may be <strong style='color:blue'>important to a person who is blind</strong>
+                    <p><em>E.g., imagine how you would describe this image on the phone to a friend</em></p>
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction9">
+                <label class="form-check-label" for="instruction9">
+                Descriptions should be written in clear and correct English (poorly written assignments will be rejected).
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction2">
+                <label class="form-check-label" for="instruction2">
+                <strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction3">
+                <label class="form-check-label" for="instruction3">
+                <strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction4">
+                <label class="form-check-label" for="instruction4">
+                <strong style='color:red'>Do not</strong> start the description with: <mark>"There is/are ..."</mark>, <mark>"This is / These are ..."</mark>, <mark>"The/This image/picture ..."</mark>, or <mark>"It is ..."</mark>
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction6">
+                <label class="form-check-label" for="instruction6">
+                Your description should contain at least <strong style='color:blue'>8 words</strong>.
+                </label>
+            </div>
         </div>
     </div>
     <div class="text-center">

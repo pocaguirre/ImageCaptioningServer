@@ -26,7 +26,6 @@ $(window).load(function(){
             render_header_button(im_urls);
             initialize_images(im_urls);
             $('#next').on('click', function(){next();});
-            $('#prev').on('click', function(){prev();});
             start();
         }, "json");
     })
@@ -36,6 +35,7 @@ $(window).load(function(){
         els[i].onclick = check_completed;
     }
     $('#demographics-form input').on("click", check_completed);
+    $('#calibrating').on("click", start_calibration);
 })
 
 // ===========================================================
@@ -70,7 +70,8 @@ function submit_function(){
             workerID: worker_obj['email-input'],
             condition: condition,
             assignmentID: assignmentID,
-            demographics: JSON.stringify(worker_obj)
+            demographics: JSON.stringify(worker_obj),
+            calibrations: JSON.stringify(calibrations)
         },
         function(data) {
             if (data.success === true){

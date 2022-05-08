@@ -1,3 +1,29 @@
+#canvas-bbox, #countdown-bbox, #see-image-btn-wrapper, #circle-bbox{
+	position: fixed;
+	height:80vh;
+	width:58vw;
+	top:10vh;
+	left:0px;
+	text-align:center;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#circle {
+	width: 25px;
+	height: 25px;
+	background: black;
+	border-radius: 50%
+}
+
+.centered{
+	display: inline;
+}
+
+canvas{
+	display: inline;
+}
+
 .result_img{
     max-height:125px;
     height:auto;
@@ -13,11 +39,6 @@
 .question-text {
     margin-top: 2rem;
     margin-bottom: 0;
-}
-
-#age-input {
-    margin-left: 15px;
-    padding-left: 10px;
 }
 
 .centered-table {
