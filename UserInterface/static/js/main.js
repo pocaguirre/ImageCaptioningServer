@@ -1,4 +1,3 @@
-// TODO: set workerID to email.  Get images based on email.
 
 $(window).load(function(){
     let dialog_modal = $("#dialog-modal" );
