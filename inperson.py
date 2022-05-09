@@ -12,6 +12,12 @@ engine =  InPersonEngine()
 assignment_id = Value('i', 0)
 
 
+@inperson.route('/inperson/setup', methods=['POST'])
+def inperson_setup():
+    engine.setup_connection()
+    return jsonify("successs")
+
+
 @inperson.route('/inperson/<condition>', methods=['GET'])
 def inperson_condition(condition):
     with assignment_id.get_lock():
