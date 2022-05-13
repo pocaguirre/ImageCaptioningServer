@@ -31,7 +31,7 @@ class InPersonEngine:
         return
     
     def setup_connection(self):
-        self.gc = pygsheets.authorize(service_file="double-time-210719-da46da0509cb.json")
+        self.gc = pygsheets.authorize(service_account_env_var="GOOGLE_PROVIDER_AUTHENTICATION_SECRET")
         self.sh = self.gc.open_by_url("https://docs.google.com/spreadsheets/d/1xoE0Po9UotHxL8UFG6A1VaK5BHizyd92qV8GUAzFgfc/edit?usp=sharing")
         self.image_sets = get_image_sets()
         self.get_worksheets()
