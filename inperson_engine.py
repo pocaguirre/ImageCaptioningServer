@@ -1,6 +1,7 @@
 import pygsheets
 import pandas as pd
 import json
+import os
 
 IMAGE_SET_CSV = "inperson_image_sets.csv"
 
@@ -28,10 +29,7 @@ class InPersonEngine:
     - ratings: contains the ratings of the workers.
     """
     def __init__(self):
-        return
-    
-    def setup_connection(self):
-        self.gc = pygsheets.authorize(service_file="double-time-210719-da46da0509cb.json")
+        self.gc = pygsheets.authorize(service_account_env_var="GOOGLE_AUTH_INPERSON")
         self.sh = self.gc.open_by_url("https://docs.google.com/spreadsheets/d/1xoE0Po9UotHxL8UFG6A1VaK5BHizyd92qV8GUAzFgfc/edit?usp=sharing")
         self.image_sets = get_image_sets()
         self.get_worksheets()
