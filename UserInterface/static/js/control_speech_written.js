@@ -30,18 +30,18 @@ function initialize_images(im_urls){
     }
 
     // Do written
-    for (var i=im_urls.length/2; i < im_urls.length; i++){
-        var im = new Image();
-        var q = new Object();
-        im.src = im_urls[i];
-        q.im = im;
-        q.ans = '';
-        q.done = false;
-        q.time = 0;
-        q.start_time = 0;
-        q.end_time = 0;
-        questions.push(q);
-    }
+    // for (var i=im_urls.length/2; i < im_urls.length; i++){
+    //     var im = new Image();
+    //     var q = new Object();
+    //     im.src = im_urls[i];
+    //     q.im = im;
+    //     q.ans = '';
+    //     q.done = false;
+    //     q.time = 0;
+    //     q.start_time = 0;
+    //     q.end_time = 0;
+    //     questions.push(q);
+    // }
 }
 // ============================================================================
 // AUDIO recording
