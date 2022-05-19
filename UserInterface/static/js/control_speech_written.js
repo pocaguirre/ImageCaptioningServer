@@ -29,6 +29,12 @@ function initialize_images(im_urls){
         questions.push(q);
     }
 
+}
+// ============================================================================
+// AUDIO recording
+// ============================================================================
+
+
     // Do written
     // for (var i=im_urls.length/2; i < im_urls.length; i++){
     //     var im = new Image();
@@ -42,10 +48,6 @@ function initialize_images(im_urls){
     //     q.end_time = 0;
     //     questions.push(q);
     // }
-}
-// ============================================================================
-// AUDIO recording
-// ============================================================================
 
 function renderAudioError(message) {
     const main = document.querySelector('error_div');
