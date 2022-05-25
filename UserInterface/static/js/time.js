@@ -43,10 +43,22 @@ function initialize_images(im_urls) {
     }
 }
 
+function has_words(){
+    // returns true if text are has more than one word
+    let text = $("#description").val()
+    if (text.split(/\s+/).length > 1){
+        $("#next").prop("disabled", false);
+        return
+    }
+    $("#next").prop("disabled", true);
+}
+
+
 // ================================================================
 // function to control next and previous question
 // ===============================================================
 function next(){
+    $("#next").prop('disabled', true);
     if (state === -1) {
         // Was calibrating, start q 0
         state += 1;

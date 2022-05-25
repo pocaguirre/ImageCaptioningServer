@@ -14,6 +14,7 @@ $(window).load(function(){
     dialog_modal.hide();
     
     $("#start-btn").on('click', function (){
+        $("#start-btn").prop('disabled', true);
         worker_obj['email-input'] = $("[name='email-input']").val();
         worker_obj['age-input'] = $("[name='age-input']").val();
         worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
@@ -21,6 +22,9 @@ $(window).load(function(){
         worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
         $.post( "/inperson/get_images", { workerID: worker_obj['email-input']}, function( images ) {
             // Set Images
+            if (typeof im_urls !== 'undefined'){
+                return;
+            }
             var im_urls = images;
             render_header_button(im_urls);
             initialize_images(im_urls);
@@ -28,13 +32,17 @@ $(window).load(function(){
             start();
         }, "json");
     })
-    $("#submitButton").on('click', function (){submit_function();});
+    $("#submitButton").on('click', function (){
+        $("#start-btn").prop('disabled', true);
+        submit_function();}
+        );
     var els = document.getElementsByClassName('instruction-check');
     for (var i = 0; i < els.length; i++) {
         els[i].onclick = check_completed;
     }
     $('#demographics-form input').on("click", check_completed);
     $('#calibrating').on("click", start_calibration);
+    $("#description").on("keypress", has_words);
 })
 
 // ===========================================================
