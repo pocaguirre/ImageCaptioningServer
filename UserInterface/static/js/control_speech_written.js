@@ -12,6 +12,14 @@ var start_time = new Date().getTime();
 
 var WINDOW_WIDTH = $(window).width();
 
+var canvas = $("#canvas_speech");
+
+$(document).ready(function(){
+    $("#instructions_written").prop("hidden", true);
+    canvas = $("#canvas_speech");
+   });
+
+
 // ============================================================================
 // initialize images SPEECH -> WRITTEN
 // ============================================================================
@@ -34,20 +42,6 @@ function initialize_images(im_urls){
 // AUDIO recording
 // ============================================================================
 
-
-    // Do written
-    // for (var i=im_urls.length/2; i < im_urls.length; i++){
-    //     var im = new Image();
-    //     var q = new Object();
-    //     im.src = im_urls[i];
-    //     q.im = im;
-    //     q.ans = '';
-    //     q.done = false;
-    //     q.time = 0;
-    //     q.start_time = 0;
-    //     q.end_time = 0;
-    //     questions.push(q);
-    // }
 
 function renderAudioError(message) {
     const main = document.querySelector('error_div');
@@ -86,12 +80,26 @@ function stop_record() {
   let stopRecord = $("#stopRecord");
   startRecord.prop('disabled', false);
   stopRecord.prop('disabled', true);
+  $(".next").prop("disabled", false);
   recorder.stop();
 }
 
 function empty_audio(){
     recordedAudio.src = "";
     recordedAudio.controls = false;
+}
+// ================================================================
+// function to control next and previous question
+// ===============================================================
+
+function has_words(){
+    // returns true if text are has more than one word
+    let text = $("#description").val()
+    if (text.split(/\s+/).length > 1){
+        $(".next").prop("disabled", false);
+        return
+    }
+    $(".next").prop("disabled", true);
 }
 
 // ================================================================
@@ -100,11 +108,13 @@ function empty_audio(){
 function next(){
     if (state === -1) {
         // Was calibrating, start q 0
+        $("#images_speech").prop('hidden', false);
+        $("#images_written").prop('hidden', true);
         state += 1;
         render_question(image_index);
         update_header_buttons(state);
     }
-    else if (state === 0 || state === 1) {
+    else if (state >= 0 && state < 4) {
         // Was q state, start q state + 1
         // let ans = $('#description').val();
         // if (!check_correct(ans, image_index)){
@@ -112,53 +122,63 @@ function next(){
         // }
         record_answers(questions[image_index].ans, image_index);
         state += 1;
-        image_index += 1
+        image_index += 1;
         render_question(image_index);
         update_header_buttons(state);
         empty_audio();
+    }
+    else if (state === 4) {
+        // Was question 4, instructions 2
+        state += 1;
+        record_answers(questions[image_index].ans, image_index);
+        empty_audio();
+        $("#circles").prop('hidden', true);
+        $("#images_speech").prop('hidden', true);
+        $("#images_written").prop('hidden', true);
+        $("#instructions_speech").prop('hidden', true);
+        $("#instructions_written").prop('hidden', false);
+
+        $("#finish").prop('hidden', true);
+        update_header_buttons(state);
+        $(".start-btn").on('click', next);
+        $(".start-btn").prop('disabled', true);
+        canvas = $("#canvas_written")
     }    
-    else if (state === 2) {
-        // Was q 2, start calibrating
+    else if (state === 5) {
+        // Was instructions 2, start calibrating
         // let ans = $('#description').val();
         // if (!check_correct(ans, state)){
         //     return -1;
         // }
-        state += 1
-        record_answers(questions[image_index].ans, image_index);
-        empty_audio();
+        state += 1;
         $("#circles").prop('hidden', false);
-        $("#images").prop('hidden', true);
-        $("#instructions").prop('hidden', true);
+        $("#images_speech").prop('hidden', true);
+        $("#images_written").prop('hidden', true);
+        $("#instructions_speech").prop('hidden', true);
+        $("#instructions_written").prop('hidden', true);
         $("#finish").prop('hidden', true);
         update_header_buttons(state);
     }
-    else if (state === 3){
-        // Was calibrating, start q 3
-        image_index += 1
+    else if (state === 6){
+        // Was calibrating, start q 5
+        $("#images_speech").prop('hidden', true);
+        $("#images_written").prop('hidden', false);
+        image_index += 1;
         render_question(image_index);
         state += 1;
         update_header_buttons(state);
     }
-    else if ( state == 4 || state == 5){
-        // was q 3 or 4, start q 4 or 5
-        // let ans = $('#description').val();
-        // if (!check_correct(ans, image_index)){
-        //     return -1;
-        // }
-        record_answers(questions[image_index].ans, image_index);
-        empty_audio();
+    else if ( state >= 7 && state < 11){
+        // was q 5 - 8, start q 6 - 9
+        let ans = $('#description').val();
+        record_answers(ans, image_index);
         state += 1;
         image_index += 1
         render_question(image_index);
         update_header_buttons(state);
     }else{
-        // let ans = $('#description').val();
-        // if (!check_correct(ans, image_index)){
-        //     return -1;
-        // }
-        // was last question, am I done?
-        record_answers(questions[image_index].ans, image_index);
-        empty_audio();
+        let ans = $('#description').val();
+        record_answers(ans, image_index);
         if (!finish()){
             return -1;
         }
@@ -169,8 +189,9 @@ function next(){
 function start(){
     state = -1;
     $("#circles").prop('hidden', false);
-    $("#images").prop('hidden', true);
-    $("#instructions").prop('hidden', true);
+    $("#images_speech").prop('hidden', true);
+    $("#instructions_speech").prop('hidden', true);
+    $("#instructions_written").prop('hidden', true);
     $("#finish").prop('hidden', true);
     update_header_buttons(state);
 }
@@ -182,7 +203,7 @@ function finish(){
             return false;
         }
     }
-    $("#images").prop('hidden', true);
+    $("#images_written").prop('hidden', true);
     $("#instructions").prop('hidden', true);
     $("#finish").prop('hidden', false);
     state += 1;
@@ -237,7 +258,7 @@ function check_new_answer(new_answer, descriptions){
 
 function check_all_checks(){
     if ($(".instruction-check:checked").length > 4) {
-        $("#start-btn").prop("disabled", false);
+        $(".start-btn").prop("disabled", false);
     }
 }
 
@@ -260,7 +281,6 @@ function start_calibration(){
         $("#circles-instructions").prop('hidden', false)
         $("#circle").prop('hidden', true);
         $("#circles").prop('hidden', true);
-        $("#images").prop('hidden', false);
         $("#instructions").prop('hidden', true);
         $("#finish").prop('hidden', true);
         next();
@@ -272,13 +292,14 @@ function start_calibration(){
 // rednering question, image, and dialog
 // ==============================================================
 function render_header_button(im_urls){
-    $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-outline-secondary" disabled>Instructions</button>`);
+    $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-outline-secondary" disabled>Instructions 1</button>`);
     $( "#button-header-group" ).append(`<button type="button" id="calibrate-1" class="header-btn btn btn-outline-secondary" disabled>Calibration 1</button>`);
-    for (var i=1; i <= 3; i++){
+    for (var i=1; i <= 5; i++){
         $( "#button-header-group" ).append(`<button type="button" id="image-${i}" class="header-btn btn btn-outline-secondary" disabled>Image ${i}</button>`);
     }
+    $( "#button-header-group" ).append(`<button type="button" id="inst" class="header-btn btn btn-outline-secondary" disabled>Instructions 2</button>`);
     $( "#button-header-group" ).append(`<button type="button" id="calibrate-2" class="header-btn btn btn-outline-secondary" disabled>Calibration 2</button>`);
-    for (var i=4; i <= 6; i++){
+    for (var i=6; i <= 10; i++){
         $( "#button-header-group" ).append(`<button type="button" id="image-${i}" class="header-btn btn btn-outline-secondary" disabled>Image ${i}</button>`);
     }
     $( "#button-header-group" ).append(`<button type="button" id="fin" class="header-btn btn btn-outline-secondary" disabled>Finish</button>`);
@@ -287,6 +308,7 @@ function render_header_button(im_urls){
 function render_question(idx){
     q = questions[idx]
     render_im(q.im);
+    $(".next").prop("disabled", true);
     $('.state-button').show();
     $('#description').show();
     $('#description').css('width', 480);
@@ -298,11 +320,7 @@ function render_question(idx){
 }
 
 function render_im(im){
-    im.width = im.width * $(window).height() * .8 / im.height;
-    im.height = $(window).height() * .8;
-    // im.height = im.height * 480 / im.width
-    // im.width = 480;
-    var c = $('#canvas')[0]
+    var c = canvas[0]
     c.width = im.width;
     c.height = im.height;
     if (im.width > WINDOW_WIDTH * .47){
@@ -362,7 +380,7 @@ function render_dialog(idx){
 function getAnswers(){
     var answers = [];
     var blobs = [];
-    for (var i=0; i<questions.length; i++){
+    for (var i=0; i<5; i++){
         answers.push({
             im_url: questions[i].im.src,
             im_time: questions[i].time,
@@ -372,6 +390,17 @@ function getAnswers(){
             im_width: questions[i].im.width
         });
         blobs.push(questions[i].ans)
+    }
+    for (var i=5; i<10; i++){
+        answers.push({
+            im_url: questions[i].im.src,
+            im_time: questions[i].time,
+            im_start_time: questions[i].start_time,
+            im_end_time: questions[i].end_time,
+            im_height: questions[i].im.height,
+            im_width: questions[i].im.width,
+            description: questions[i].ans
+        });
     }
     return [answers, blobs];
 }

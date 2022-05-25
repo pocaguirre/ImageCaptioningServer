@@ -24,7 +24,7 @@ $(window).load(function(){
             var im_urls = images;
             render_header_button(im_urls);
             initialize_images(im_urls);
-            $('#next').on('click', function(){next();});
+            $('.next').on('click', function(){next();});
             start();
         }, "json");
     })
@@ -37,6 +37,7 @@ $(window).load(function(){
     $('#calibrating').on("click", start_calibration);
     $("#startRecord").on('click', start_record);
     $("#stopRecord").on("click", stop_record);
+    $("#description").on("keypress", has_words);
 })
 
 // ===========================================================
@@ -66,6 +67,7 @@ function get_data(){
     var formData = new FormData();
     formData.append("workerID", worker_obj['email-input']);
     formData.append("condition", condition);
+    formData.append("medium", medium);
     formData.append("assignmentID", assignmentID);
     formData.append("demographics", JSON.stringify(worker_obj));
     formData.append("calibrations", JSON.stringify(calibrations));

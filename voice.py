@@ -12,26 +12,31 @@ engine =  voiceEngine()
 assignment_id = Value('i', 0)
 
 
-@voice.route('/voice/control', methods=['GET'])
-def voice_condition():
+@voice.route('/voice/<condition>/<medium>', methods=['GET'])
+def voice_condition(condition, medium):
     with assignment_id.get_lock():
         assignment_id.value += 1
         out = assignment_id.value
-        return render_template(f"control_speech_written.html", 
+        return render_template(f"{condition}_{medium}.html", 
                                 demographics=True, 
-                                condition="control", 
+                                condition=condition,
+                                medium=medium,
                                 assignmentID=out)
 
 
 @voice.route('/voice/submit', methods=['POST'])
 def voice_submit():
-    answer_dict = request.form['answers']
-    condition = request.form['condition']
-    demographics = request.form['demographics']
-    assignment_id = request.form['assignmentID']
-    worker_id = request.form['workerID']
-    calibrations = request.form['calibrations']
-    success = engine.save_data(worker_id, assignment_id, condition, answer_dict, request.files, demographics, calibrations)
+    data = {
+        "answers_dict": request.form['answers'],
+        "condition": request.form['condition'],
+        "medium": request.form['medium'],
+        "demographics": request.form['demographics'],
+        "assignment_id": request.form['assignmentID'],
+        "worker_id": request.form['workerID'],
+        "calibrations": request.form['calibrations'],
+        "answer_blobs": request.files
+    }
+    success = engine.save_data(data)
     return jsonify(success=success)
 
 

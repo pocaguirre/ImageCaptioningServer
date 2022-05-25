@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from io import BytesIO
 
-IMAGE_SET_CSV = "inperson_image_sets.csv"
+IMAGE_SET_CSV = "voice_image_set.csv"
 AUDIO_PATH = "1vm990mkdtkTPdJcf4cWDO0p9g1WivoXK"
 
 def authenticate():
@@ -17,17 +17,12 @@ def authenticate():
     return build('drive', 'v3', credentials=creds)
 
 
-def get_image_sets() -> dict:
-    image_set_df = pd.read_csv(IMAGE_SET_CSV)
-    image_set_dict = {}
-    for i, row in image_set_df.iterrows():
-        if row['image set'] in image_set_dict:
-            image_set_dict[row['image set']].append(f"/static/images/{row['filename']}")
-        else:
-            image_set_dict[row['image set']] = [f"/static/images/{row['filename']}"]
-    for image_set, images in image_set_dict.items():
-        assert len(images) == 6, "CSV not fell formatted"
-    return image_set_dict
+def get_image_sets():
+    images = []
+    with open(IMAGE_SET_CSV) as f:
+        for line in f:
+            images.append(f"/static/images/{line}")
+    return images
 
 
 class voiceEngine:
@@ -73,56 +68,94 @@ class voiceEngine:
         """
         Returns the images of a worker.
         """
-        if self.check_worker_id(worker_id):
-            return self.image_sets['A']
-        else:
-            return self.image_sets['B']
+        return self.image_sets
     
-    def save_data(self, worker_id, assignment_id, condition, answers_dict, answer_blobs, demographics, calibrations):
+    def save_data(self, data): # worker_id, assignment_id, condition, answers_dict, answer_blobs, demographics, calibrations):
         """
         Saves the data of a worker.
         """
-        if self.check_worker_assignment(worker_id, assignment_id):
+        if self.check_worker_assignment(data['worker_id'], data['assignment_id']):
             return False
         else:
+            # Uploading audio files
             description_paths = []
-            for record_name, blob in answer_blobs.items():
+            for record_name, blob in data['answer_blobs'].items():
                 blob.save("temp.webm")
                 media = MediaFileUpload("temp.webm", mimetype=blob.mimetype, resumable=True)
-                fmeta = {"name": f"{assignment_id}_{record_name}.webm", "parents":[AUDIO_PATH]}
+                fmeta = {"name": f"{data['assignment_id']}_{record_name}.webm", "parents":[AUDIO_PATH]}
                 file = self.gdrive.files().create(body=fmeta, media_body=media).execute()
                 description_paths.append(f"https://docs.google.com/document/d/{file.get('id')}/view")
 
-
-            assignment = [assignment_id, worker_id, condition]
+            # Uploading assignment metadata
+            assignment = [data['assignment_id'], data['worker_id'], data['condition'], data['medium']]
             self.append_to_table(self.assignmet_wks, assignment)
-            if not self.check_worker_id(worker_id):
-                demographics_obj = json.loads(demographics)
-                user = [worker_id, demographics_obj['age-input'], demographics_obj['education-radio'], demographics_obj['glasses-radio'], demographics_obj['colorblind-radio']]
+            # Uploadig worker demographics
+            if not self.check_worker_id(data['worker_id']):
+                demographics_obj = json.loads(data['demographics'])
+                user = [data['worker_id'], demographics_obj['age-input'], demographics_obj['education-radio'], demographics_obj['glasses-radio'], demographics_obj['colorblind-radio']]
                 self.append_to_table(self.user_wks, user)
-            
-            answer_obj = json.loads(answers_dict)
+            # Uploading description information
+            answer_obj = json.loads(data['answers_dict'])
             answers = []
-            for answer, dpath in zip(answer_obj, description_paths):
-                answers.append([
-                    assignment_id, 
-                    answer['im_url'], 
-                    dpath, 
-                    answer['im_time'], 
-                    answer['im_start_time'], 
-                    answer['im_end_time'],
-                    answer['im_width'],
-                    answer['im_height']
+            if 'description' in answer_obj[0]:
+                for i, answer in enumerate(answer_obj):
+                    if i > 4:
+                        break
+                    answers.append([
+                        data['assignment_id'], 
+                        answer['im_url'], 
+                        answer['description'], 
+                        answer['im_time'], 
+                        answer['im_start_time'], 
+                        answer['im_end_time'],
+                        answer['im_width'],
+                        answer['im_height']
                     ])
+                for answer, dpath in zip(answer_obj[5:], description_paths):
+                    answers.append([
+                        data['assignment_id'], 
+                        answer['im_url'], 
+                        dpath, 
+                        answer['im_time'], 
+                        answer['im_start_time'], 
+                        answer['im_end_time'],
+                        answer['im_width'],
+                        answer['im_height']
+                        ])
+            else:
+                for answer, dpath in zip(answer_obj[:5], description_paths):
+                    answers.append([
+                        data['assignment_id'], 
+                        answer['im_url'], 
+                        dpath, 
+                        answer['im_time'], 
+                        answer['im_start_time'], 
+                        answer['im_end_time'],
+                        answer['im_width'],
+                        answer['im_height']
+                        ])
+                for i, answer in enumerate(answer_obj):
+                    if i < 5:
+                        continue
+                    answers.append([
+                        data['assignment_id'], 
+                        answer['im_url'], 
+                        answer['description'], 
+                        answer['im_time'], 
+                        answer['im_start_time'], 
+                        answer['im_end_time'],
+                        answer['im_width'],
+                        answer['im_height']
+                    ])
+                
             self.append_to_table(self.images_wks, answers, len(answer_obj))
 
-            
-
-            cal_obj = json.loads(calibrations)
+            # Uploading Calibrations
+            cal_obj = json.loads(data['calibrations'])
             cals = []
             for i, cal in enumerate(cal_obj):
                 cals.append([
-                    assignment_id,
+                    data['assignment_id'],
                     i + 1,
                     cal['start'],
                     cal['end']
