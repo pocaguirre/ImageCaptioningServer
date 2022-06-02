@@ -2,20 +2,25 @@
 // create question set and state to go through the questions
 // ============================================================================
 var worker_obj = new Object();
-var calibrations = new Array();
 var state = -1;
-var image_index = 0;
+var image_index = 0
 jQuery.support.cors = true;
 var questions = new Array();
+var calibrations = new Array();
 
 var start_time = new Date().getTime();
-
 var WINDOW_WIDTH = $(window).width();
 
-var canvas = $("#canvas_speech");
+// change im_urls to your images
+let instruction_im_path = "/static/images/dog.jpg";
+let instruction_im = new Image();
+instruction_im.src = instruction_im_path;
 
-$(document).ready(function(){
-    canvas = $("#canvas_speech");
+// ============================================================================
+// initialize images
+// ============================================================================
+$(document).ready(function() {
+    canvas = $("#canvas_written");
     var els = document.getElementById("instructions_speech").getElementsByClassName("instruction-check");
     for (var i = 0; i < els.length; i++) {
         els[i].onclick = check_completed_speech;
@@ -24,27 +29,31 @@ $(document).ready(function(){
     for (var i = 0; i < els.length; i++) {
         els[i].onclick = check_completed_written;
     }
-});
+    // time stuff
+    $("#see-image_written").on("click", function(){see_image_btn("_written");});
+    $("#see-image_speech").on("click", function(){see_image_btn("_speech");});
+    $("#see-image-instruction_written").on("click", function(){see_image_instruction_btn("_written");});
+    $("#see-image-instruction_speech").on("click", function(){see_image_instruction_btn("_speech");});
+})
 
 
-// ============================================================================
-// initialize images SPEECH -> WRITTEN
-// ============================================================================
-function initialize_images(im_urls){
-    // Do speech
-    for (var i=0; i < im_urls.length; i++){
+function initialize_images(im_urls) {
+    for (i = 0; i < im_urls.length; i++) {
         var im = new Image();
         var q = new Object();
         im.src = im_urls[i];
         q.im = im;
+        q.ans = '';
         q.done = false;
+        q.seen = false;
         q.time = 0;
         q.start_time = 0;
         q.end_time = 0;
         questions.push(q);
     }
-
 }
+
+
 // ============================================================================
 // AUDIO recording
 // ============================================================================
@@ -107,6 +116,8 @@ function empty_audio(){
 // function to control next and previous question
 // ===============================================================
 
+
+
 function has_words(){
     // returns true if text are has more than one word
     let text = $("#description").val()
@@ -117,11 +128,13 @@ function has_words(){
     $(".next").prop("disabled", true);
 }
 
+
 // ================================================================
 // function to control next and previous question
 // ===============================================================
 function next(){
     if (state === -2){
+        // was in instructions, start calibration
         $("#circles").prop('hidden', false);
         $("#demographic_wrapper").prop('hidden', true);
         $("#images_speech").prop('hidden', true);
@@ -137,26 +150,25 @@ function next(){
         $("#images_written").prop('hidden', true);
         state += 1;
         render_question(image_index);
+        $("#see-image-div_speech").prop('hidden', false);
+        $("#already-seen_speech").prop('hidden', true);
         update_header_buttons(state);
     }
     else if (state >= 0 && state < 4) {
-        // Was q state, start q state + 1
-        // let ans = $('#description').val();
-        // if (!check_correct(ans, image_index)){
-        //     return -1;
-        // }
         record_answers(questions[image_index].ans, image_index);
-        state += 1;
-        image_index += 1;
-        render_question(image_index);
-        update_header_buttons(state);
         empty_audio();
+        state += 1;
+        image_index += 1
+        render_question(image_index);
+        $("#see-image-div_speech").prop('hidden', false);
+        $("#already-seen_speech").prop('hidden', true);
+        update_header_buttons(state);
     }
     else if (state === 4) {
         // Was question 4, instructions 2
-        state += 1;
         record_answers(questions[image_index].ans, image_index);
         empty_audio();
+        state += 1;
         $(".next").prop("disabled", true);
         $("#circles").prop('hidden', true);
         $("#images_speech").prop('hidden', true);
@@ -166,14 +178,10 @@ function next(){
 
         $("#finish").prop('hidden', true);
         update_header_buttons(state);
-        canvas = $("#canvas_written")
+        canvas = $("#canvas_speech")
     }    
     else if (state === 5) {
         // Was instructions 2, start calibrating
-        // let ans = $('#description').val();
-        // if (!check_correct(ans, state)){
-        //     return -1;
-        // }
         state += 1;
         $("#circles").prop('hidden', false);
         $("#images_speech").prop('hidden', true);
@@ -187,18 +195,23 @@ function next(){
         // Was calibrating, start q 5
         $("#images_speech").prop('hidden', true);
         $("#images_written").prop('hidden', false);
+        state += 1;
         image_index += 1;
         render_question(image_index);
-        state += 1;
+        $("#see-image-div_written").prop('hidden', false);
+        $("#already-seen_written").prop('hidden', true);
         update_header_buttons(state);
+        empty_audio();
     }
     else if ( state >= 7 && state < 11){
         // was q 5 - 8, start q 6 - 9
         let ans = $('#description').val();
         record_answers(ans, image_index);
         state += 1;
-        image_index += 1
+        image_index += 1;
         render_question(image_index);
+        $("#see-image-div_written").prop('hidden', false);
+        $("#already-seen_written").prop('hidden', true);
         update_header_buttons(state);
     }else{
         let ans = $('#description').val();
@@ -235,8 +248,6 @@ function finish(){
     $("#dialog-confirm" ).dialog('open');
 }
 
-
-
 function record_answers(ans, local_state){
     var q = questions[local_state];
     // store user input
@@ -245,9 +256,7 @@ function record_answers(ans, local_state){
     rn = new Date().getTime();
     q.time += rn - start_time;
     q.done = true;
-    q.end_time = rn;
 }
-
 
 function check_correct(ans, local_state){
     if (ans.split(/\s+/).length < 8){
@@ -267,7 +276,7 @@ function check_new_answer(new_answer, descriptions){
     var desc = [];
     loop1:
     for(var i = 0; i < descriptions.length; i+=1){
-        if(i === state){continue loop1;}
+        if(i === image_index){continue loop1;}
         desc = descriptions[i].ans.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
         if(new_answer.length !== desc.length){continue loop1;}
         loop2:
@@ -278,19 +287,19 @@ function check_new_answer(new_answer, descriptions){
     }
     return true;
 }
-
-
 function check_completed_speech(){
-    if ($('.instruction-check:checked','#instructions_speech').length === 6) {
+    if ($('.instruction-check:checked','#instructions_speech').length === 7) {
         $(".next").prop("disabled", false);
     }
 }
 
 function check_completed_written(){
-    if ($('.instruction-check:checked','#instructions_written').length === 6) {
+    if ($('.instruction-check:checked','#instructions_written').length === 7) {
         $(".next").prop("disabled", false);
     }
 }
+
+
 
 // ===============================================================
 // CALIBRATION
@@ -320,7 +329,7 @@ function start_calibration(){
 
 
 // ===============================================================
-// rednering question, image, and dialog
+// rendering question, image, and dialog
 // ==============================================================
 function render_header_button(im_urls){
     $( "#button-header-group" ).append(`<button type="button" id="demo" class="header-btn btn btn-outline-secondary" disabled>Demographics</button>`);
@@ -338,8 +347,7 @@ function render_header_button(im_urls){
 }
 
 function render_question(idx){
-    q = questions[idx]
-    render_im(q.im);
+    q = questions[idx];
     $(".next").prop("disabled", true);
     $('.state-button').show();
     $('#description').show();
@@ -351,8 +359,67 @@ function render_question(idx){
     q.start_time = rn;
 }
 
-function render_im(im){
-    var c = canvas[0]
+function see_image_btn(btn_pressed){
+    $("#see-image-div"+btn_pressed).prop('hidden', true);
+    let countdown = $("#countdown"+btn_pressed);
+    $("#countdown-bbox"+btn_pressed).prop('hidden', false);
+    countdown.prop('hidden', false);
+    countdown.countdown360({
+      radius      : 60.5,
+      seconds     : 3,
+      strokeWidth : 15,
+      fillStyle   : '#0276FD',
+      strokeStyle : '#003F87',
+      fontSize    : 50,
+      fontColor   : '#FFFFFF',
+      autostart: false,
+      onComplete  : function () {
+          $("#countdown"+btn_pressed).prop('hidden', true);
+          $("#countdown-bbox"+btn_pressed).prop('hidden', true);
+          $("#canvas-bbox"+btn_pressed).prop('hidden', false);
+          q = questions[image_index];
+          q.seen = true;
+          render_im(q.im, canvas="#canvas"+btn_pressed);
+          q.start_time = new Date().getTime();
+          setTimeout(() => {  
+              clear_im(canvas=$("#canvas"+btn_pressed));
+              $("#canvas-bbox"+btn_pressed).prop('hidden', true);
+              q.end_time = new Date().getTime();
+            }, 1000);
+      }
+    }).start();
+}
+
+
+function see_image_instruction_btn(btn_pressed){
+    $("#see-image-div-instruction"+btn_pressed).prop('hidden', true);
+    let countdown = $("#countdown-instruction"+btn_pressed)
+    countdown.prop('hidden', false);
+    countdown.countdown360({
+      radius      : 60.5,
+      seconds     : 3,
+      strokeWidth : 15,
+      fillStyle   : '#0276FD',
+      strokeStyle : '#003F87',
+      fontSize    : 50,
+      fontColor   : '#FFFFFF',
+      autostart: false,
+      onComplete  : function () {
+          $("#countdown-instruction"+btn_pressed).prop('hidden', true);
+          render_im(instruction_im, canvas="#canvas-instruction"+btn_pressed);
+          setTimeout(() => {  clear_im(canvas="#canvas-instruction"+btn_pressed); }, 1000);
+      }
+    }).start();
+}
+
+function clear_im(canvas="#canvas"){
+    var c = $(canvas)[0];
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+}
+
+function render_im(im, canvas="#canvas"){
+    var c =  $(canvas)[0]
     c.width = im.width;
     c.height = im.height;
     if (im.width > WINDOW_WIDTH * .47){
@@ -367,6 +434,7 @@ function render_im(im){
     ctx.drawImage(im, 0, 0, c.width, c.height);
     window.scrollTo(0, document.body.scrollHeight);
 }
+
 
 function update_header_buttons(activeIdx){
     $( ".header-btn" ).each(function( index ) {

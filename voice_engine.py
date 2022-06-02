@@ -6,6 +6,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from io import BytesIO
+import numpy as np
 
 IMAGE_SET_CSV = "voice_image_set.csv"
 AUDIO_PATH = "1vm990mkdtkTPdJcf4cWDO0p9g1WivoXK"
@@ -68,6 +69,7 @@ class voiceEngine:
         """
         Returns the images of a worker.
         """
+        np.random.shuffle(self.image_sets)
         return self.image_sets
     
     def save_data(self, data): # worker_id, assignment_id, condition, answers_dict, answer_blobs, demographics, calibrations):

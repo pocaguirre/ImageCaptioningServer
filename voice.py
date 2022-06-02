@@ -1,27 +1,20 @@
-from flask import Blueprint, jsonify, request, current_app, render_template, make_response
-import string
-import random
-import numpy as np
-import json
+from flask import Blueprint, jsonify, request, render_template
 from voice_engine import voiceEngine
-from multiprocessing import Value
+import secrets
 
 
 voice = Blueprint('voice', __name__)
 engine =  voiceEngine()
-assignment_id = Value('i', 0)
 
 
 @voice.route('/voice/<condition>/<medium>', methods=['GET'])
 def voice_condition(condition, medium):
-    with assignment_id.get_lock():
-        assignment_id.value += 1
-        out = assignment_id.value
-        return render_template(f"{condition}_{medium}.html", 
+    assignment_id = secrets.token_urlsafe(16)
+    return render_template(f"{condition}_{medium}.html", 
                                 demographics=True, 
                                 condition=condition,
                                 medium=medium,
-                                assignmentID=out)
+                                assignmentID=assignment_id)
 
 
 @voice.route('/voice/submit', methods=['POST'])

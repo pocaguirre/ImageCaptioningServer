@@ -1,5 +1,6 @@
 {% extends "voice_parent.html" %}
 {% block header %}
+    <script src="https://www.pocaguirre.com/static/jquery.countdown360/dist/jquery.countdown360.js"></script>
     <script type="text/javascript">
         function myFunc(vars) {
             return vars
@@ -8,15 +9,30 @@
         var assignmentID = myFunc({{ assignmentID|tojson }});
         var medium = myFunc({{ medium|tojson }});
     </script>
-    <script type='text/javascript' src='/static/js/control_speech_written.js'></script>
+    <script type='text/javascript' src='/static/js/time_written_speech.js'></script>
 {% endblock %}
 
 {% block images_speech %}
     <div class="row">
         <div class="col-7 text-end">
-            <div  style='padding-top:5px' id="canvas-bbox" class="d-flex align-items-center justify-content-center">
+            <div style='padding-top:5px'  id="canvas-bbox" class="d-flex align-items-center justify-content-center" hidden>
                 <canvas id='canvas_speech'></canvas>
             </div>
+            <div style='padding-top:5px'  id="countdown-bbox_speech" class="d-flex align-items-center justify-content-center">
+                <div class="text-center">
+                    <div id="countdown_speech" class="centered"></div>
+                </div>
+            </div>
+            <div style='padding-top:5px'  id="see-image-btn-wrapper" class="d-flex align-items-center justify-content-center" hidden>
+                <div class="text-center centered" style="z-index: 100" id="see-image-div_speech">
+                    <button id="see-image_speech" class="btn btn-primary">See Image</button>
+                    <p><em>Remember: You can only see the image once.</em></p>
+                </div>
+            </div>
+            <div style='padding-top:5px'  class="d-flex align-items-center justify-content-center">
+                <p id="already-seen_speech" hidden><em>Image already seen.</em></p>
+            </div>
+            
         </div>
         <div class="col-5 text-start">
             <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
@@ -31,6 +47,7 @@
                 <li><strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.</li>
                 <li><strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.</li>
                 <li><strong style='color:red'>Do not</strong> start the description with: <mark>"There is/are ..."</mark>, <mark>"This is / These are ..."</mark>, <mark>"The/This image/picture ..."</mark>, or <mark>"It is ..."</mark></li>
+                <li>You can observe the image for <strong style='color:red'>only 1 second</strong>.</li>
                 <div style='padding-top:5px'>
                     <div id='userinput_div'>
                         <h2>Audio record and playback</h2>
@@ -59,9 +76,24 @@
 {% block images_written %}
     <div class="row">
         <div class="col-7 text-end">
-            <div  style='padding-top:5px' id="canvas-bbox" class="d-flex align-items-center justify-content-center">
+            <div style='padding-top:5px'  id="canvas-bbox" class="d-flex align-items-center justify-content-center" hidden>
                 <canvas id='canvas_written'></canvas>
             </div>
+            <div style='padding-top:5px'  id="countdown-bbox_written" class="d-flex align-items-center justify-content-center">
+                <div class="text-center">
+                    <div id="countdown_written" class="centered"></div>
+                </div>
+            </div>
+            <div style='padding-top:5px'  id="see-image-btn-wrapper" class="d-flex align-items-center justify-content-center" hidden>
+                <div class="text-center centered" style="z-index: 100" id="see-image-div_written">
+                    <button id="see-image_written" class="btn btn-primary">See Image</button>
+                    <p><em>Remember: You can only see the image once.</em></p>
+                </div>
+            </div>
+            <div style='padding-top:5px'  class="d-flex align-items-center justify-content-center">
+                <p id="already-seen_written" hidden><em>Image already seen.</em></p>
+            </div>
+            
         </div>
         <div class="col-5 text-start">
             <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
@@ -76,6 +108,7 @@
                 <li><strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.</li>
                 <li><strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.</li>
                 <li><strong style='color:red'>Do not</strong> start the description with: <mark>"There is/are ..."</mark>, <mark>"This is / These are ..."</mark>, <mark>"The/This image/picture ..."</mark>, or <mark>"It is ..."</mark></li>
+                <li>You can observe the image for <strong style='color:red'>only 1 second</strong>.</li>
                 <div style='padding-top:5px'>
                     <div id='userinput_div'>
                         <div id='userinput'>
@@ -86,7 +119,7 @@
                 </div>
             </div>
             <div class='state-button text-center pt-3' style='text-align:right;display:inline-block'>
-                <input type='button' class='next' value='next'>
+                <input type='button' class='next' value='next' disabled>
             </div>
         </div>
     </div>
@@ -134,57 +167,92 @@
                 <strong style='color:red'>Do not</strong> start the description with: <mark>"There is/are ..."</mark>, <mark>"This is / These are ..."</mark>, <mark>"The/This image/picture ..."</mark>, or <mark>"It is ..."</mark>
                 </label>
             </div>
-            <div class='state-button text-center pt-3' style='text-align:right;display:inline-block'>
-                <input type='button' class='next' value='next' disabled>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction6">
+                <label class="form-check-label" for="instruction5">
+                    You can observe the image for <strong style='color:red'>only 1 second</strong>.
+                </label>
             </div>
         </div>
     </div>
+    <hr>
+    <h2 style='font-weight:800'>Image Test</h2>
+    <p class="lead">This is an example of an interaction with an image in this HIT.</p>
+    <div class="text-center">
+        <div id="countdown-instruction_speech"></div>
+        <canvas id='canvas-instruction_speech'></canvas>
+    </div>
+    <div id="see-image-div-instruction_speech" class="text-center">
+        <button id="see-image-instruction_speech" class="btn btn-primary">See Image</button>
+        <p><em>Remember: You can only see the image once.</em></p>
+    </div>
+    <div class='state-button text-center pt-3' style='text-align:right;display:inline-block'>
+        <input type='button' class='next' value='next' disabled>
+    </div>
 {% endblock %}
+
 {% block instructions_written %}
     <div class="col-6 p-3">
         <div style='display:inline-block;vertical-align:top;font-size:12pt;text-align:left;'>
             <h2 style='font-weight:800'>Instructions Per Image:</h2>
-            <p><strong>Please read the following instructions and confirm your understanding by clicking each square.</strong></p>
+            <p>Please read the following instructions and confirm your understanding by clicking each square.</p>
             <div class="form-check">
-                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction7">
-                <label class="form-check-label" for="instruction9">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction1">
+                <label class="form-check-label" for="instruction1">
                     <p>Use the text box to <strong>write</strong> your description.</p>
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction8">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction2">
                 <label class="form-check-label" for="instruction1">
                     Describe all parts of the image that may be <strong style='color:blue'>important to a person who is blind</strong>
                     <p><em>E.g., imagine how you would describe this image on the phone to a friend</em></p>
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction9">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction3">
                 <label class="form-check-label" for="instruction9">
-                <p>Descriptions should be <strong style="color:red">written</strong> in clear and correct English.</p>
+                    <p>Descriptions should be <strong style="color:red">written</strong> in clear and correct English.</p>
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction10">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction4">
                 <label class="form-check-label" for="instruction2">
                 <strong style='color:red'>Do not</strong> speculate about what people in the image might be saying or thinking.
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction11">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction5">
                 <label class="form-check-label" for="instruction3">
                 <strong style='color:red'>Do not</strong> describe things that might have happened in the future or past.
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction12">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction6">
                 <label class="form-check-label" for="instruction4">
                 <strong style='color:red'>Do not</strong> start the description with: <mark>"There is/are ..."</mark>, <mark>"This is / These are ..."</mark>, <mark>"The/This image/picture ..."</mark>, or <mark>"It is ..."</mark>
                 </label>
             </div>
-            <div class='state-button text-center pt-3' style='text-align:right;display:inline-block'>
-                <input type='button' class='next' value='next' disabled>
+            <div class="form-check">
+                <input class="form-check-input instruction-check" type="checkbox" value="" id="instruction6">
+                <label class="form-check-label" for="instruction5">
+                    You can observe the image for <strong style='color:red'>only 1 second</strong>.
+                </label>
             </div>
         </div>
+    </div>
+    <hr>
+    <h2 style='font-weight:800'>Image Test</h2>
+    <p class="lead">This is an example of an interaction with an image in this HIT.</p>
+    <div class="text-center">
+        <div id="countdown-instruction_written"></div>
+        <canvas id='canvas-instruction_written'></canvas>
+    </div>
+    <div id="see-image-div-instruction_written" class="text-center">
+        <button id="see-image-instruction_written" class="btn btn-primary">See Image</button>
+        <p><em>Remember: You can only see the image once.</em></p>
+    </div>
+    <div class='state-button text-center pt-3' style='text-align:right;display:inline-block'>
+        <input type='button' class='next' value='next' disabled>
     </div>
 {% endblock %}

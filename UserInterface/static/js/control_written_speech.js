@@ -12,10 +12,10 @@ var start_time = new Date().getTime();
 
 var WINDOW_WIDTH = $(window).width();
 
-var canvas = $("#canvas_speech");
+var canvas = $("#canvas_written");
 
 $(document).ready(function(){
-    canvas = $("#canvas_speech");
+    canvas = $("#canvas_written");
     var els = document.getElementById("instructions_speech").getElementsByClassName("instruction-check");
     for (var i = 0; i < els.length; i++) {
         els[i].onclick = check_completed_speech;
@@ -122,6 +122,7 @@ function has_words(){
 // ===============================================================
 function next(){
     if (state === -2){
+        // was in instructions, start calibration
         $("#circles").prop('hidden', false);
         $("#demographic_wrapper").prop('hidden', true);
         $("#images_speech").prop('hidden', true);
@@ -133,8 +134,8 @@ function next(){
     }
     else if (state === -1) {
         // Was calibrating, start q 0
-        $("#images_speech").prop('hidden', false);
-        $("#images_written").prop('hidden', true);
+        $("#images_speech").prop('hidden', true);
+        $("#images_written").prop('hidden', false);
         state += 1;
         render_question(image_index);
         update_header_buttons(state);
@@ -145,35 +146,37 @@ function next(){
         // if (!check_correct(ans, image_index)){
         //     return -1;
         // }
-        record_answers(questions[image_index].ans, image_index);
+        // record_answers(questions[image_index].ans, image_index);
+        // state += 1;
+        // image_index += 1;
+        // render_question(image_index);
+        // update_header_buttons(state);
+        // empty_audio();
+        let ans = $('#description').val();
+        record_answers(ans, image_index);
         state += 1;
-        image_index += 1;
+        image_index += 1
         render_question(image_index);
         update_header_buttons(state);
-        empty_audio();
     }
     else if (state === 4) {
         // Was question 4, instructions 2
         state += 1;
-        record_answers(questions[image_index].ans, image_index);
-        empty_audio();
+        let ans = $('#description').val();
+        record_answers(ans, image_index);
         $(".next").prop("disabled", true);
         $("#circles").prop('hidden', true);
         $("#images_speech").prop('hidden', true);
         $("#images_written").prop('hidden', true);
-        $("#instructions_speech").prop('hidden', true);
-        $("#instructions_written").prop('hidden', false);
+        $("#instructions_speech").prop('hidden', false);
+        $("#instructions_written").prop('hidden', true);
 
         $("#finish").prop('hidden', true);
         update_header_buttons(state);
-        canvas = $("#canvas_written")
+        canvas = $("#canvas_speech")
     }    
     else if (state === 5) {
         // Was instructions 2, start calibrating
-        // let ans = $('#description').val();
-        // if (!check_correct(ans, state)){
-        //     return -1;
-        // }
         state += 1;
         $("#circles").prop('hidden', false);
         $("#images_speech").prop('hidden', true);
@@ -185,24 +188,24 @@ function next(){
     }
     else if (state === 6){
         // Was calibrating, start q 5
-        $("#images_speech").prop('hidden', true);
-        $("#images_written").prop('hidden', false);
+        $("#images_speech").prop('hidden', false);
+        $("#images_written").prop('hidden', true);
+        state += 1;
         image_index += 1;
         render_question(image_index);
-        state += 1;
         update_header_buttons(state);
+        empty_audio();
     }
     else if ( state >= 7 && state < 11){
         // was q 5 - 8, start q 6 - 9
-        let ans = $('#description').val();
-        record_answers(ans, image_index);
+        record_answers(questions[image_index].ans, image_index);
         state += 1;
-        image_index += 1
+        image_index += 1;
         render_question(image_index);
         update_header_buttons(state);
+        empty_audio();
     }else{
-        let ans = $('#description').val();
-        record_answers(ans, image_index);
+        record_answers(questions[image_index].ans, image_index);
         if (!finish()){
             return -1;
         }
@@ -215,8 +218,8 @@ function start(){
     $("#circles").prop('hidden', true);
     $("#demographic_wrapper").prop('hidden', true);
     $("#images_speech").prop('hidden', true);
-    $("#instructions_speech").prop('hidden', false);
-    $("#instructions_written").prop('hidden', true);
+    $("#instructions_speech").prop('hidden', true);
+    $("#instructions_written").prop('hidden', false);
     $("#finish").prop('hidden', true);
     update_header_buttons(state);
 }
@@ -228,7 +231,7 @@ function finish(){
             return false;
         }
     }
-    $("#images_written").prop('hidden', true);
+    $("#images_speech").prop('hidden', true);
     $("#finish").prop('hidden', false);
     state += 1;
     update_header_buttons(state);
@@ -419,9 +422,9 @@ function getAnswers(){
             im_start_time: questions[i].start_time,
             im_end_time: questions[i].end_time,
             im_height: questions[i].im.height,
-            im_width: questions[i].im.width
+            im_width: questions[i].im.width,
+            description: questions[i].ans
         });
-        blobs.push(questions[i].ans)
     }
     for (var i=5; i<10; i++){
         answers.push({
@@ -430,9 +433,9 @@ function getAnswers(){
             im_start_time: questions[i].start_time,
             im_end_time: questions[i].end_time,
             im_height: questions[i].im.height,
-            im_width: questions[i].im.width,
-            description: questions[i].ans
+            im_width: questions[i].im.width
         });
+        blobs.push(questions[i].ans)
     }
     return [answers, blobs];
 }

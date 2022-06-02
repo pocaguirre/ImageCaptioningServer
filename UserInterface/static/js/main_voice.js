@@ -29,15 +29,11 @@ $(window).load(function(){
         }, "json");
     })
     $("#submitButton").on('click', function (){submit_function();});
-    var els = document.getElementsByClassName('instruction-check');
-    for (var i = 0; i < els.length; i++) {
-        els[i].onclick = check_completed;
-    }
     $('#demographics-form input').on("click", check_completed);
     $('#calibrating').on("click", start_calibration);
     $("#startRecord").on('click', start_record);
     $("#stopRecord").on("click", stop_record);
-    $("#description").on("keypress", has_words);
+    $("#description").on("keydown", has_words);
 })
 
 // ===========================================================
@@ -88,6 +84,13 @@ function submit_function(){
             data: ajaxData,
             processData: false,
             contentType: false,
+            beforeSend: function(){
+                $(".lds-spinner").prop("hidden", false);
+                $("#submitButton").prop("disabled", true);
+            },
+            complete: function(){
+                $(".lds-spinner").prop("hidden", true);
+            },
             success: function(data) {
             if (data.success === true){
                 success_dialog();
@@ -114,7 +117,7 @@ function success_dialog(){
             }
         }
     });
-    dialog_task.text("Thank you for completing this HIT");
+    dialog_task.text("Thank you for completing this study!");
     dialog_task.dialog('open');
 }
 
@@ -150,7 +153,7 @@ function check_completed() {
     }
     if (empty_input === false){
         // CHECK INSTRUCTIONS ARE CLICKED
-        check_all_checks();
+        $(".start-btn").prop("disabled", false);
     }
 }
 
