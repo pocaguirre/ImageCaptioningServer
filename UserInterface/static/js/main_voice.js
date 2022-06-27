@@ -72,7 +72,7 @@ function get_data(){
     blobs = ans_obj[1];
     formData.append("answers", JSON.stringify(answers_dict));
     for(var i=0; i < blobs.length; i +=1){
-        formData.append("recording" + i, blobs[i]);
+        formData.append(blobs[i]['fname'], blobs[i]['blob']);
     }
     return formData
 }

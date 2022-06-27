@@ -79,77 +79,58 @@ class voiceEngine:
         if self.check_worker_assignment(data['worker_id'], data['assignment_id']):
             return False
         else:
-            # Uploading audio files
-            description_paths = []
-            for record_name, blob in data['answer_blobs'].items():
-                blob.save("temp.webm")
-                media = MediaFileUpload("temp.webm", mimetype=blob.mimetype, resumable=True)
-                fmeta = {"name": f"{data['assignment_id']}_{record_name}.webm", "parents":[AUDIO_PATH]}
-                file = self.gdrive.files().create(body=fmeta, media_body=media).execute()
-                description_paths.append(f"https://docs.google.com/document/d/{file.get('id')}/view")
-
             # Uploading assignment metadata
             assignment = [data['assignment_id'], data['worker_id'], data['condition'], data['medium']]
             self.append_to_table(self.assignmet_wks, assignment)
+
             # Uploadig worker demographics
             if not self.check_worker_id(data['worker_id']):
                 demographics_obj = json.loads(data['demographics'])
                 user = [data['worker_id'], demographics_obj['age-input'], demographics_obj['education-radio'], demographics_obj['glasses-radio'], demographics_obj['colorblind-radio']]
                 self.append_to_table(self.user_wks, user)
+
+            
+            # Uploading audio files
+            description_paths = {}
+            for record_name, blob in data['answer_blobs'].items():
+                blob.save("temp.webm")
+                media = MediaFileUpload("temp.webm", mimetype=blob.mimetype, resumable=True)
+                fmeta = {"name": f"{record_name}.webm", "parents":[AUDIO_PATH]}
+                file = self.gdrive.files().create(body=fmeta, media_body=media).execute()
+                description_paths[record_name] = f"https://drive.google.com/file/d/{file.get('id')}/view"
+                os.remove("temp.webm")
             # Uploading description information
             answer_obj = json.loads(data['answers_dict'])
             answers = []
-            if 'description' in answer_obj[0]:
-                for i, answer in enumerate(answer_obj):
-                    if i > 4:
-                        break
+            for answer in answer_obj:
+                if answer['medium'] == "speech":
                     answers.append([
                         data['assignment_id'], 
-                        answer['im_url'], 
-                        answer['description'], 
-                        answer['im_time'], 
-                        answer['im_start_time'], 
-                        answer['im_end_time'],
-                        answer['im_width'],
-                        answer['im_height']
-                    ])
-                for answer, dpath in zip(answer_obj[5:], description_paths):
-                    answers.append([
-                        data['assignment_id'], 
-                        answer['im_url'], 
-                        dpath, 
+                        answer['im_url'],
+                        answer['im_name'], 
+                        "spoken",
+                        answer['fname'],
+                        description_paths[answer['fname']], 
                         answer['im_time'], 
                         answer['im_start_time'], 
                         answer['im_end_time'],
                         answer['im_width'],
                         answer['im_height']
                         ])
-            else:
-                for answer, dpath in zip(answer_obj[:5], description_paths):
+                else:
                     answers.append([
                         data['assignment_id'], 
-                        answer['im_url'], 
-                        dpath, 
-                        answer['im_time'], 
-                        answer['im_start_time'], 
-                        answer['im_end_time'],
-                        answer['im_width'],
-                        answer['im_height']
-                        ])
-                for i, answer in enumerate(answer_obj):
-                    if i < 5:
-                        continue
-                    answers.append([
-                        data['assignment_id'], 
-                        answer['im_url'], 
+                        answer['im_url'],
+                        answer['im_name'], 
+                        "written",
+                        "",
                         answer['description'], 
                         answer['im_time'], 
                         answer['im_start_time'], 
                         answer['im_end_time'],
                         answer['im_width'],
                         answer['im_height']
-                    ])
-                
+                        ])      
             self.append_to_table(self.images_wks, answers, len(answer_obj))
 
             # Uploading Calibrations

@@ -145,7 +145,7 @@ function next(){
         // if (!check_correct(ans, image_index)){
         //     return -1;
         // }
-        record_answers(questions[image_index].ans, image_index);
+        record_answers(questions[image_index].ans, image_index, "speech");
         state += 1;
         image_index += 1;
         render_question(image_index);
@@ -155,7 +155,7 @@ function next(){
     else if (state === 4) {
         // Was question 4, instructions 2
         state += 1;
-        record_answers(questions[image_index].ans, image_index);
+        record_answers(questions[image_index].ans, image_index, "speech");
         empty_audio();
         $(".next").prop("disabled", true);
         $("#circles").prop('hidden', true);
@@ -195,14 +195,14 @@ function next(){
     else if ( state >= 7 && state < 11){
         // was q 5 - 8, start q 6 - 9
         let ans = $('#description').val();
-        record_answers(ans, image_index);
+        record_answers(ans, image_index, "written");
         state += 1;
         image_index += 1
         render_question(image_index);
         update_header_buttons(state);
     }else{
         let ans = $('#description').val();
-        record_answers(ans, image_index);
+        record_answers(ans, image_index, "written");
         if (!finish()){
             return -1;
         }
@@ -237,8 +237,9 @@ function finish(){
 
 
 
-function record_answers(ans, local_state){
+function record_answers(ans, local_state, medium){
     var q = questions[local_state];
+    q.medium = medium
     // store user input
     q.ans = ans;
     // Save time
@@ -249,18 +250,18 @@ function record_answers(ans, local_state){
 }
 
 
-function check_correct(ans, local_state){
-    if (ans.split(/\s+/).length < 8){
-        render_dialog(7);
-        return false;
-    } else if (!check_new_answer(ans, questions)){
-        render_dialog(1);
-        return false;
-    } else {
-        record_answers(ans, local_state);
-        return true;
-    }
-}
+// function check_correct(ans, local_state){
+//     if (ans.split(/\s+/).length < 8){
+//         render_dialog(7);
+//         return false;
+//     } else if (!check_new_answer(ans, questions)){
+//         render_dialog(1);
+//         return false;
+//     } else {
+//         record_answers(ans, local_state);
+//         return true;
+//     }
+// }
 
 function check_new_answer(new_answer, descriptions){
     new_answer = new_answer.split(/[^a-z]/i).filter(function(i){return i}).map(name => name.toLowerCase());
@@ -412,27 +413,42 @@ function render_dialog(idx){
 function getAnswers(){
     var answers = [];
     var blobs = [];
-    for (var i=0; i<5; i++){
-        answers.push({
-            im_url: questions[i].im.src,
-            im_time: questions[i].time,
-            im_start_time: questions[i].start_time,
-            im_end_time: questions[i].end_time,
-            im_height: questions[i].im.height,
-            im_width: questions[i].im.width
-        });
-        blobs.push(questions[i].ans)
-    }
-    for (var i=5; i<10; i++){
-        answers.push({
-            im_url: questions[i].im.src,
-            im_time: questions[i].time,
-            im_start_time: questions[i].start_time,
-            im_end_time: questions[i].end_time,
-            im_height: questions[i].im.height,
-            im_width: questions[i].im.width,
-            description: questions[i].ans
-        });
+    var chunks = [];
+    var im_name = "";
+    for (var i in questions){
+        chunks = questions[i].im.src.split("/")
+        im_name = chunks[chunks.length-1]
+        if (questions[i].medium == "speech"){
+            answers.push({
+                im_url: questions[i].im.src,
+                'im_name': im_name,
+                medium: questions[i].medium,
+                fname: `${assignmentID}_${im_name}`,
+                description: "",
+                im_time: questions[i].time,
+                im_start_time: questions[i].start_time,
+                im_end_time: questions[i].end_time,
+                im_height: questions[i].im.height,
+                im_width: questions[i].im.width
+            });
+            blobs.push({
+                fname: `${assignmentID}_${im_name}`,
+                blob: questions[i].ans
+            })
+        } else {
+            answers.push({
+                im_url: questions[i].im.src,
+                'im_name': im_name,
+                medium: questions[i].medium,
+                fname: "",
+                description: questions[i].ans,
+                im_time: questions[i].time,
+                im_start_time: questions[i].start_time,
+                im_end_time: questions[i].end_time,
+                im_height: questions[i].im.height,
+                im_width: questions[i].im.width
+            });
+        }
     }
     return [answers, blobs];
 }

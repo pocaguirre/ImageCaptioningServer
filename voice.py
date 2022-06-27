@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, render_template
 from voice_engine import voiceEngine
 import secrets
+import string
 
 
 voice = Blueprint('voice', __name__)
@@ -9,7 +10,8 @@ engine =  voiceEngine()
 
 @voice.route('/voice/<condition>/<medium>', methods=['GET'])
 def voice_condition(condition, medium):
-    assignment_id = secrets.token_urlsafe(16)
+    alphabet = string.ascii_letters + string.digits
+    assignment_id = ''.join(secrets.choice(alphabet) for i in range(24))
     return render_template(f"{condition}_{medium}.html", 
                                 demographics=True, 
                                 condition=condition,
