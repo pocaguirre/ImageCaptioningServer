@@ -60,6 +60,152 @@
                                     <label for="age-input" class="form-label">What is your age?</label>
                                     <input type="number" class="form-control" id="age-input" name="age-input" min="18" max="99" required>
                                 </div>
+                                <div id="race-question">
+                                    <p class="question-text">Which one of the following most accurately describes you? Choose all that apply</p>
+                                    <table class="table table-borderless left-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="race-checkbox" id="race1" value="White">
+                                                        <label class="form-check-label" for="education1">White</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race5" value="Black or African American">
+                                                      <label class="form-check-label" for="race5">Black or African American</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race2" value="Chinese">
+                                                      <label class="form-check-label" for="race2">Chinese</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race6" value="Vietnamese">
+                                                      <label class="form-check-label" for="race6">Vietnamese</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                  <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race3" value="Filipino">
+                                                      <label class="form-check-label" for="race3">Filipino</label>
+                                                    </div>
+                                              </td>
+                                              <td>
+                                                  <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race7" value="Korean">
+                                                      <label class="form-check-label" for="race7">Korean</label>
+                                                    </div>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race4" value="Asian Indian">
+                                                      <label class="form-check-label" for="race4">Asian Indian</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race8" value="Japanese">
+                                                      <label class="form-check-label" for="race8">Japanese</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race9" value="Native Hawaiian">
+                                                      <label class="form-check-label" for="race9">Native Hawaiian</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race10" value="Samoan">
+                                                      <label class="form-check-label" for="race10">Samoan</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                      <input class="form-check-input" type="checkbox" name="race-checkbox" id="race11" value="Chamorro">
+                                                      <label class="form-check-label" for="race11">Chamorro</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <label for="other-race" class="form-label">Other race - Let me type ...</label>
+                                                    <input type="text" class="form-control" id="other-race" aria-describedby="other-race" name="race-checkbox">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div id="ethnicity-question">
+                                    <p class="question-text">Are you of Hispanic, Latino, or Spanish origin?</p>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" name="ethnicity-checkbox" id="ethnicity1" value="No, not of Hispanic, Latino, or Spanish origin">
+                                      <label class="form-check-label" for="ethnicity1">No, not of Hispanic, Latino, or Spanish origin</label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" name="ethnicity-checkbox" id="ethnicity2" value="Yes, Mexican, Mexican American, Chicano">
+                                      <label class="form-check-label" for="ethnicity2">Yes, Mexican, Mexican American, Chicano</label>
+                                    </div>
+                                    <div class="form-check ">
+                                        <input class="form-check-input" type="checkbox" name="ethnicity-checkbox" id="ethnicity3" value="Yes, Puerto Rican">
+                                        <label class="form-check-label" for="ethnicity3">Yes, Puerto Rican</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="ethnicity-checkbox" id="ethnicity4" value="Yes, Cuban">
+                                        <label class="form-check-label" for="ethnicity4">Yes, Cuban</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="ethnicity-checkbox" id="ethnicity5" value="Yes, another Hispanic, Latino, or Spanish origin">
+                                        <label class="form-check-label" for="ethnicity5">Yes, another Hispanic, Latino, or Spanish origin</label>
+                                    </div>
+                                </div>
+
+                                <div id="gender-question">
+                                    <p class="question-text">Which one of the following most accurately describes you? Choose all that apply.</p>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" name="gender-checkbox" id="gender1" value="Woman">
+                                      <label class="form-check-label" for="gender1">Woman</label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" name="gender-checkbox" id="gender2" value="Man">
+                                      <label class="form-check-label" for="gender2">Man</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="gender-checkbox" id="gender3" value="Non-binary">
+                                        <label class="form-check-label" for="gender3">Non-binary</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="gender-checkbox" id="gender4" value="Transgender">
+                                        <label class="form-check-label" for="gender4">Transgender</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="gender-checkbox" id="gender5" value="Intersex">
+                                        <label class="form-check-label" for="gender5">Intersex</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label for="other-gender" class="form-label">Other gender - Let me type ...</label>
+                                        <input type="text" class="form-control" id="other-gender" aria-describedby="other-gender" name="gender-checkbox">
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="gender-checkbox" id="gender6" value="I prefer not to say">
+                                        <label class="form-check-label" for="gender6">I prefer not to say</label>
+                                    </div>
+                                </div>
+
                                 <div id="education-question">
                                     <p class="question-text">What is the highest degree or level of education you have completed?</p>
                                     <table class="table table-borderless left-table">
@@ -117,8 +263,20 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div id="english-question">
+                                    <p class="question-text">Is English your first language (or native level)?</p>
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="english-radio" id="english1" value="yes" required>
+                                      <label class="form-check-label" for="english1">yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="english-radio" id="english2" value="no">
+                                      <label class="form-check-label" for="english2">no</label>
+                                    </div>
+                                </div>
+
                                 <div id="glasses-question">
-                                    <p class="question-text">Do you wear <em>correcting</em> eyeglasses or contact lenses?</p>
+                                    <p class="question-text">Do you wear <em>correcting</em> eyeglasses?</p>
                                     <div class="form-check form-check-inline">
                                       <input class="form-check-input" type="radio" name="glasses-radio" id="glasses1" value="yes" required>
                                       <label class="form-check-label" for="glasses1">yes</label>
@@ -126,6 +284,17 @@
                                     <div class="form-check form-check-inline">
                                       <input class="form-check-input" type="radio" name="glasses-radio" id="glasses2" value="no">
                                       <label class="form-check-label" for="glasses2">no</label>
+                                    </div>
+                                </div>
+                                <div id="lenses-question">
+                                    <p class="question-text">Do you wear <em>correcting</em> contact lenses?</p>
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="lenses-radio" id="lenses1" value="yes" required>
+                                      <label class="form-check-label" for="lenses1">yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="lenses-radio" id="lenses2" value="no">
+                                      <label class="form-check-label" for="lenses2">no</label>
                                     </div>
                                 </div>
                                 <div id="colorblind-question">
@@ -208,7 +377,7 @@
                 </div>
                 <div class="col-5 text-start" id="circles-instructions">
                     <h3>Calibrating</h3>
-                    <p>After clicking the button, please look at the circle that will appear on the screen.</p>
+                    <p>After clicking the button, please stare at the circle that appears for the duration it remains on the screen.</p>
                     <div class='state-button text-center pt-3'>
                         <input type='button' id='calibrating' value="ok">
                     </div>

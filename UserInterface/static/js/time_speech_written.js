@@ -151,6 +151,7 @@ function next(){
         state += 1;
         render_question(image_index);
         $("#see-image-div_speech").prop('hidden', false);
+        pre_render_im(questions[image_index].im, "#canvas_speech");
         $("#already-seen_speech").prop('hidden', true);
         update_header_buttons(state);
     }
@@ -159,6 +160,7 @@ function next(){
         empty_audio();
         state += 1;
         image_index += 1
+        pre_render_im(questions[image_index].im, "#canvas_speech");
         render_question(image_index);
         $("#see-image-div_speech").prop('hidden', false);
         $("#already-seen_speech").prop('hidden', true);
@@ -198,6 +200,7 @@ function next(){
         state += 1;
         image_index += 1;
         render_question(image_index);
+        pre_render_im(questions[image_index].im, "#canvas_written");
         $("#see-image-div_written").prop('hidden', false);
         $("#already-seen_written").prop('hidden', true);
         update_header_buttons(state);
@@ -209,6 +212,7 @@ function next(){
         record_answers(ans, image_index, "written");
         state += 1;
         image_index += 1;
+        pre_render_im(questions[image_index].im, "#canvas_written");
         render_question(image_index);
         $("#see-image-div_written").prop('hidden', false);
         $("#already-seen_written").prop('hidden', true);
@@ -232,6 +236,8 @@ function start(){
     $("#instructions_written").prop('hidden', true);
     $("#finish").prop('hidden', true);
     update_header_buttons(state);
+    pre_render_im(instruction_im, "#canvas-instruction_written");
+    pre_render_im(instruction_im, "#canvas-instruction_speech");
 }
 
 function finish(){
@@ -417,9 +423,11 @@ function clear_im(canvas="#canvas"){
     var c = $(canvas)[0];
     var ctx = c.getContext("2d");
     ctx.clearRect(0, 0, c.width, c.height);
+
 }
 
 function render_im(im, canvas="#canvas"){
+    clear_im(canvas);
     var c =  $(canvas)[0]
     c.width = im.width;
     c.height = im.height;
@@ -433,6 +441,26 @@ function render_im(im, canvas="#canvas"){
     }
     var ctx=c.getContext("2d");
     ctx.drawImage(im, 0, 0, c.width, c.height);
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+
+function pre_render_im(im, canvas="#canvas"){
+    var c =  $(canvas)[0]
+    c.width = im.width;
+    c.height = im.height;
+    if (im.width > WINDOW_WIDTH * .47){
+        // c.width =  WINDOW_WIDTH * .5;
+        // c.height = im.height * WINDOW_WIDTH * .5 / im.width;
+        c.height = im.height * WINDOW_WIDTH * .47 / im.width
+        c.width = WINDOW_WIDTH * .47;
+        im.height = c.height;
+        im.width = c.width;
+    }
+    // currently drawing older image sizes? or just wrong
+    // c.style.border = '1px solid #038cfc';
+    var ctx=c.getContext("2d");
+    ctx.strokeRect(0, 0, c.width, c.height);
     window.scrollTo(0, document.body.scrollHeight);
 }
 

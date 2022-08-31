@@ -86,7 +86,18 @@ class voiceEngine:
             # Uploadig worker demographics
             if not self.check_worker_id(data['worker_id']):
                 demographics_obj = json.loads(data['demographics'])
-                user = [data['worker_id'], demographics_obj['age-input'], demographics_obj['education-radio'], demographics_obj['glasses-radio'], demographics_obj['colorblind-radio']]
+                user = [
+                    data['worker_id'], 
+                    demographics_obj['age-input'], 
+                    ";".join(demographics_obj['race-input']),
+                    ";".join(demographics_obj['ethnicity-input']),
+                    ";".join(demographics_obj['gender-input']),
+                    demographics_obj['education-radio'],
+                    demographics_obj['english-radio'], 
+                    demographics_obj['glasses-radio'],
+                    demographics_obj['lenses-radio'], 
+                    demographics_obj['colorblind-radio']
+                    ]
                 self.append_to_table(self.user_wks, user)
 
             

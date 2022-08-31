@@ -16,8 +16,13 @@ $(window).load(function(){
     $("#start-btn").on('click', function (){
         worker_obj['email-input'] = $("[name='email-input']").val();
         worker_obj['age-input'] = $("[name='age-input']").val();
+        worker_obj['race-input'] = get_multiple_choice_answer("race-checkbox");
+        worker_obj['ethnicity-input'] = get_multiple_choice_answer("ethnicity-checkbox");
+        worker_obj['gender-input'] = get_multiple_choice_answer("gender-checkbox");
         worker_obj['education-radio'] = $("[name='education-radio']:checked").val();
+        worker_obj['english-radio'] = $("[name='english-radio']:checked").val();
         worker_obj["glasses-radio"] = $("[name='glasses-radio']:checked").val();
+        worker_obj['lenses-radio'] = $("[name='lenses-radio']:checked").val();
         worker_obj["colorblind-radio"] = $("[name='colorblind-radio']:checked").val();
         $.post( "/voice/get_images", { workerID: worker_obj['email-input']}, function( images ) {
             // Set Images
@@ -146,7 +151,9 @@ function check_completed() {
         $("[name='email-input']").val() !== "" &&
         $("[name='age-input']").val() !== "" &&
         $("[name='education-radio']:checked").length !== 0 &&
+        $("[name='english-radio']:checked").length !== 0 &&
         $("[name='glasses-radio']:checked").length !== 0 &&
+        $("[name='lenses-radio']:checked").length !== 0 &&
         $("[name='colorblind-radio']:checked").length !== 0
     ){
         empty_input = false;
@@ -165,3 +172,21 @@ $(document).ready(function(){
       e.preventDefault();
   });
  });
+
+
+// ===========================================================
+// get multiple choice responses
+// ===========================================================
+function get_multiple_choice_answer(element_name) {
+    var checkboxes = document.getElementsByName(element_name);
+    var answers = [];
+    for(var i = 0; i < checkboxes.length; i++){
+        if(checkboxes[i].checked){
+            answers.push(checkboxes[i].value);
+        }
+        else if(checkboxes[i].type === "text" && checkboxes[i].value !== ""){
+            answers.push(checkboxes[i].value)
+        }
+    }
+    return answers
+}

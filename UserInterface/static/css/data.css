@@ -1,4 +1,19 @@
-#canvas-bbox, #countdown-bbox, #see-image-btn-wrapper, #circle-bbox{
+.parent-instruction {
+	position: relative;
+	height:60vh;
+	width:58vw;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.instruction-overlap {
+	position: absolute;
+	text-align:center;
+	margin: 0 auto;
+}
+
+#canvas-bbox, #countdown-bbox_speech, #countdown-bbox_written, #see-image-btn-wrapper, #circle-bbox{
 	position: fixed;
 	height:80vh;
 	width:58vw;
